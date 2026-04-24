@@ -8518,5 +8518,259 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v23-timeblock-types-sleep-and-skip-fix-style">
+#tbModal .modal,
+#calendarSelectedBlockModal .modal,
+#calendarDayModal .modal{
+  width:100% !important;
+  max-width:min(760px,100vw) !important;
+  overflow-x:hidden !important;
+  box-sizing:border-box !important;
+}
+#tbModal .modal *{max-width:100%;box-sizing:border-box;min-width:0}
+#tbModal .modal .inp-row{width:100%;display:flex;gap:8px}
+#tbModal .modal input,
+#tbModal .modal select,
+#tbModal .modal button{min-width:0}
+.tb-advanced-card.v23{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+  padding:12px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  overflow:hidden;
+}
+.tb-v23-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.tb-v23-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tb-v23-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px}
+.tb-v23-help{font-size:11px;color:var(--muted);line-height:1.45}
+.tb-v23-all-day{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);
+}
+.tb-v23-all-day strong{font-size:13px}.tb-v23-all-day span{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.tb-v23-hidden{display:none!important}
+@media(max-width:560px){
+  #tbModal .modal{max-height:86svh!important;padding:18px 16px calc(18px + var(--sb))!important;border-radius:20px 20px 0 0!important;overflow-y:auto!important;overflow-x:hidden!important}
+  #tbModal .modal-title{font-size:18px!important;line-height:1.2;position:sticky;top:-18px;background:var(--surface);z-index:2;padding:0 0 12px;margin-bottom:10px}
+  #tbModal .modal .inp-row{flex-direction:column!important;gap:10px!important}
+  .tb-v23-grid{grid-template-columns:1fr!important;gap:10px}
+  .tb-advanced-card.v23{padding:12px;gap:12px}
+}
+.sleep-autosave-status{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(52,211,153,.24);background:rgba(52,211,153,.08);color:var(--health);font-family:'DM Mono',monospace;font-size:10px}
+</style>
+<script id="v23-timeblock-types-sleep-and-skip-fix-script">
+(function(){
+  const ymd=(d)=>{const dt=new Date(d);return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;};
+  const parseDateOnly=(str)=>{if(!str)return null;const p=String(str).slice(0,10).split('-').map(Number);if(p.length!==3||p.some(Number.isNaN))return null;return new Date(p[0],p[1]-1,p[2]);};
+  const addDays=(date,n)=>{const d=new Date(date);d.setDate(d.getDate()+Number(n||0));return d;};
+  const repeatLabel=(r)=>r==='daily'?'Todos os dias':r==='weekdays'?'Dias úteis':r==='weekly'?'Semanal':'Sem repetição';
+  const escapeHtml=(s)=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const nativeSave=()=>{try{localStorage.setItem('flow_v3',JSON.stringify(window.S||{}));}catch(e){}};
+  const saveAll=()=>{try{if(typeof save==='function')save();else nativeSave();}catch(e){nativeSave();}};
+
+  function ensureState(){
+    window.S=window.S||{};
+    S.history=S.history||{};
+    S.timeBlocks=Array.isArray(S.timeBlocks)?S.timeBlocks:[];
+    S.timeBlockRules=Array.isArray(S.timeBlockRules)?S.timeBlockRules:[];
+    S.timeBlockSkips=Array.isArray(S.timeBlockSkips)?S.timeBlockSkips:[];
+    S.calendarBlockSkips=Array.isArray(S.calendarBlockSkips)?S.calendarBlockSkips:[];
+    S.meals=Array.isArray(S.meals)?S.meals:[];
+    S.studySessions=Array.isArray(S.studySessions)?S.studySessions:[];
+    S.goals=S.goals||{water:8,waterBaseMl:0,steps:10000,calories:2000,sleep:8,pomodoros:4};
+  }
+
+  function skipKey(sourceType,sourceId,date){return `${sourceType}:${sourceId}:${date}`;}
+  function allSkips(){ensureState();return [...S.timeBlockSkips,...S.calendarBlockSkips].filter(Boolean);}
+  function isSkipped(sourceType,sourceId,date){const key=skipKey(sourceType,sourceId,date);return allSkips().some(x=>x&&x.key===key);}
+  function addUnifiedSkip(sourceType,sourceId,date,title,meta){
+    ensureState();
+    const key=skipKey(sourceType,sourceId,date);
+    const obj={key,sourceType:String(sourceType),sourceId:String(sourceId),date,title:title||'Bloco de tempo',meta:meta||'',reason:'removido',createdAt:new Date().toISOString()};
+    if(!S.timeBlockSkips.some(x=>x&&x.key===key))S.timeBlockSkips.push({...obj});
+    if(!S.calendarBlockSkips.some(x=>x&&x.key===key))S.calendarBlockSkips.push({...obj});
+  }
+  function removeUnifiedSkip(key){
+    ensureState();
+    S.timeBlockSkips=S.timeBlockSkips.filter(x=>x&&x.key!==key);
+    S.calendarBlockSkips=S.calendarBlockSkips.filter(x=>x&&x.key!==key);
+  }
+  window.restoreCalendarBlockOccurrence=function(key,dateStr){
+    removeUnifiedSkip(key);saveAll();refreshCalendarBits();if(dateStr&&typeof openCalendarDay==='function')openCalendarDay(dateStr);
+  };
+  window.addCalendarSingleBlockSkip=function(sourceType,sourceId,dateStr,title,meta){
+    addUnifiedSkip(sourceType,sourceId,dateStr,title,meta);saveAll();refreshCalendarBits();if(typeof openCalendarDay==='function')openCalendarDay(dateStr);
+  };
+  window.applySelectedDaysBlockRemoval=function(){
+    const checked=[...document.querySelectorAll('#calendarSelectedBlockContent input[data-selected-day-block]:checked')];
+    if(!checked.length){alert('Selecione pelo menos um bloco.');return;}
+    checked.forEach(input=>addUnifiedSkip(input.dataset.sourceType,input.dataset.sourceId,input.dataset.date,input.dataset.title,input.dataset.meta));
+    window.calendarSelectedDays=[];window.calendarDaySelectMode=false;
+    saveAll();refreshCalendarBits();try{closeModal('calendarSelectedBlockModal');}catch(e){}
+  };
+
+  function shouldIncludeRule(rule,date){
+    const base=parseDateOnly(rule.date||rule.startDate);if(!base||date<base)return false;
+    const end=parseDateOnly(rule.endDate||rule.dateEnd||rule.until||'');if(end&&date>end)return false;
+    if(rule.repeat==='daily')return true;
+    if(rule.repeat==='weekdays')return date.getDay()!==0&&date.getDay()!==6;
+    if(rule.repeat==='weekly')return date.getDay()===base.getDay();
+    return ymd(date)===ymd(base);
+  }
+
+  window.timeBlockOccurrences=function(days=120,startDateStr){
+    ensureState();
+    const out=[];const today=ymd(new Date());const start=parseDateOnly(startDateStr||today)||new Date();const end=addDays(start,Number(days||120));
+    S.timeBlocks.forEach(tb=>{
+      const dateStr=tb.date||tb.startDate||today;const d=parseDateOnly(dateStr);const sourceId=tb.id;const sourceType='timeBlock';
+      if(d&&d>=start&&d<=end&&!isSkipped(sourceType,sourceId,dateStr))out.push({...tb,date:dateStr,repeat:'none',sourceType,sourceId,allDay:!!tb.allDay});
+    });
+    S.timeBlockRules.forEach(rule=>{
+      const sourceId=rule.id;const sourceType='timeBlockRule';
+      for(let cur=new Date(start);cur<=end;cur.setDate(cur.getDate()+1)){
+        const d=new Date(cur);const dateStr=ymd(d);
+        if(shouldIncludeRule(rule,d)&&!isSkipped(sourceType,sourceId,dateStr))out.push({id:`${sourceId}-${dateStr}`,sourceType,sourceId,start:rule.start,end:rule.end,task:rule.task,color:rule.color||'#fb923c',date:dateStr,repeat:rule.repeat||'none',endDate:rule.endDate||'',allDay:!!rule.allDay,rule:true});
+      }
+    });
+    return out.sort((a,b)=>`${a.date}${a.start||''}`.localeCompare(`${b.date}${b.start||''}`));
+  };
+
+  function patchAllCalendarEvents(){
+    const old=window.allCalendarEventsForDate;
+    window.allCalendarEventsForDate=function(dateStr){
+      let events=[];
+      try{events=old?old(dateStr):[];}catch(e){events=[];}
+      // Rebuild blocks and removed records with the unified skip list so deletion persists.
+      events=events.filter(ev=>ev.type!=='block'&&ev.type!=='absence');
+      const blocks=window.timeBlockOccurrences(120,dateStr).filter(b=>b.date===dateStr).map(b=>({type:'block',sourceId:b.sourceId||b.id,sourceType:b.sourceType||(b.rule?'timeBlockRule':'timeBlock'),occurrenceDate:dateStr,title:b.task||'Bloco de tempo',done:false,color:b.color||'var(--study)',meta:b.allDay?'Dia inteiro':`${b.start||'--:--'}–${b.end||'--:--'}${b.repeat&&b.repeat!=='none'?' · '+repeatLabel(b.repeat):''}`}));
+      const removed=allSkips().filter(x=>x&&x.date===dateStr).filter((x,i,arr)=>arr.findIndex(y=>y.key===x.key)===i).map(x=>({type:'absence',skipKey:x.key,sourceId:x.sourceId,sourceType:x.sourceType,title:'↩ Bloco removido',color:'#34d399',meta:`${x.title||'Bloco'} removido deste dia${x.meta?' · '+x.meta:''}`}));
+      return [...events,...blocks,...removed];
+    };
+  }
+
+  function ensureTimeBlockUi(){
+    const tbTask=document.getElementById('tbTask');if(!tbTask)return;
+    const oldDate=document.getElementById('tbDate');const oldRepeat=document.getElementById('tbRepeat');
+    if(oldDate){oldDate.style.display='none';oldDate.tabIndex=-1;}
+    if(oldRepeat){oldRepeat.style.display='none';oldRepeat.tabIndex=-1;}
+    let wrap=document.getElementById('tbAdvancedWrap');
+    if(!wrap){
+      wrap=document.createElement('div');wrap.id='tbAdvancedWrap';
+      const color=document.getElementById('tbColor');color?.insertAdjacentElement('afterend',wrap);
+    }
+    wrap.className='tb-advanced-card v23';
+    if(!wrap.dataset.v23){
+      wrap.dataset.v23='1';
+      wrap.innerHTML=`
+        <div class="tb-v23-field">
+          <div class="tb-v23-label">Tipo do bloco</div>
+          <select class="inp" id="tbModeV23">
+            <option value="single">Bloco de tempo de dia único</option>
+            <option value="period" selected>Bloco de tempo recorrente com período</option>
+            <option value="open">Bloco de tempo recorrente sem período</option>
+          </select>
+        </div>
+        <label class="tb-v23-all-day">
+          <div><strong>Dia inteiro</strong><span>Ocupa o dia todo, sem horário de início e fim.</span></div>
+          <input type="checkbox" id="tbAllDayV23" style="width:22px;height:22px;accent-color:var(--work)">
+        </label>
+        <div class="tb-v23-grid" id="tbDateGridV23">
+          <div class="tb-v23-field">
+            <div class="tb-v23-label" id="tbStartDateLabelV23">Data inicial</div>
+            <input class="inp" id="tbStartDateV23" type="date">
+          </div>
+          <div class="tb-v23-field" id="tbEndDateBoxV23">
+            <div class="tb-v23-label">Data final</div>
+            <input class="inp" id="tbEndDateV23" type="date">
+          </div>
+        </div>
+        <div class="tb-v23-field" id="tbRepeatBoxV23">
+          <div class="tb-v23-label">Recorrência</div>
+          <select class="inp" id="tbRepeatNewV23">
+            <option value="daily">Todos os dias</option>
+            <option value="weekdays" selected>Dias úteis</option>
+            <option value="weekly">Semanal</option>
+          </select>
+        </div>
+        <div class="tb-v23-help" id="tbHelpV23">Escolha o tipo do bloco. Depois, se precisar, remova dias específicos pelo calendário sem apagar a série.</div>`;
+    }
+    const today=ymd(new Date());
+    const mode=document.getElementById('tbModeV23');const startDate=document.getElementById('tbStartDateV23');const endDate=document.getElementById('tbEndDateV23');const repeat=document.getElementById('tbRepeatNewV23');const allDay=document.getElementById('tbAllDayV23');
+    if(startDate&&!startDate.value)startDate.value=oldDate?.value||today;
+    if(endDate&&!endDate.value)endDate.value=startDate?.value||today;
+    if(repeat&&oldRepeat?.value&&oldRepeat.value!=='none')repeat.value=oldRepeat.value;
+    function sync(){
+      const m=mode?.value||'period';const isSingle=m==='single';const isOpen=m==='open';
+      const endBox=document.getElementById('tbEndDateBoxV23');const repeatBox=document.getElementById('tbRepeatBoxV23');const label=document.getElementById('tbStartDateLabelV23');const help=document.getElementById('tbHelpV23');
+      if(endBox)endBox.classList.toggle('tb-v23-hidden',isSingle||isOpen);
+      if(repeatBox)repeatBox.classList.toggle('tb-v23-hidden',isSingle);
+      if(label)label.textContent=isSingle?'Data do bloco':'Data inicial';
+      if(help)help.textContent=isSingle?'Cria o bloco em apenas um dia.':isOpen?'Cria um bloco recorrente sem data final definida.':'Cria um bloco recorrente entre a data inicial e a data final.';
+      if(isSingle&&endDate&&startDate)endDate.value=startDate.value;
+      const timeRow=document.getElementById('tbStart')?.closest('.inp-row');
+      if(timeRow)timeRow.classList.toggle('tb-v23-hidden',!!allDay?.checked);
+    }
+    mode.onchange=sync;allDay.onchange=sync;startDate.onchange=()=>{if(endDate&&(!endDate.value||endDate.value<startDate.value))endDate.value=startDate.value;if(oldDate)oldDate.value=startDate.value;};
+    sync();
+  }
+
+  const oldAdd=typeof addTimeBlock==='function'?addTimeBlock:null;
+  window.addTimeBlock=addTimeBlock=function(){if(oldAdd)oldAdd();else document.getElementById('tbModal')?.classList.add('open');setTimeout(ensureTimeBlockUi,50);};
+  window.saveTB=function(){
+    ensureState();ensureTimeBlockUi();
+    const allDay=!!document.getElementById('tbAllDayV23')?.checked;
+    const start=allDay?'00:00':document.getElementById('tbStart')?.value;
+    const end=allDay?'23:59':document.getElementById('tbEnd')?.value;
+    const task=document.getElementById('tbTask')?.value?.trim();
+    const color=document.getElementById('tbColor')?.value||'#fb923c';
+    const mode=document.getElementById('tbModeV23')?.value||'period';
+    const startDate=document.getElementById('tbStartDateV23')?.value||document.getElementById('tbDate')?.value||ymd(new Date());
+    let endDate=document.getElementById('tbEndDateV23')?.value||startDate;
+    const repeat=mode==='single'?'none':(document.getElementById('tbRepeatNewV23')?.value||'weekdays');
+    if(!task||(!allDay&&(!start||!end)))return;
+    if(mode==='single')S.timeBlocks.push({id:Date.now(),start,end,task,color,date:startDate,repeat:'none',allDay});
+    else{if(mode==='period'&&endDate<startDate)endDate=startDate;S.timeBlockRules.push({id:Date.now(),start,end,task,color,date:startDate,startDate,endDate:mode==='period'?endDate:'',repeat,allDay,openEnded:mode==='open'});}
+    saveAll();try{if(typeof renderTimeBlocks==='function')renderTimeBlocks();}catch(e){}refreshCalendarBits();try{closeModal('tbModal');}catch(e){}
+    const tbTask=document.getElementById('tbTask');if(tbTask)tbTask.value='';
+  };
+
+  function currentSleepHours(){
+    const s=S.sleepStart||document.getElementById('sleepStart')?.value||'23:00';const e=S.sleepEnd||document.getElementById('sleepEnd')?.value||'07:00';
+    const [sh,sm]=String(s).split(':').map(Number);const [eh,em]=String(e).split(':').map(Number);if([sh,sm,eh,em].some(Number.isNaN))return 0;let mins=(eh*60+em)-(sh*60+sm);if(mins<0)mins+=1440;return Number((mins/60).toFixed(1));
+  }
+  function totalCalories(){return (S.meals||[]).reduce((sum,m)=>sum+Number(m.kcal||0),0);}
+  function syncTodayHistory(){
+    ensureState();const key=new Date().toDateString();const entry={...(S.history[key]||{})};
+    entry.water=Number(S.water||0);entry.steps=Number(S.steps||0);entry.calories=totalCalories();entry.sleep=currentSleepHours();entry.sleepStart=S.sleepStart||'23:00';entry.sleepEnd=S.sleepEnd||'07:00';entry.sleepQuality=Number(S.sleepQuality||0);entry.pomos=Number(S.pomsDone||0);entry.mood=Number(S.mood||0);try{entry.score=typeof calcScore==='function'?Number(calcScore()||0):Number(entry.score||0);}catch(e){entry.score=Number(entry.score||0);}entry.updatedAt=new Date().toISOString();S.history[key]=entry;
+  }
+  function persistSleep(){
+    ensureState();const s=document.getElementById('sleepStart');const e=document.getElementById('sleepEnd');if(s)S.sleepStart=s.value||S.sleepStart||'23:00';if(e)S.sleepEnd=e.value||S.sleepEnd||'07:00';
+    syncTodayHistory();nativeSave();try{if(typeof renderCharts==='function')renderCharts();}catch(e){}try{if(typeof renderOverview==='function')renderOverview();}catch(e){}
+    const st=document.getElementById('sleepAutosaveStatus');if(st)st.textContent='✓ sono salvo automaticamente';
+  }
+  const oldCalc=typeof calcSleep==='function'?calcSleep:null;
+  if(oldCalc){window.calcSleep=calcSleep=function(){const r=oldCalc.apply(this,arguments);persistSleep();return r;};}
+  const oldQual=typeof setSleepQual==='function'?setSleepQual:null;
+  if(oldQual){window.setSleepQual=setSleepQual=function(q,sv=true){const r=oldQual.apply(this,arguments);S.sleepQuality=Number(q||0);persistSleep();return r;};}
+  function bindSleepSave(){
+    const s=document.getElementById('sleepStart');const e=document.getElementById('sleepEnd');
+    if(s&&!s.dataset.v23Sleep){s.dataset.v23Sleep='1';s.value=S.sleepStart||s.value||'23:00';['input','change','blur'].forEach(evt=>s.addEventListener(evt,persistSleep));}
+    if(e&&!e.dataset.v23Sleep){e.dataset.v23Sleep='1';e.value=S.sleepEnd||e.value||'07:00';['input','change','blur'].forEach(evt=>e.addEventListener(evt,persistSleep));}
+    const card=document.querySelector('#sec-sleep .card');if(card&&!document.getElementById('sleepAutosaveStatus')){const p=document.createElement('div');p.id='sleepAutosaveStatus';p.className='sleep-autosave-status';p.textContent='✓ sono salvo automaticamente';card.appendChild(p);}persistSleep();
+  }
+  function refreshCalendarBits(){try{if(typeof renderTaskCalendar==='function')renderTaskCalendar();}catch(e){}try{if(typeof renderOverview==='function')renderOverview();}catch(e){}try{if(typeof updateWorkProgress==='function')updateWorkProgress();}catch(e){}}
+  patchAllCalendarEvents();
+  function boot(){ensureState();ensureTimeBlockUi();bindSleepSave();refreshCalendarBits();}
+  document.addEventListener('DOMContentLoaded',boot);setTimeout(boot,250);setTimeout(boot,900);setTimeout(boot,1600);
+  window.addEventListener('pagehide',()=>{try{persistSleep();nativeSave();}catch(e){}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){try{persistSleep();nativeSave();}catch(e){}}});
+})();
+</script>
+
 </body>
 </html>
