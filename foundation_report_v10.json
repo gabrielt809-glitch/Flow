@@ -1,0 +1,63 @@
+{
+  "version": "10.0.0",
+  "stage": "Foundation v11 — revisão final, manifest, diagnostics, boot guard",
+  "structure": {
+    "index_html_lines": 1179,
+    "styles_css_lines": 1535,
+    "legacy_js_lines": 6332,
+    "foundation_files": {
+      "core.js": 104,
+      "storage.js": 34,
+      "history.js": 72,
+      "sleep.js": 112,
+      "timeblocks.js": 250,
+      "calendar.js": 300,
+      "ui.js": 60,
+      "bridge.js": 72,
+      "tasks.js": 438,
+      "overview.js": 153,
+      "water.js": 138,
+      "food.js": 95,
+      "health.js": 185,
+      "focus.js": 181,
+      "habits.js": 126,
+      "mood.js": 59,
+      "settings.js": 198,
+      "onboarding.js": 59,
+      "manifest.js": 45,
+      "diagnostics.js": 59
+    }
+  },
+  "checks": {
+    "node_syntax_check": "passed",
+    "modules_added": [
+      "manifest.js",
+      "diagnostics.js"
+    ],
+    "bridge_boot_guard": "enabled",
+    "legacy_file_kept_as_safety_fallback": true
+  },
+  "legacy_duplicate_function_declarations_top_20": {
+    "boot": 8,
+    "ensureState": 6,
+    "localDateInputFromDate": 4,
+    "repeatLabel": 3,
+    "getMonday": 3,
+    "skipKey": 3,
+    "isSkipped": 3,
+    "startFocusSound": 2,
+    "stopFocusAudio": 2,
+    "setFocusVolume": 2,
+    "setFocusSound": 2,
+    "normalizeFoodText": 2,
+    "genDates": 2,
+    "timeBlockOccurrences": 2,
+    "eventsForDate": 2,
+    "makeNoise": 2,
+    "ensureCtx": 2,
+    "taskPriorityLabel": 2,
+    "allCalendarEventsForDate": 2,
+    "currentWeight": 2
+  },
+  "next_recommended_stage": "Foundation v11 — remoção física controlada de trechos legados já cobertos, começando por comentários/patches inativos e funções sobrescritas com fallback em pacote separado."
+}

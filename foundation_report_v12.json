@@ -1,0 +1,26 @@
+{
+  "version": "12.0.0",
+  "stage": "legacy-cleanup-calendar-timeblocks",
+  "base": "flow_foundation_v11",
+  "actions": [
+    "Moved duplicated legacy Calendar/TimeBlocks patch blocks out of runtime",
+    "Preserved full legacy backup under assets/legacy/app.legacy.full-backup.v12.js",
+    "Archived removed runtime segment under assets/legacy/calendar_timeblocks_duplicates_removed_v12.js",
+    "Kept official Flow.Calendar and Flow.TimeBlocks as active sources through bridge compatibility"
+  ],
+  "legacy_runtime_lines_before": 6334,
+  "legacy_runtime_lines_after": 4079,
+  "removed_lines": 2256,
+  "removed_ranges_1_based_in_v11": [
+    [
+      3924,
+      6179
+    ]
+  ],
+  "safety": {
+    "calendar_official": "assets/foundation/calendar.js",
+    "timeblocks_official": "assets/foundation/timeblocks.js",
+    "legacy_backup": "assets/legacy/app.legacy.full-backup.v12.js",
+    "removed_archive": "assets/legacy/calendar_timeblocks_duplicates_removed_v12.js"
+  }
+}
