@@ -1,0 +1,40 @@
+{
+  "version": "15.0.0-aggressive-clean",
+  "created_at": "2026-04-24T14:35:20",
+  "legacy_runtime_loaded_by_index": false,
+  "legacy_backup": "assets/legacy/app.legacy.full-backup.v15.aggressive.js",
+  "runtime": "assets/foundation/app.js",
+  "scripts_in_index": [
+    "assets/foundation/core.js",
+    "assets/foundation/storage.js",
+    "assets/foundation/app.js",
+    "assets/foundation/history.js",
+    "assets/foundation/sleep.js",
+    "assets/foundation/timeblocks.js",
+    "assets/foundation/tasks.js",
+    "assets/foundation/calendar.js",
+    "assets/foundation/overview.js",
+    "assets/foundation/water.js",
+    "assets/foundation/food.js",
+    "assets/foundation/health.js",
+    "assets/foundation/focus.js",
+    "assets/foundation/habits.js",
+    "assets/foundation/mood.js",
+    "assets/foundation/settings.js",
+    "assets/foundation/onboarding.js",
+    "assets/foundation/manifest.js",
+    "assets/foundation/legacy-gate.js",
+    "assets/foundation/diagnostics.js",
+    "assets/foundation/ui.js",
+    "assets/foundation/bridge.js"
+  ],
+  "file_count": 29,
+  "notes": [
+    "app.legacy.js removed from active runtime",
+    "Flow.App introduced",
+    "global compatibility installed by Flow.App and bridge"
+  ],
+  "legacy_folder_kept_files": [
+    "app.legacy.full-backup.v15.aggressive.js"
+  ]
+}
