@@ -7399,5 +7399,380 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v20-specific-block-removal-style">
+.calendar-day-toolbar{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:10px 0 14px;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--surface2);
+}
+.calendar-day-toolbar .inp-row{align-items:stretch}
+.calendar-block-select-row{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.calendar-block-select-row input[type="checkbox"]{
+  width:22px;
+  height:22px;
+  margin-top:2px;
+  accent-color:var(--study);
+  flex-shrink:0;
+}
+.calendar-absence-item{
+  border-color:rgba(52,211,153,.28)!important;
+  background:rgba(52,211,153,.055)!important;
+}
+.calendar-absence-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.calendar-absence-actions .btn{flex:1;min-width:120px}
+.calendar-bulk-btn-wrap{margin:10px 0 12px;display:flex;gap:8px;flex-wrap:wrap}
+.calendar-bulk-btn-wrap .btn{flex:1;min-width:180px}
+.calendar-bulk-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.calendar-bulk-day{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:12px}
+.calendar-bulk-day-title{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.calendar-bulk-option{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--border)}
+.calendar-bulk-option:first-of-type{border-top:0}
+.calendar-bulk-option input{width:22px;height:22px;margin-top:1px;accent-color:var(--study);flex-shrink:0}
+.calendar-bulk-option strong{display:block;font-size:13px;line-height:1.3}
+.calendar-bulk-option span{display:block;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px}
+#calendarDayModal .modal,
+#calendarEditModal .modal,
+#calendarBulkBlockModal .modal{
+  width:min(100%,760px)!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+  max-height:82svh!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-left:18px!important;
+  padding-right:18px!important;
+}
+#calendarDayModal .modal *,
+#calendarEditModal .modal *,
+#calendarBulkBlockModal .modal *{max-width:100%;min-width:0}
+@media(max-width:520px){
+  #calendarDayModal .modal,
+  #calendarEditModal .modal,
+  #calendarBulkBlockModal .modal{
+    width:100%!important;
+    max-width:100%!important;
+    max-height:84svh!important;
+    border-radius:20px 20px 0 0!important;
+  }
+  .calendar-day-toolbar .inp-row{flex-direction:column}
+  .calendar-day-toolbar .btn{width:100%}
+  .calendar-absence-actions{flex-direction:column}
+  .calendar-bulk-btn-wrap{flex-direction:column}
+  .calendar-bulk-btn-wrap .btn{min-width:0;width:100%}
+}
+</style>
+<script id="v20-specific-block-removal-script">
+(function(){
+  const saveFn = () => { try{ if(typeof saveSafe==='function') saveSafe(); else if(typeof save==='function') save(); }catch(e){} };
+  const ymd = (d)=>{
+    const dt = new Date(d);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  };
+  const parseDateOnly = (str)=>{
+    if(!str) return null;
+    const p=String(str).slice(0,10).split('-').map(Number);
+    if(p.length!==3 || p.some(Number.isNaN)) return null;
+    return new Date(p[0],p[1]-1,p[2]);
+  };
+  const escapeHtml=(s)=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const prioLabel=(p)=>p==='high'?'Alta':p==='low'?'Baixa':'Média';
+  const repeatLabel=(r)=>r==='daily'?'Todos os dias':r==='weekdays'?'Dias úteis':r==='weekly'?'Semanal':'Sem repetição';
+  const reasonLabel=(r)=>({ferias:'🏖️ Férias',folga:'🌿 Folga',atestado:'🧾 Atestado',removido:'🚫 Removido'}[r] || '🚫 Removido');
+  const reasonColor=(r)=>({ferias:'#34d399',folga:'#22d3ee',atestado:'#f87171',removido:'#a0a0c0'}[r] || '#a0a0c0');
+
+  function ensureState(){
+    window.S=window.S||{};
+    S.tasks=Array.isArray(S.tasks)?S.tasks:[];
+    S.taskRules=Array.isArray(S.taskRules)?S.taskRules:[];
+    S.timeBlocks=Array.isArray(S.timeBlocks)?S.timeBlocks:[];
+    S.timeBlockRules=Array.isArray(S.timeBlockRules)?S.timeBlockRules:[];
+    S.timeBlockSkips=Array.isArray(S.timeBlockSkips)?S.timeBlockSkips:[];
+  }
+  function skipKey(sourceType, sourceId, date){ return `${sourceType}:${sourceId}:${date}`; }
+  function isSkipped(sourceType, sourceId, date){
+    ensureState();
+    const key=skipKey(sourceType, sourceId, date);
+    return S.timeBlockSkips.some(x=>x && x.key===key);
+  }
+  function addSkip(sourceType, sourceId, date, title, meta, reason){
+    ensureState();
+    const key=skipKey(sourceType, sourceId, date);
+    if(!S.timeBlockSkips.some(x=>x.key===key)){
+      S.timeBlockSkips.push({key,sourceType:String(sourceType),sourceId:String(sourceId),date,title:title||'Bloco de tempo',meta:meta||'',reason:reason||'removido',createdAt:new Date().toISOString()});
+    }
+  }
+  function removeSkip(key){
+    ensureState();
+    S.timeBlockSkips=S.timeBlockSkips.filter(x=>x.key!==key);
+  }
+  function refreshAll(){
+    saveFn();
+    try{ if(typeof renderTimeBlocks==='function') renderTimeBlocks(); }catch(e){}
+    try{ if(typeof renderTasks==='function') renderTasks(); }catch(e){}
+    try{ if(typeof updateWorkProgress==='function') updateWorkProgress(); }catch(e){}
+    try{ if(typeof renderOverview==='function') renderOverview(); }catch(e){}
+    try{ if(typeof renderTaskCalendar==='function') renderTaskCalendar(); }catch(e){}
+  }
+
+  window.timeBlockOccurrences = function(days=120, startDateStr){
+    ensureState();
+    const out=[];
+    const todayStr=ymd(new Date());
+    const start=parseDateOnly(startDateStr || todayStr) || new Date();
+    const end=new Date(start); end.setDate(end.getDate()+Number(days||120));
+
+    S.timeBlocks.forEach(tb=>{
+      const baseStr=tb.date || todayStr;
+      const base=parseDateOnly(baseStr);
+      const sourceId=tb.id;
+      const sourceType='timeBlock';
+      if(base && base>=start && base<=end && !isSkipped(sourceType, sourceId, baseStr)){
+        out.push({...tb,id:tb.id,sourceId,sourceType,date:baseStr,repeat:tb.repeat||'none',rule:false});
+      }
+    });
+
+    S.timeBlockRules.forEach(rule=>{
+      const baseStr=rule.date || todayStr;
+      const base=parseDateOnly(baseStr);
+      if(!base) return;
+      for(let cur=new Date(start); cur<=end; cur.setDate(cur.getDate()+1)){
+        const d=new Date(cur);
+        if(d<base) continue;
+        const ds=ymd(d);
+        let include=false;
+        if(rule.repeat==='daily') include=true;
+        else if(rule.repeat==='weekdays') include=d.getDay()!==0 && d.getDay()!==6;
+        else if(rule.repeat==='weekly') include=d.getDay()===base.getDay();
+        else include=ds===baseStr;
+        const sourceId=rule.id;
+        const sourceType='timeBlockRule';
+        if(include && !isSkipped(sourceType, sourceId, ds)){
+          out.push({id:`${rule.id}-${ds}`,sourceId,sourceType,start:rule.start,end:rule.end,task:rule.task,color:rule.color||'#c084fc',date:ds,repeat:rule.repeat||'none',rule:true});
+        }
+      }
+    });
+    return out.sort((a,b)=>`${a.date}${a.start||''}`.localeCompare(`${b.date}${b.start||''}`));
+  };
+
+  window.allCalendarEventsForDate = function(dateStr){
+    ensureState();
+    const tasks=S.tasks.filter(t=>t&&t.due&&String(t.due).slice(0,10)===dateStr).map(t=>({type:'task',sourceId:t.id,title:t.text||'Tarefa',done:!!t.done,color:'var(--work)',meta:`${t.cat||'Tarefa'} · ${prioLabel(t.prio)}${t.done?' · concluída':''}${t.due?' · '+(String(t.due).slice(11,16)||'dia todo'):''}`}));
+    const ruleEvents=S.taskRules.filter(r=>{
+      if(!r||r.floating) return false;
+      const base=parseDateOnly(r.startDate||dateStr), date=parseDateOnly(dateStr);
+      if(!base||!date||date<base) return false;
+      if(r.repeat==='daily') return true;
+      if(r.repeat==='weekdays') return date.getDay()!==0&&date.getDay()!==6;
+      if(r.repeat==='weekly') return date.getDay()===base.getDay();
+      return dateStr===(r.startDate||dateStr);
+    }).map(r=>({type:'rule',sourceId:r.id,ruleId:r.id,title:r.text||'Tarefa recorrente',done:(r.doneDates||[]).includes(dateStr),color:'var(--habits)',meta:`${r.cat||'Tarefa'} · ${prioLabel(r.prio)} · ${repeatLabel(r.repeat)}${(r.doneDates||[]).includes(dateStr)?' · concluída':''}`}));
+    const blocks=window.timeBlockOccurrences(120,dateStr).filter(b=>b.date===dateStr).map(b=>({type:'block',sourceId:b.sourceId||b.id,sourceType:b.sourceType||(b.rule?'timeBlockRule':'timeBlock'),occurrenceDate:dateStr,title:b.task||'Bloco de tempo',done:false,color:b.color||'var(--study)',meta:`${b.start||'--:--'}–${b.end||'--:--'}${b.repeat&&b.repeat!=='none'?' · '+repeatLabel(b.repeat):''}`}));
+    const absences=S.timeBlockSkips.filter(x=>x&&x.date===dateStr).map(x=>({type:'absence',skipKey:x.key,sourceId:x.sourceId,sourceType:x.sourceType,title:reasonLabel(x.reason),color:reasonColor(x.reason),meta:`${x.title||'Bloco'} removido deste dia${x.meta?' · '+x.meta:''}`}));
+    return [...tasks,...ruleEvents,...blocks,...absences];
+  };
+
+  window.removeCalendarBlockOccurrence = function(sourceType, sourceId, dateStr, title, meta){
+    const reason=document.getElementById('calendarRemovalReason')?.value || 'removido';
+    addSkip(sourceType,sourceId,dateStr,title,meta,reason);
+    refreshAll();
+    window.openCalendarDay(dateStr);
+  };
+
+  window.removeSelectedCalendarBlocks = function(dateStr){
+    const checked=[...document.querySelectorAll('#calendarDayContent input[data-block-select]:checked')];
+    if(!checked.length){ alert('Selecione pelo menos um bloco.'); return; }
+    const reason=document.getElementById('calendarRemovalReason')?.value || 'removido';
+    checked.forEach(input=>addSkip(input.dataset.sourceType,input.dataset.sourceId,dateStr,input.dataset.title,input.dataset.meta,reason));
+    refreshAll();
+    window.openCalendarDay(dateStr);
+  };
+
+  window.restoreCalendarBlockOccurrence = function(skipKeyValue, dateStr){
+    removeSkip(skipKeyValue);
+    refreshAll();
+    window.openCalendarDay(dateStr);
+  };
+
+  window.selectAllDayBlocks = function(on){
+    document.querySelectorAll('#calendarDayContent input[data-block-select]').forEach(cb=>cb.checked=!!on);
+  };
+
+  window.openCalendarDay = function(dateStr){
+    ensureState();
+    let modal=document.getElementById('calendarDayModal');
+    if(!modal){
+      modal=document.createElement('div');
+      modal.className='modal-bg';
+      modal.id='calendarDayModal';
+      modal.innerHTML=`<div class="modal"><div class="modal-title"><span id="calendarDayTitle">Detalhes do dia</span><button class="modal-close" onclick="closeModal('calendarDayModal')">×</button></div><div id="calendarDayContent"></div></div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});
+    }
+    const title=document.getElementById('calendarDayTitle');
+    const content=document.getElementById('calendarDayContent');
+    const dayDate=parseDateOnly(dateStr);
+    const events=window.allCalendarEventsForDate(dateStr);
+    if(title) title.textContent=dayDate?dayDate.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}):'Detalhes do dia';
+    if(!content) return;
+    if(!events.length){ content.innerHTML='<div class="empty">Nenhuma tarefa ou bloco de tempo neste dia.</div>'; modal.classList.add('open'); return; }
+    const tasks=events.filter(ev=>ev.type==='task'||ev.type==='rule');
+    const blocks=events.filter(ev=>ev.type==='block');
+    const absences=events.filter(ev=>ev.type==='absence');
+    let html='';
+    if(tasks.length){
+      html+='<div class="day-modal-group-title">Tarefas</div>';
+      html+=tasks.map(ev=>{
+        const icon=ev.type==='rule'?'↻':ev.done?'✅':'📝';
+        const editCall=ev.type==='rule'?`openCalendarRuleEditor(${Number(ev.sourceId)}, '${escapeHtml(dateStr)}')`:`openCalendarTaskEditor(${Number(ev.sourceId)}, '${escapeHtml(dateStr)}')`;
+        return `<div class="day-modal-item"><div class="day-modal-title">${icon} ${escapeHtml(ev.title)}</div><div class="day-modal-meta">${escapeHtml(ev.meta)}</div><div class="calendar-edit-actions"><button class="btn btn-sm" onclick="${editCall}">Editar tarefa</button></div></div>`;
+      }).join('');
+    }
+    if(blocks.length){
+      html+=`<div class="day-modal-group-title">Blocos de tempo</div>
+      <div class="calendar-day-toolbar">
+        <div class="inp-row">
+          <select class="inp" id="calendarRemovalReason" style="flex:1;font-size:13px">
+            <option value="ferias">🏖️ Férias</option>
+            <option value="folga">🌿 Folga</option>
+            <option value="atestado">🧾 Atestado</option>
+            <option value="removido">🚫 Apenas remover</option>
+          </select>
+          <button class="btn btn-p" style="background:var(--study);border-color:var(--study);color:#080810" onclick="removeSelectedCalendarBlocks('${escapeHtml(dateStr)}')">Remover selecionados só deste dia</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-xs" onclick="selectAllDayBlocks(true)">Selecionar todos</button>
+          <button class="btn btn-xs" onclick="selectAllDayBlocks(false)">Limpar seleção</button>
+        </div>
+      </div>`;
+      html+=blocks.map(ev=>`
+        <div class="day-modal-item">
+          <label class="calendar-block-select-row">
+            <input type="checkbox" data-block-select="1" data-source-type="${escapeHtml(ev.sourceType)}" data-source-id="${escapeHtml(ev.sourceId)}" data-title="${escapeHtml(ev.title)}" data-meta="${escapeHtml(ev.meta)}">
+            <span style="flex:1">
+              <span class="day-modal-title">🕒 ${escapeHtml(ev.title)}</span>
+              <span class="day-modal-meta">${escapeHtml(ev.meta)}</span>
+            </span>
+          </label>
+          <div class="calendar-edit-actions">
+            <button class="btn btn-sm calendar-edit-danger" onclick="removeCalendarBlockOccurrence('${escapeHtml(ev.sourceType)}','${escapeHtml(ev.sourceId)}','${escapeHtml(dateStr)}','${escapeHtml(ev.title)}','${escapeHtml(ev.meta)}')">Remover só deste dia</button>
+          </div>
+        </div>`).join('');
+    }
+    if(absences.length){
+      html+='<div class="day-modal-group-title">Ausências / blocos removidos</div>';
+      html+=absences.map(ev=>`<div class="day-modal-item calendar-absence-item"><div class="day-modal-title">${escapeHtml(ev.title)}</div><div class="day-modal-meta">${escapeHtml(ev.meta)}</div><div class="calendar-absence-actions"><button class="btn btn-sm" onclick="restoreCalendarBlockOccurrence('${escapeHtml(ev.skipKey)}','${escapeHtml(dateStr)}')">Restaurar bloco neste dia</button></div></div>`).join('');
+    }
+    content.innerHTML=html;
+    modal.classList.add('open');
+  };
+
+  function getMonday(baseDate){
+    const d=new Date(baseDate); d.setHours(0,0,0,0);
+    const day=d.getDay(); d.setDate(d.getDate()+(day===0?-6:1-day));
+    return d;
+  }
+  function currentWeekRange(){
+    const offset=Number(window.taskCalendarWeekOffset||0);
+    const start=getMonday(new Date()); start.setDate(start.getDate()+offset*7);
+    const end=new Date(start); end.setDate(start.getDate()+6);
+    return {start,end};
+  }
+  function formatDateLabel(dateStr){
+    const d=parseDateOnly(dateStr);
+    return d?d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}):dateStr;
+  }
+
+  function injectBulkButton(){
+    const card=document.getElementById('taskCalendarCard');
+    if(!card || document.getElementById('bulkBlockRemoveBtnWrap')) return;
+    const grid=document.getElementById('taskCalendarGrid');
+    const wrap=document.createElement('div');
+    wrap.id='bulkBlockRemoveBtnWrap';
+    wrap.className='calendar-bulk-btn-wrap';
+    wrap.innerHTML=`<button class="btn" onclick="openBulkBlockRemovalModal()">Selecionar blocos da semana para férias/folga/atestado</button>`;
+    grid?.insertAdjacentElement('beforebegin',wrap);
+  }
+  const previousRenderTaskCalendar=window.renderTaskCalendar;
+  window.renderTaskCalendar=function(){
+    if(typeof previousRenderTaskCalendar==='function') previousRenderTaskCalendar();
+    injectBulkButton();
+  };
+
+  function ensureBulkModal(){
+    let modal=document.getElementById('calendarBulkBlockModal');
+    if(modal) return modal;
+    modal=document.createElement('div');
+    modal.className='modal-bg';
+    modal.id='calendarBulkBlockModal';
+    modal.innerHTML=`<div class="modal"><div class="modal-title"><span>Remover blocos específicos</span><button class="modal-close" onclick="closeModal('calendarBulkBlockModal')">×</button></div><div id="calendarBulkBlockContent"></div></div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});
+    return modal;
+  }
+
+  window.openBulkBlockRemovalModal=function(){
+    ensureState();
+    const {start}=currentWeekRange();
+    const days=[];
+    for(let i=0;i<7;i++){ const d=new Date(start); d.setDate(start.getDate()+i); days.push(ymd(d)); }
+    const byDay=days.map(date=>({date,blocks:window.timeBlockOccurrences(1,date).filter(b=>b.date===date)})).filter(x=>x.blocks.length);
+    const modal=ensureBulkModal();
+    const content=document.getElementById('calendarBulkBlockContent');
+    if(!content) return;
+    if(!byDay.length){
+      content.innerHTML='<div class="empty">Nenhum bloco de tempo disponível nesta semana.</div>';
+      modal.classList.add('open');
+      return;
+    }
+    content.innerHTML=`
+      <div class="calendar-day-toolbar">
+        <div class="inp-row">
+          <select class="inp" id="bulkRemovalReason" style="flex:1;font-size:13px">
+            <option value="ferias">🏖️ Férias</option>
+            <option value="folga">🌿 Folga</option>
+            <option value="atestado">🧾 Atestado</option>
+            <option value="removido">🚫 Apenas remover</option>
+          </select>
+          <button class="btn btn-p" style="background:var(--study);border-color:var(--study);color:#080810" onclick="applyBulkBlockRemoval()">Aplicar aos selecionados</button>
+        </div>
+        <div class="food-preview">Isso remove apenas as ocorrências selecionadas. O bloco recorrente original continua existindo nos outros dias.</div>
+      </div>
+      <div class="calendar-bulk-list">
+        ${byDay.map(group=>`<div class="calendar-bulk-day"><div class="calendar-bulk-day-title">${formatDateLabel(group.date)}</div>${group.blocks.map(b=>`<label class="calendar-bulk-option"><input type="checkbox" data-bulk-block="1" data-date="${escapeHtml(group.date)}" data-source-type="${escapeHtml(b.sourceType||'timeBlock')}" data-source-id="${escapeHtml(b.sourceId||b.id)}" data-title="${escapeHtml(b.task||'Bloco de tempo')}" data-meta="${escapeHtml((b.start||'--:--')+'–'+(b.end||'--:--'))}"><span><strong>${escapeHtml(b.task||'Bloco de tempo')}</strong><span>${escapeHtml((b.start||'--:--')+'–'+(b.end||'--:--'))}${b.repeat&&b.repeat!=='none'?' · '+escapeHtml(repeatLabel(b.repeat)):''}</span></span></label>`).join('')}</div>`).join('')}
+      </div>`;
+    modal.classList.add('open');
+  };
+
+  window.applyBulkBlockRemoval=function(){
+    const checked=[...document.querySelectorAll('#calendarBulkBlockContent input[data-bulk-block]:checked')];
+    if(!checked.length){ alert('Selecione pelo menos um bloco.'); return; }
+    const reason=document.getElementById('bulkRemovalReason')?.value || 'removido';
+    checked.forEach(input=>addSkip(input.dataset.sourceType,input.dataset.sourceId,input.dataset.date,input.dataset.title,input.dataset.meta,reason));
+    refreshAll();
+    try{ closeModal('calendarBulkBlockModal'); }catch(e){}
+  };
+
+  function boot(){ injectBulkButton(); try{ if(typeof renderTaskCalendar==='function') renderTaskCalendar(); }catch(e){} }
+  document.addEventListener('DOMContentLoaded',boot);
+  setTimeout(boot,300);
+  setTimeout(boot,900);
+})();
+</script>
+
 </body>
 </html>
