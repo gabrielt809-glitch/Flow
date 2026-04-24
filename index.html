@@ -6572,5 +6572,246 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v18-task-calendar-weekly-style">
+#taskCalendarGrid.weekly-stack-layout{
+  display:block !important;
+  gap:0 !important;
+}
+#taskCalendarGrid.weekly-stack-layout .task-week-section{
+  margin-bottom:14px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-week-head{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:8px;
+  margin-bottom:8px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-week-head.two-cols{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+#taskCalendarGrid.weekly-stack-layout .task-weekday-chip{
+  text-align:center;
+  font-size:10px;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  padding:2px 0;
+}
+#taskCalendarGrid.weekly-stack-layout .task-week-row{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:8px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-week-row.weekend{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+#taskCalendarGrid.weekly-stack-layout .task-weekend-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:10px;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin:4px 0 8px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-weekend-title::before,
+#taskCalendarGrid.weekly-stack-layout .task-weekend-title::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
+#taskCalendarGrid.weekly-stack-layout .task-day.weekly-card{
+  min-height:122px !important;
+}
+#taskCalendarGrid.weekly-stack-layout .task-day.weekend-card{
+  min-height:112px !important;
+}
+#taskCalendarGrid.weekly-stack-layout .task-day.weekly-card .task-day-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-day-weeklabel{
+  font-size:10px;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+#taskCalendarGrid.weekly-stack-layout .task-day-miniwrap{
+  min-height:50px;
+}
+@media (max-width: 760px){
+  #taskCalendarGrid.weekly-stack-layout .task-week-head,
+  #taskCalendarGrid.weekly-stack-layout .task-week-row{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:6px;
+  }
+  #taskCalendarGrid.weekly-stack-layout .task-week-head.two-cols,
+  #taskCalendarGrid.weekly-stack-layout .task-week-row.weekend{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #taskCalendarGrid.weekly-stack-layout .task-day.weekly-card{
+    min-height:112px !important;
+    padding:9px !important;
+  }
+  #taskCalendarGrid.weekly-stack-layout .task-day.weekend-card{
+    min-height:104px !important;
+  }
+  #taskCalendarGrid.weekly-stack-layout .task-day-num{
+    font-size:15px !important;
+  }
+  #taskCalendarGrid.weekly-stack-layout .task-day-mini{
+    font-size:9px;
+  }
+}
+</style>
+<script id="v18-task-calendar-weekly-script">
+(function(){
+  const weekNames = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const fullWeekNames = ['segunda','terça','quarta','quinta','sexta','sábado','domingo'];
+  const monthNames = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const ymd = (d)=>{
+    const dt = new Date(d);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  };
+  const escapeHtml=(s)=>String(s??'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+  function getMonday(baseDate){
+    const d = new Date(baseDate);
+    d.setHours(0,0,0,0);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  function buildRangeLabel(start, end){
+    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+    if(sameMonth){
+      return `${String(start.getDate()).padStart(2,'0')}–${String(end.getDate()).padStart(2,'0')} ${monthNames[start.getMonth()]} ${start.getFullYear()}`;
+    }
+    if(start.getFullYear() === end.getFullYear()){
+      return `${String(start.getDate()).padStart(2,'0')} ${monthNames[start.getMonth()]} – ${String(end.getDate()).padStart(2,'0')} ${monthNames[end.getMonth()]} ${start.getFullYear()}`;
+    }
+    return `${String(start.getDate()).padStart(2,'0')} ${monthNames[start.getMonth()]} ${start.getFullYear()} – ${String(end.getDate()).padStart(2,'0')} ${monthNames[end.getMonth()]} ${end.getFullYear()}`;
+  }
+
+  function makeDayButton(dateObj, idx){
+    const dateStr = ymd(dateObj);
+    const todayStr = ymd(new Date());
+    const events = typeof window.allCalendarEventsForDate === 'function' ? window.allCalendarEventsForDate(dateStr) : [];
+    const taskCount = events.filter(ev => ev.type === 'task' || ev.type === 'rule').length;
+    const blockCount = events.filter(ev => ev.type === 'block').length;
+    const total = events.length;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'task-day weekly-card' + (idx >= 5 ? ' weekend-card' : '') + (dateStr === todayStr ? ' today' : '') + (total ? ' has-items' : '') + (taskCount ? ' has-tasks' : '') + (blockCount ? ' has-blocks' : '');
+
+    const preview = events.slice(0,3).map(ev => {
+      const klass = ev.type === 'block' ? 'block' : ev.type === 'rule' ? 'rule' : 'task';
+      const prefix = ev.type === 'block' ? '🕒 ' : ev.type === 'rule' ? '↻ ' : '• ';
+      return `<div class="task-day-mini ${klass}">${prefix}${escapeHtml(ev.title)}</div>`;
+    }).join('');
+
+    const dots = events.slice(0,5).map(ev => `<span class="task-day-dot" style="background:${escapeHtml(ev.color || (ev.type==='block'?'var(--study)':'var(--work)'))}"></span>`).join('');
+
+    btn.innerHTML = `
+      <div class="task-day-topline">
+        <span class="task-day-weeklabel">${weekNames[idx]}</span>
+        <span class="task-day-count">${total ? `${total} item${total>1?'s':''}` : ''}</span>
+      </div>
+      <div class="task-day-head">
+        <span class="task-day-num">${dateObj.getDate()}</span>
+      </div>
+      <div class="task-day-miniwrap">${preview || '<div class="task-day-empty">Nenhum item</div>'}</div>
+      <div class="task-day-dots">${dots}</div>`;
+    btn.onclick = () => {
+      if(typeof window.openCalendarDay === 'function') window.openCalendarDay(dateStr);
+    };
+    return btn;
+  }
+
+  window.changeTaskCalendar = function(delta){
+    window.taskCalendarWeekOffset = Number(window.taskCalendarWeekOffset || 0) + Number(delta || 0);
+    if(typeof window.renderTaskCalendar === 'function') window.renderTaskCalendar();
+  };
+
+  window.renderTaskCalendar = function(){
+    const grid = document.getElementById('taskCalendarGrid');
+    const label = document.getElementById('taskCalendarLabel');
+    if(!grid || !label) return;
+
+    const offset = Number(window.taskCalendarWeekOffset || 0);
+    const monday = getMonday(new Date());
+    monday.setDate(monday.getDate() + (offset * 7));
+    const days = [];
+    for(let i=0;i<7;i++){
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d);
+    }
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    label.textContent = 'Semana · ' + buildRangeLabel(monday, sunday);
+
+    grid.className = 'task-calendar-grid weekly-stack-layout';
+    grid.innerHTML = '';
+
+    const weekSection = document.createElement('div');
+    weekSection.className = 'task-week-section';
+    const weekHead = document.createElement('div');
+    weekHead.className = 'task-week-head';
+    weekNames.slice(0,5).forEach(name=>{
+      const chip = document.createElement('div');
+      chip.className = 'task-weekday-chip';
+      chip.textContent = name;
+      weekHead.appendChild(chip);
+    });
+    const weekRow = document.createElement('div');
+    weekRow.className = 'task-week-row';
+    days.slice(0,5).forEach((d, idx)=>weekRow.appendChild(makeDayButton(d, idx)));
+    weekSection.appendChild(weekHead);
+    weekSection.appendChild(weekRow);
+
+    const weekendSection = document.createElement('div');
+    weekendSection.className = 'task-week-section';
+    const weekendTitle = document.createElement('div');
+    weekendTitle.className = 'task-weekend-title';
+    weekendTitle.textContent = 'Final de semana';
+    const weekendHead = document.createElement('div');
+    weekendHead.className = 'task-week-head two-cols';
+    weekNames.slice(5).forEach(name=>{
+      const chip = document.createElement('div');
+      chip.className = 'task-weekday-chip';
+      chip.textContent = name;
+      weekendHead.appendChild(chip);
+    });
+    const weekendRow = document.createElement('div');
+    weekendRow.className = 'task-week-row weekend';
+    days.slice(5).forEach((d, idx)=>weekendRow.appendChild(makeDayButton(d, idx + 5)));
+    weekendSection.appendChild(weekendTitle);
+    weekendSection.appendChild(weekendHead);
+    weekendSection.appendChild(weekendRow);
+
+    grid.appendChild(weekSection);
+    grid.appendChild(weekendSection);
+  };
+
+  function boot(){
+    if(typeof window.renderTaskCalendar === 'function') window.renderTaskCalendar();
+  }
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 250);
+  setTimeout(boot, 900);
+})();
+</script>
+
 </body>
 </html>
