@@ -8141,5 +8141,382 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v22-timeblock-range-and-save-fix-style">
+.tb-advanced-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+}
+.tb-advanced-label{
+  font-size:10px;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:2px;
+}
+.tb-advanced-help{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.45;
+}
+.tb-date-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+@media (max-width:420px){
+  .tb-date-grid{grid-template-columns:1fr}
+}
+.save-status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(52,211,153,.25);
+  background:rgba(52,211,153,.08);
+  color:var(--health);
+  font-size:10px;
+  font-family:'DM Mono',monospace;
+  margin-top:8px;
+}
+</style>
+<script id="v22-timeblock-range-and-save-fix-script">
+(function(){
+  const originalSave = typeof save === 'function' ? save : null;
+  const ymd = (d)=>{
+    const dt = new Date(d);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  };
+  const parseDateOnly = (str)=>{
+    if(!str) return null;
+    const p=String(str).slice(0,10).split('-').map(Number);
+    if(p.length!==3 || p.some(Number.isNaN)) return null;
+    return new Date(p[0],p[1]-1,p[2]);
+  };
+  const addDays=(date,n)=>{ const d=new Date(date); d.setDate(d.getDate()+n); return d; };
+
+  function ensureState(){
+    window.S = window.S || {};
+    S.history = S.history || {};
+    S.timeBlocks = Array.isArray(S.timeBlocks) ? S.timeBlocks : [];
+    S.timeBlockRules = Array.isArray(S.timeBlockRules) ? S.timeBlockRules : [];
+    S.calendarBlockSkips = Array.isArray(S.calendarBlockSkips) ? S.calendarBlockSkips : [];
+    S.meals = Array.isArray(S.meals) ? S.meals : [];
+    S.studySessions = Array.isArray(S.studySessions) ? S.studySessions : [];
+    S.goals = S.goals || {water:8,waterBaseMl:0,steps:10000,calories:2000,sleep:8,pomodoros:4};
+  }
+
+  function totalCalories(){
+    ensureState();
+    return (S.meals || []).reduce((sum,m)=>sum + Number(m.kcal || 0),0);
+  }
+
+  function currentSleepHours(){
+    try{
+      if(typeof getSleepHours === 'function') return Number(getSleepHours() || 0);
+    }catch(e){}
+    const start = S.sleepStart || '23:00';
+    const end = S.sleepEnd || '07:00';
+    const [sh,sm]=start.split(':').map(Number);
+    const [eh,em]=end.split(':').map(Number);
+    if([sh,sm,eh,em].some(Number.isNaN)) return 0;
+    let mins=(eh*60+em)-(sh*60+em);
+    mins=(eh*60+em)-(sh*60+sm);
+    if(mins<0) mins+=1440;
+    return Number((mins/60).toFixed(1));
+  }
+
+  function currentScoreSafe(){
+    try{
+      if(typeof calcScore === 'function') return Number(calcScore() || 0);
+    }catch(e){}
+    return 0;
+  }
+
+  function syncTodayHistory(){
+    ensureState();
+    const key = new Date().toDateString();
+    const sleepH = currentSleepHours();
+    const entry = Object.assign({}, S.history[key] || {});
+    entry.water = Number(S.water || 0);
+    try{ entry.waterGoalMl = typeof calcWaterGoalMl === 'function' ? calcWaterGoalMl() : (S.goals.waterBaseMl || S.goals.water*250 || 2000); }catch(e){ entry.waterGoalMl = S.goals.waterBaseMl || S.goals.water*250 || 2000; }
+    entry.cupSize = Number(S.cupSize || 250);
+    entry.steps = Number(S.steps || 0);
+    entry.calories = totalCalories();
+    entry.sleep = sleepH;
+    entry.sleepStart = S.sleepStart || document.getElementById('sleepStart')?.value || '23:00';
+    entry.sleepEnd = S.sleepEnd || document.getElementById('sleepEnd')?.value || '07:00';
+    entry.sleepQuality = Number(S.sleepQuality || 0);
+    entry.pomos = Number(S.pomsDone || 0);
+    entry.score = currentScoreSafe();
+    entry.mood = Number(S.mood || 0);
+    entry.updatedAt = new Date().toISOString();
+    S.history[key] = entry;
+    const keys = Object.keys(S.history).sort((a,b)=>new Date(a)-new Date(b));
+    while(keys.length > 120){ delete S.history[keys.shift()]; }
+  }
+
+  function refreshWeeklyChartsSoon(){
+    clearTimeout(window.__flowHistoryRefreshTimer);
+    window.__flowHistoryRefreshTimer = setTimeout(()=>{
+      try{ if(typeof renderCharts === 'function') renderCharts(); }catch(e){}
+      try{ if(typeof renderOverview === 'function') renderOverview(); }catch(e){}
+      try{ if(typeof calcScore === 'function') calcScore(); }catch(e){}
+    },120);
+  }
+
+  window.save = save = function(){
+    try{ syncTodayHistory(); }catch(e){}
+    if(originalSave) originalSave();
+    else { try{ localStorage.setItem('flowData', JSON.stringify(S)); }catch(e){} }
+    refreshWeeklyChartsSoon();
+  };
+
+  window.saveCurrentDayHistory = function(){
+    syncTodayHistory();
+    if(originalSave) originalSave();
+    refreshWeeklyChartsSoon();
+  };
+
+  function ensureTimeBlockAdvancedUi(){
+    const tbTask = document.getElementById('tbTask');
+    if(!tbTask) return;
+
+    let oldDate = document.getElementById('tbDate');
+    let oldRepeat = document.getElementById('tbRepeat');
+
+    let wrap = document.getElementById('tbAdvancedWrap');
+    if(!wrap){
+      wrap = document.createElement('div');
+      wrap.id = 'tbAdvancedWrap';
+      wrap.className = 'tb-advanced-card';
+      wrap.innerHTML = `
+        <div>
+          <div class="tb-advanced-label">Tipo do bloco</div>
+          <select class="inp" id="tbMode" style="--acc:var(--work)">
+            <option value="single">Dia único</option>
+            <option value="recurring" selected>Recorrente com período</option>
+          </select>
+        </div>
+        <div class="tb-date-grid">
+          <div>
+            <div class="tb-advanced-label" id="tbStartDateLabel">Data</div>
+            <input class="inp" id="tbStartDate" type="date" style="--acc:var(--work)">
+          </div>
+          <div id="tbEndDateBox">
+            <div class="tb-advanced-label">Data final</div>
+            <input class="inp" id="tbEndDate" type="date" style="--acc:var(--work)">
+          </div>
+        </div>
+        <div id="tbRepeatBox">
+          <div class="tb-advanced-label">Recorrência</div>
+          <select class="inp" id="tbRepeatNew" style="--acc:var(--work)">
+            <option value="daily">Todos os dias</option>
+            <option value="weekdays" selected>Dias úteis</option>
+            <option value="weekly">Semanal</option>
+          </select>
+        </div>
+        <div class="tb-advanced-help" id="tbAdvancedHelp">Use data inicial e final para criar blocos como jornada de trabalho por um período específico. Depois você ainda pode remover dias isolados pelo calendário.</div>
+      `;
+      const color = document.getElementById('tbColor');
+      color?.insertAdjacentElement('afterend', wrap);
+    }
+
+    const today = ymd(new Date());
+    const startDate = document.getElementById('tbStartDate');
+    const endDate = document.getElementById('tbEndDate');
+    const repeatNew = document.getElementById('tbRepeatNew');
+    const mode = document.getElementById('tbMode');
+    if(startDate && !startDate.value) startDate.value = oldDate?.value || today;
+    if(endDate && !endDate.value) endDate.value = startDate?.value || today;
+    if(repeatNew && oldRepeat?.value && oldRepeat.value !== 'none') repeatNew.value = oldRepeat.value;
+
+    if(oldDate){ oldDate.style.display='none'; oldDate.tabIndex=-1; }
+    if(oldRepeat){ oldRepeat.style.display='none'; oldRepeat.tabIndex=-1; }
+
+    function syncMode(){
+      const isSingle = mode?.value === 'single';
+      const endBox = document.getElementById('tbEndDateBox');
+      const repeatBox = document.getElementById('tbRepeatBox');
+      const label = document.getElementById('tbStartDateLabel');
+      const help = document.getElementById('tbAdvancedHelp');
+      if(endBox) endBox.style.display = isSingle ? 'none' : '';
+      if(repeatBox) repeatBox.style.display = isSingle ? 'none' : '';
+      if(label) label.textContent = isSingle ? 'Data do bloco' : 'Data inicial';
+      if(help) help.textContent = isSingle ? 'Cria o bloco em apenas um dia.' : 'Cria o bloco recorrente entre a data inicial e a data final. Você pode remover dias isolados pelo calendário depois.';
+      if(isSingle && endDate && startDate) endDate.value = startDate.value;
+    }
+    mode?.addEventListener('change', syncMode);
+    startDate?.addEventListener('change', ()=>{
+      if(endDate && (!endDate.value || endDate.value < startDate.value)) endDate.value = startDate.value;
+      const oldDateNow = document.getElementById('tbDate');
+      if(oldDateNow) oldDateNow.value = startDate.value;
+    });
+    syncMode();
+  }
+
+  const repeatLabel=(r)=>r==='daily'?'Todos os dias':r==='weekdays'?'Dias úteis':r==='weekly'?'Semanal':'Sem repetição';
+  function shouldIncludeRule(rule,date){
+    const base = parseDateOnly(rule.date || rule.startDate);
+    if(!base || date < base) return false;
+    const end = parseDateOnly(rule.endDate || rule.dateEnd || rule.until || '');
+    if(end && date > end) return false;
+    if(rule.repeat==='daily') return true;
+    if(rule.repeat==='weekdays') return date.getDay() !== 0 && date.getDay() !== 6;
+    if(rule.repeat==='weekly') return date.getDay() === base.getDay();
+    return ymd(date) === ymd(base);
+  }
+
+  const isSkipped=(sourceType,sourceId,dateStr)=>{
+    ensureState();
+    return S.calendarBlockSkips.some(skip => String(skip.sourceType)===String(sourceType) && String(skip.sourceId)===String(sourceId) && String(skip.date)===String(dateStr));
+  };
+
+  window.timeBlockOccurrences = function(days=120,startDateStr){
+    ensureState();
+    const out=[];
+    const start = parseDateOnly(startDateStr || ymd(new Date())) || new Date();
+    const end = addDays(start, Number(days||120));
+
+    S.timeBlocks.forEach(tb=>{
+      const dateStr = tb.date || tb.startDate || ymd(new Date());
+      const d = parseDateOnly(dateStr);
+      const sourceId = tb.id;
+      if(d && d >= start && d <= end && !isSkipped('timeBlock',sourceId,dateStr)){
+        out.push({...tb,date:dateStr,repeat:'none',sourceType:'timeBlock',sourceId});
+      }
+    });
+
+    S.timeBlockRules.forEach(rule=>{
+      const sourceId = rule.id;
+      for(let cur=new Date(start);cur<=end;cur.setDate(cur.getDate()+1)){
+        const d = new Date(cur);
+        const dateStr = ymd(d);
+        if(shouldIncludeRule(rule,d) && !isSkipped('timeBlockRule',sourceId,dateStr)){
+          out.push({
+            id:`${sourceId}-${dateStr}`,
+            sourceType:'timeBlockRule',
+            sourceId,
+            start:rule.start,
+            end:rule.end,
+            task:rule.task,
+            color:rule.color || '#fb923c',
+            date:dateStr,
+            repeat:rule.repeat || 'none',
+            endDate:rule.endDate || '',
+            rule:true
+          });
+        }
+      }
+    });
+
+    return out.sort((a,b)=>`${a.date}${a.start||''}`.localeCompare(`${b.date}${b.start||''}`));
+  };
+
+  window.saveTB = function(){
+    ensureState();
+    ensureTimeBlockAdvancedUi();
+    const start = document.getElementById('tbStart')?.value;
+    const end = document.getElementById('tbEnd')?.value;
+    const task = document.getElementById('tbTask')?.value?.trim();
+    const color = document.getElementById('tbColor')?.value || '#fb923c';
+    const mode = document.getElementById('tbMode')?.value || 'recurring';
+    const startDate = document.getElementById('tbStartDate')?.value || document.getElementById('tbDate')?.value || ymd(new Date());
+    let endDate = document.getElementById('tbEndDate')?.value || startDate;
+    const repeat = mode === 'single' ? 'none' : (document.getElementById('tbRepeatNew')?.value || document.getElementById('tbRepeat')?.value || 'weekdays');
+    if(!start || !end || !task) return;
+    if(mode !== 'single' && endDate < startDate) endDate = startDate;
+
+    if(mode === 'single'){
+      S.timeBlocks.push({id:Date.now(),start,end,task,color,date:startDate,repeat:'none'});
+    }else{
+      S.timeBlockRules.push({id:Date.now(),start,end,task,color,date:startDate,startDate,endDate,repeat});
+    }
+
+    save();
+    try{ if(typeof renderTimeBlocks==='function') renderTimeBlocks(); }catch(e){}
+    try{ if(typeof renderTaskCalendar==='function') renderTaskCalendar(); }catch(e){}
+    try{ if(typeof closeModal==='function') closeModal('tbModal'); }catch(e){}
+    const tbTask=document.getElementById('tbTask'); if(tbTask) tbTask.value='';
+  };
+
+  const originalAddTimeBlock = typeof addTimeBlock === 'function' ? addTimeBlock : null;
+  window.addTimeBlock = addTimeBlock = function(){
+    if(originalAddTimeBlock) originalAddTimeBlock();
+    else document.getElementById('tbModal')?.classList.add('open');
+    setTimeout(ensureTimeBlockAdvancedUi,50);
+  };
+
+  function hydrateSleepInputs(){
+    const s=document.getElementById('sleepStart');
+    const e=document.getElementById('sleepEnd');
+    if(s && S.sleepStart) s.value=S.sleepStart;
+    if(e && S.sleepEnd) e.value=S.sleepEnd;
+    try{ if(typeof calcSleep === 'function') calcSleep(); }catch(err){}
+    try{ if(S.sleepQuality && typeof setSleepQual === 'function') setSleepQual(Number(S.sleepQuality),false); }catch(err){}
+  }
+
+  const originalCalcSleep = typeof calcSleep === 'function' ? calcSleep : null;
+  if(originalCalcSleep){
+    window.calcSleep = calcSleep = function(){
+      const s=document.getElementById('sleepStart');
+      const e=document.getElementById('sleepEnd');
+      if(s) S.sleepStart=s.value || S.sleepStart || '23:00';
+      if(e) S.sleepEnd=e.value || S.sleepEnd || '07:00';
+      const result = originalCalcSleep.apply(this,arguments);
+      try{ syncTodayHistory(); }catch(err){}
+      try{ if(originalSave) originalSave(); }catch(err){}
+      refreshWeeklyChartsSoon();
+      return result;
+    };
+  }
+
+  const originalSetSleepQual = typeof setSleepQual === 'function' ? setSleepQual : null;
+  if(originalSetSleepQual){
+    window.setSleepQual = setSleepQual = function(q,sv=true){
+      const result = originalSetSleepQual.apply(this,arguments);
+      S.sleepQuality = Number(q || 0);
+      try{ syncTodayHistory(); }catch(err){}
+      if(sv){ try{ if(originalSave) originalSave(); }catch(err){} refreshWeeklyChartsSoon(); }
+      return result;
+    };
+  }
+
+  function addSavedStatusToSleep(){
+    const card = document.querySelector('#sec-sleep .card');
+    if(card && !document.getElementById('sleepSavedStatus')){
+      const pill=document.createElement('div');
+      pill.id='sleepSavedStatus';
+      pill.className='save-status-pill';
+      pill.textContent='✓ sono salvo automaticamente';
+      card.appendChild(pill);
+    }
+  }
+
+  function boot(){
+    ensureState();
+    ensureTimeBlockAdvancedUi();
+    hydrateSleepInputs();
+    addSavedStatusToSleep();
+    try{ syncTodayHistory(); if(originalSave) originalSave(); }catch(e){}
+    try{ if(typeof renderCharts==='function') renderCharts(); }catch(e){}
+    try{ if(typeof renderTaskCalendar==='function') renderTaskCalendar(); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',boot);
+  setTimeout(boot,250);
+  setTimeout(boot,900);
+  window.addEventListener('pagehide',()=>{ try{ syncTodayHistory(); if(originalSave) originalSave(); }catch(e){} });
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){ try{ syncTodayHistory(); if(originalSave) originalSave(); }catch(e){} } });
+})();
+</script>
+
 </body>
 </html>
