@@ -6813,5 +6813,591 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v19-calendar-editable-items-style">
+.calendar-edit-actions{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.calendar-edit-actions .btn{
+  flex:1;
+  min-width:100px;
+}
+.calendar-edit-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.calendar-edit-grid .full{
+  grid-column:1/-1;
+}
+.calendar-edit-label{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:5px;
+}
+.calendar-edit-danger{
+  border-color:rgba(248,113,113,.35)!important;
+  color:#f87171!important;
+}
+.calendar-quick-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.calendar-quick-row .btn{
+  flex:1;
+  min-width:130px;
+}
+@media(max-width:520px){
+  .calendar-edit-grid{grid-template-columns:1fr}
+  .calendar-edit-grid .full{grid-column:auto}
+}
+</style>
+
+<script id="v19-calendar-editable-items-script">
+(function(){
+  const saveFn = () => { try{ if(typeof saveSafe==='function') saveSafe(); else if(typeof save==='function') save(); }catch(e){} };
+  const ymd = (d)=>{
+    const dt = new Date(d);
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  };
+  const parseDateOnly = (str)=>{
+    if(!str) return null;
+    const p = String(str).slice(0,10).split('-').map(Number);
+    if(p.length!==3 || p.some(Number.isNaN)) return null;
+    return new Date(p[0], p[1]-1, p[2]);
+  };
+  const escapeHtml = (s)=>String(s??'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const prioLabel = (p)=>p==='high'?'Alta':p==='low'?'Baixa':'Média';
+  const repeatLabel = (r)=>r==='daily'?'Todos os dias':r==='weekdays'?'Dias úteis':r==='weekly'?'Semanal':'Sem repetição';
+  const normalizeDateTime = (date, time)=>{
+    if(!date) return '';
+    const hhmm = time || '09:00';
+    return `${date}T${hhmm}`;
+  };
+  const getTimeFromDue = (due)=> String(due || '').slice(11,16) || '09:00';
+
+  function ensureState(){
+    window.S = window.S || {};
+    S.tasks = Array.isArray(S.tasks) ? S.tasks : [];
+    S.taskRules = Array.isArray(S.taskRules) ? S.taskRules : [];
+    S.timeBlocks = Array.isArray(S.timeBlocks) ? S.timeBlocks : [];
+    S.timeBlockRules = Array.isArray(S.timeBlockRules) ? S.timeBlockRules : [];
+  }
+
+  window.timeBlockOccurrences = function(days=120, startDateStr){
+    ensureState();
+    const out = [];
+    const todayStr = ymd(new Date());
+    const start = parseDateOnly(startDateStr || todayStr) || new Date();
+    const end = new Date(start);
+    end.setDate(end.getDate() + Number(days || 120));
+
+    S.timeBlocks.forEach(tb=>{
+      const baseStr = tb.date || todayStr;
+      const base = parseDateOnly(baseStr);
+      if(base && base >= start && base <= end){
+        out.push({
+          ...tb,
+          id: tb.id,
+          sourceId: tb.id,
+          sourceType: 'timeBlock',
+          date: baseStr,
+          repeat: tb.repeat || 'none',
+          rule:false
+        });
+      }
+    });
+
+    S.timeBlockRules.forEach(rule=>{
+      const baseStr = rule.date || todayStr;
+      const base = parseDateOnly(baseStr);
+      if(!base) return;
+      for(let cur = new Date(start); cur <= end; cur.setDate(cur.getDate()+1)){
+        const d = new Date(cur);
+        if(d < base) continue;
+        const ds = ymd(d);
+        let include = false;
+        if(rule.repeat === 'daily') include = true;
+        else if(rule.repeat === 'weekdays') include = d.getDay() !== 0 && d.getDay() !== 6;
+        else if(rule.repeat === 'weekly') include = d.getDay() === base.getDay();
+        else include = ds === baseStr;
+
+        if(include){
+          out.push({
+            id:`${rule.id}-${ds}`,
+            sourceId: rule.id,
+            sourceType:'timeBlockRule',
+            start: rule.start,
+            end: rule.end,
+            task: rule.task,
+            color: rule.color || '#c084fc',
+            date: ds,
+            repeat: rule.repeat || 'none',
+            rule:true
+          });
+        }
+      }
+    });
+
+    return out.sort((a,b)=>`${a.date}${a.start||''}`.localeCompare(`${b.date}${b.start||''}`));
+  };
+
+  window.allCalendarEventsForDate = function(dateStr){
+    ensureState();
+
+    const tasks = S.tasks
+      .filter(t => t && t.due && String(t.due).slice(0,10) === dateStr)
+      .map(t => ({
+        type:'task',
+        sourceId:t.id,
+        title:t.text || 'Tarefa',
+        done:!!t.done,
+        color:'var(--work)',
+        meta:`${t.cat || 'Tarefa'} · ${prioLabel(t.prio)}${t.done ? ' · concluída' : ''}${t.due ? ' · ' + (String(t.due).slice(11,16) || 'dia todo') : ''}`
+      }));
+
+    const ruleEvents = S.taskRules
+      .filter(r => {
+        if(!r || r.floating) return false;
+        const base = parseDateOnly(r.startDate || dateStr);
+        const date = parseDateOnly(dateStr);
+        if(!base || !date || date < base) return false;
+        if(r.repeat === 'daily') return true;
+        if(r.repeat === 'weekdays') return date.getDay() !== 0 && date.getDay() !== 6;
+        if(r.repeat === 'weekly') return date.getDay() === base.getDay();
+        return dateStr === (r.startDate || dateStr);
+      })
+      .map(r => ({
+        type:'rule',
+        sourceId:r.id,
+        ruleId:r.id,
+        title:r.text || 'Tarefa recorrente',
+        done:(r.doneDates || []).includes(dateStr),
+        color:'var(--habits)',
+        meta:`${r.cat || 'Tarefa'} · ${prioLabel(r.prio)} · ${repeatLabel(r.repeat)}${(r.doneDates||[]).includes(dateStr) ? ' · concluída' : ''}`
+      }));
+
+    const blocks = window.timeBlockOccurrences(120, dateStr)
+      .filter(b => b.date === dateStr)
+      .map(b => ({
+        type:'block',
+        sourceId:b.sourceId || b.id,
+        sourceType:b.rule ? 'timeBlockRule' : 'timeBlock',
+        occurrenceDate:dateStr,
+        title:b.task || 'Bloco de tempo',
+        done:false,
+        color:b.color || 'var(--study)',
+        meta:`${b.start || '--:--'}–${b.end || '--:--'}${b.repeat && b.repeat !== 'none' ? ' · ' + repeatLabel(b.repeat) : ''}`
+      }));
+
+    return [...tasks, ...ruleEvents, ...blocks];
+  };
+
+  function refreshCalendarAndLists(){
+    saveFn();
+    try{ if(typeof renderTasks === 'function') renderTasks(); }catch(e){}
+    try{ if(typeof renderTimeBlocks === 'function') renderTimeBlocks(); }catch(e){}
+    try{ if(typeof updateWorkProgress === 'function') updateWorkProgress(); }catch(e){}
+    try{ if(typeof renderOverview === 'function') renderOverview(); }catch(e){}
+    try{ if(typeof renderTaskCalendar === 'function') renderTaskCalendar(); }catch(e){}
+  }
+
+  function getTaskById(id){ return S.tasks.find(t => String(t.id) === String(id)); }
+  function getRuleById(id){ return S.taskRules.find(r => String(r.id) === String(id)); }
+  function getBlockById(id){ return S.timeBlocks.find(b => String(b.id) === String(id)); }
+  function getBlockRuleById(id){ return S.timeBlockRules.find(b => String(b.id) === String(id)); }
+
+  function ensureEditModal(){
+    let modal = document.getElementById('calendarEditModal');
+    if(modal) return modal;
+    modal = document.createElement('div');
+    modal.className = 'modal-bg';
+    modal.id = 'calendarEditModal';
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="modal-title">
+          <span id="calendarEditTitle">Editar item</span>
+          <button class="modal-close" onclick="closeModal('calendarEditModal')">×</button>
+        </div>
+        <div id="calendarEditContent"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('open'); });
+    return modal;
+  }
+
+  function openEditModal(title, html){
+    const modal = ensureEditModal();
+    const titleEl = document.getElementById('calendarEditTitle');
+    const contentEl = document.getElementById('calendarEditContent');
+    if(titleEl) titleEl.textContent = title;
+    if(contentEl) contentEl.innerHTML = html;
+    modal.classList.add('open');
+  }
+
+  window.openCalendarTaskEditor = function(taskId, dateStr){
+    ensureState();
+    const task = getTaskById(taskId);
+    if(!task) return;
+    const date = String(task.due || '').slice(0,10) || dateStr || ymd(new Date());
+    const time = getTimeFromDue(task.due);
+    const checked = task.done ? 'checked' : '';
+
+    openEditModal('Editar tarefa', `
+      <div class="calendar-edit-grid">
+        <div class="full">
+          <label class="calendar-edit-label">Título</label>
+          <input class="inp" id="calEditTaskText" value="${escapeHtml(task.text || '')}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Data</label>
+          <input class="inp" id="calEditTaskDate" type="date" value="${escapeHtml(date)}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Hora</label>
+          <input class="inp" id="calEditTaskTime" type="time" value="${escapeHtml(time)}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Categoria</label>
+          <select class="inp" id="calEditTaskCat">
+            ${['💼 Trabalho','📚 Estudos','🏠 Pessoal','💪 Saúde'].map(c=>`<option ${c===(task.cat||'')?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="calendar-edit-label">Prioridade</label>
+          <select class="inp" id="calEditTaskPrio">
+            <option value="high" ${task.prio==='high'?'selected':''}>🔴 Alta</option>
+            <option value="mid" ${task.prio==='mid'?'selected':''}>🟡 Média</option>
+            <option value="low" ${task.prio==='low'?'selected':''}>🟢 Baixa</option>
+          </select>
+        </div>
+        <div class="full">
+          <label class="calendar-edit-label">Observações</label>
+          <textarea class="inp" id="calEditTaskNotes" rows="3">${escapeHtml(task.notes || '')}</textarea>
+        </div>
+        <label class="overview-toggle full" style="margin-top:2px">
+          <input type="checkbox" id="calEditTaskDone" ${checked}>
+          <span>Marcar como concluída</span>
+        </label>
+      </div>
+      <div class="calendar-edit-actions">
+        <button class="btn btn-p" style="background:var(--work);border-color:var(--work);color:#080810" onclick="saveCalendarTaskEdit(${Number(task.id)})">Salvar</button>
+        <button class="btn calendar-edit-danger" onclick="deleteCalendarTaskEdit(${Number(task.id)}, '${escapeHtml(dateStr || date)}')">Excluir</button>
+      </div>
+    `);
+  };
+
+  window.saveCalendarTaskEdit = function(taskId){
+    const task = getTaskById(taskId);
+    if(!task) return;
+    const text = document.getElementById('calEditTaskText')?.value.trim();
+    const date = document.getElementById('calEditTaskDate')?.value;
+    const time = document.getElementById('calEditTaskTime')?.value || '09:00';
+    if(!text || !date) return;
+    task.text = text;
+    task.due = normalizeDateTime(date, time);
+    task.cat = document.getElementById('calEditTaskCat')?.value || task.cat;
+    task.prio = document.getElementById('calEditTaskPrio')?.value || task.prio;
+    task.notes = document.getElementById('calEditTaskNotes')?.value.trim() || '';
+    task.done = !!document.getElementById('calEditTaskDone')?.checked;
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(date);
+  };
+
+  window.deleteCalendarTaskEdit = function(taskId, dateStr){
+    if(!confirm('Excluir esta tarefa?')) return;
+    S.tasks = S.tasks.filter(t => String(t.id) !== String(taskId));
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(dateStr);
+  };
+
+  window.openCalendarRuleEditor = function(ruleId, dateStr){
+    ensureState();
+    const rule = getRuleById(ruleId);
+    if(!rule) return;
+    const startDate = rule.startDate || dateStr || ymd(new Date());
+    openEditModal('Editar tarefa recorrente', `
+      <div class="calendar-edit-grid">
+        <div class="full">
+          <label class="calendar-edit-label">Título</label>
+          <input class="inp" id="calEditRuleText" value="${escapeHtml(rule.text || '')}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Começa em</label>
+          <input class="inp" id="calEditRuleDate" type="date" value="${escapeHtml(startDate)}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Repetição</label>
+          <select class="inp" id="calEditRuleRepeat">
+            <option value="daily" ${rule.repeat==='daily'?'selected':''}>Todos os dias</option>
+            <option value="weekdays" ${rule.repeat==='weekdays'?'selected':''}>Dias úteis</option>
+            <option value="weekly" ${rule.repeat==='weekly'?'selected':''}>Semanal</option>
+          </select>
+        </div>
+        <div>
+          <label class="calendar-edit-label">Categoria</label>
+          <select class="inp" id="calEditRuleCat">
+            ${['💼 Trabalho','📚 Estudos','🏠 Pessoal','💪 Saúde'].map(c=>`<option ${c===(rule.cat||'')?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="calendar-edit-label">Prioridade</label>
+          <select class="inp" id="calEditRulePrio">
+            <option value="high" ${rule.prio==='high'?'selected':''}>🔴 Alta</option>
+            <option value="mid" ${rule.prio==='mid'?'selected':''}>🟡 Média</option>
+            <option value="low" ${rule.prio==='low'?'selected':''}>🟢 Baixa</option>
+          </select>
+        </div>
+        <div class="full">
+          <label class="calendar-edit-label">Observações</label>
+          <textarea class="inp" id="calEditRuleNotes" rows="3">${escapeHtml(rule.notes || '')}</textarea>
+        </div>
+      </div>
+      <div class="calendar-edit-actions">
+        <button class="btn btn-p" style="background:var(--habits);border-color:var(--habits);color:#080810" onclick="saveCalendarRuleEdit(${Number(rule.id)}, '${escapeHtml(dateStr || startDate)}')">Salvar série</button>
+        <button class="btn calendar-edit-danger" onclick="deleteCalendarRuleEdit(${Number(rule.id)}, '${escapeHtml(dateStr || startDate)}')">Excluir série</button>
+      </div>
+    `);
+  };
+
+  window.saveCalendarRuleEdit = function(ruleId, dateStr){
+    const rule = getRuleById(ruleId);
+    if(!rule) return;
+    const text = document.getElementById('calEditRuleText')?.value.trim();
+    const date = document.getElementById('calEditRuleDate')?.value;
+    if(!text || !date) return;
+    rule.text = text;
+    rule.startDate = date;
+    rule.repeat = document.getElementById('calEditRuleRepeat')?.value || rule.repeat;
+    rule.cat = document.getElementById('calEditRuleCat')?.value || rule.cat;
+    rule.prio = document.getElementById('calEditRulePrio')?.value || rule.prio;
+    rule.notes = document.getElementById('calEditRuleNotes')?.value.trim() || '';
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(dateStr || date);
+  };
+
+  window.deleteCalendarRuleEdit = function(ruleId, dateStr){
+    if(!confirm('Excluir esta tarefa recorrente inteira?')) return;
+    S.taskRules = S.taskRules.filter(r => String(r.id) !== String(ruleId));
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(dateStr);
+  };
+
+  window.openCalendarBlockEditor = function(sourceId, sourceType, dateStr){
+    ensureState();
+    const isRule = sourceType === 'timeBlockRule';
+    const block = isRule ? getBlockRuleById(sourceId) : getBlockById(sourceId);
+    if(!block) return;
+    const date = block.date || dateStr || ymd(new Date());
+    const vacationQuick = `
+      <div class="calendar-quick-row">
+        <button class="btn btn-sm" onclick="applyVacationPresetToBlockForm()">🏖️ Transformar em férias</button>
+        <button class="btn btn-sm" onclick="applyWorkPresetToBlockForm()">💼 Trabalho padrão</button>
+      </div>
+    `;
+    openEditModal(isRule ? 'Editar bloco recorrente' : 'Editar bloco de tempo', `
+      <div class="calendar-edit-grid">
+        <div class="full">
+          <label class="calendar-edit-label">Nome do bloco</label>
+          <input class="inp" id="calEditBlockTask" value="${escapeHtml(block.task || '')}">
+          ${vacationQuick}
+        </div>
+        <div>
+          <label class="calendar-edit-label">Data inicial</label>
+          <input class="inp" id="calEditBlockDate" type="date" value="${escapeHtml(date)}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Repetição</label>
+          <select class="inp" id="calEditBlockRepeat">
+            <option value="none" ${(!block.repeat || block.repeat==='none')?'selected':''}>Sem repetição</option>
+            <option value="daily" ${block.repeat==='daily'?'selected':''}>Todos os dias</option>
+            <option value="weekdays" ${block.repeat==='weekdays'?'selected':''}>Dias úteis</option>
+            <option value="weekly" ${block.repeat==='weekly'?'selected':''}>Semanal</option>
+          </select>
+        </div>
+        <div>
+          <label class="calendar-edit-label">Início</label>
+          <input class="inp" id="calEditBlockStart" type="time" value="${escapeHtml(block.start || '09:00')}">
+        </div>
+        <div>
+          <label class="calendar-edit-label">Fim</label>
+          <input class="inp" id="calEditBlockEnd" type="time" value="${escapeHtml(block.end || '18:00')}">
+        </div>
+        <div class="full">
+          <label class="calendar-edit-label">Cor</label>
+          <input class="inp" id="calEditBlockColor" type="color" value="${escapeHtml(block.color || '#fb923c')}" style="height:44px;padding:6px">
+        </div>
+      </div>
+      <div class="calendar-edit-actions">
+        <button class="btn btn-p" style="background:var(--study);border-color:var(--study);color:#080810" onclick="saveCalendarBlockEdit('${escapeHtml(sourceId)}', '${escapeHtml(sourceType)}', '${escapeHtml(dateStr || date)}')">Salvar bloco</button>
+        <button class="btn calendar-edit-danger" onclick="deleteCalendarBlockEdit('${escapeHtml(sourceId)}', '${escapeHtml(sourceType)}', '${escapeHtml(dateStr || date)}')">Excluir</button>
+      </div>
+      <div class="food-preview" style="margin-top:12px">Dica: para férias de vários dias, use repetição <strong>todos os dias</strong> ou <strong>dias úteis</strong> e ajuste a data inicial. Depois você pode excluir ou editar essa série quando acabar.</div>
+    `);
+  };
+
+  window.applyVacationPresetToBlockForm = function(){
+    const name = document.getElementById('calEditBlockTask');
+    const start = document.getElementById('calEditBlockStart');
+    const end = document.getElementById('calEditBlockEnd');
+    const color = document.getElementById('calEditBlockColor');
+    const repeat = document.getElementById('calEditBlockRepeat');
+    if(name) name.value = '🏖️ Férias';
+    if(start) start.value = '00:00';
+    if(end) end.value = '23:59';
+    if(color) color.value = '#34d399';
+    if(repeat && repeat.value === 'none') repeat.value = 'daily';
+  };
+
+  window.applyWorkPresetToBlockForm = function(){
+    const name = document.getElementById('calEditBlockTask');
+    const start = document.getElementById('calEditBlockStart');
+    const end = document.getElementById('calEditBlockEnd');
+    const color = document.getElementById('calEditBlockColor');
+    if(name) name.value = '💼 Trabalho';
+    if(start) start.value = '09:00';
+    if(end) end.value = '18:00';
+    if(color) color.value = '#fb923c';
+  };
+
+  window.saveCalendarBlockEdit = function(sourceId, sourceType, fallbackDate){
+    ensureState();
+    const task = document.getElementById('calEditBlockTask')?.value.trim();
+    const date = document.getElementById('calEditBlockDate')?.value;
+    const repeat = document.getElementById('calEditBlockRepeat')?.value || 'none';
+    const start = document.getElementById('calEditBlockStart')?.value || '09:00';
+    const end = document.getElementById('calEditBlockEnd')?.value || '18:00';
+    const color = document.getElementById('calEditBlockColor')?.value || '#fb923c';
+    if(!task || !date) return;
+
+    const wasRule = sourceType === 'timeBlockRule';
+    let original = wasRule ? getBlockRuleById(sourceId) : getBlockById(sourceId);
+
+    if(wasRule && repeat === 'none'){
+      S.timeBlockRules = S.timeBlockRules.filter(b => String(b.id) !== String(sourceId));
+      S.timeBlocks.push({id:Date.now(), task, date, repeat:'none', start, end, color});
+    }else if(!wasRule && repeat !== 'none'){
+      S.timeBlocks = S.timeBlocks.filter(b => String(b.id) !== String(sourceId));
+      S.timeBlockRules.push({id:Date.now(), task, date, repeat, start, end, color});
+    }else if(original){
+      original.task = task;
+      original.date = date;
+      original.repeat = repeat;
+      original.start = start;
+      original.end = end;
+      original.color = color;
+    }
+
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(fallbackDate || date);
+  };
+
+  window.deleteCalendarBlockEdit = function(sourceId, sourceType, dateStr){
+    const isRule = sourceType === 'timeBlockRule';
+    if(!confirm(isRule ? 'Excluir este bloco recorrente inteiro?' : 'Excluir este bloco de tempo?')) return;
+    if(isRule) S.timeBlockRules = S.timeBlockRules.filter(b => String(b.id) !== String(sourceId));
+    else S.timeBlocks = S.timeBlocks.filter(b => String(b.id) !== String(sourceId));
+    refreshCalendarAndLists();
+    try{ closeModal('calendarEditModal'); }catch(e){}
+    window.openCalendarDay(dateStr);
+  };
+
+  window.openCalendarDay = function(dateStr){
+    let modal = document.getElementById('calendarDayModal');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.className = 'modal-bg';
+      modal.id = 'calendarDayModal';
+      modal.innerHTML = `
+        <div class="modal">
+          <div class="modal-title">
+            <span id="calendarDayTitle">Detalhes do dia</span>
+            <button class="modal-close" onclick="closeModal('calendarDayModal')">×</button>
+          </div>
+          <div id="calendarDayContent"></div>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('open'); });
+    }
+
+    const title = document.getElementById('calendarDayTitle');
+    const content = document.getElementById('calendarDayContent');
+    const dayDate = parseDateOnly(dateStr);
+    const events = window.allCalendarEventsForDate(dateStr);
+
+    if(title) title.textContent = dayDate ? dayDate.toLocaleDateString('pt-BR',{weekday:'long', day:'2-digit', month:'long'}) : 'Detalhes do dia';
+    if(!content) return;
+
+    if(!events.length){
+      content.innerHTML = '<div class="empty">Nenhuma tarefa ou bloco de tempo neste dia.</div>';
+      modal.classList.add('open');
+      return;
+    }
+
+    const tasks = events.filter(ev => ev.type === 'task' || ev.type === 'rule');
+    const blocks = events.filter(ev => ev.type === 'block');
+
+    let html = '';
+
+    if(tasks.length){
+      html += '<div class="day-modal-group-title">Tarefas</div>';
+      html += tasks.map(ev => {
+        const icon = ev.type === 'rule' ? '↻' : ev.done ? '✅' : '📝';
+        const editCall = ev.type === 'rule'
+          ? `openCalendarRuleEditor(${Number(ev.sourceId)}, '${escapeHtml(dateStr)}')`
+          : `openCalendarTaskEditor(${Number(ev.sourceId)}, '${escapeHtml(dateStr)}')`;
+        return `
+          <div class="day-modal-item">
+            <div class="day-modal-title">${icon} ${escapeHtml(ev.title)}</div>
+            <div class="day-modal-meta">${escapeHtml(ev.meta)}</div>
+            <div class="calendar-edit-actions">
+              <button class="btn btn-sm" onclick="${editCall}">Editar</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    if(blocks.length){
+      html += '<div class="day-modal-group-title">Blocos de tempo</div>';
+      html += blocks.map(ev => `
+        <div class="day-modal-item">
+          <div class="day-modal-title">🕒 ${escapeHtml(ev.title)}</div>
+          <div class="day-modal-meta">${escapeHtml(ev.meta)}</div>
+          <div class="calendar-edit-actions">
+            <button class="btn btn-sm" onclick="openCalendarBlockEditor('${escapeHtml(ev.sourceId)}', '${escapeHtml(ev.sourceType)}', '${escapeHtml(dateStr)}')">Editar bloco</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    content.innerHTML = html;
+    modal.classList.add('open');
+  };
+
+  function boot(){
+    try{ if(typeof renderTaskCalendar === 'function') renderTaskCalendar(); }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 250);
+  setTimeout(boot, 900);
+})();
+</script>
+
 </body>
 </html>
