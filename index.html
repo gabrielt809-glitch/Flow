@@ -6287,5 +6287,290 @@ body{touch-action:manipulation}
 })();
 </script>
 
+
+<style id="v17-calendar-preview-and-encoding-fix-style">
+.task-day.has-items{border-color:rgba(251,146,60,.34);box-shadow:0 0 0 1px rgba(251,146,60,.08) inset}
+.task-day.has-blocks:not(.has-tasks){border-color:rgba(192,132,252,.38);box-shadow:0 0 0 1px rgba(192,132,252,.10) inset}
+.task-day-miniwrap{display:flex;flex-direction:column;gap:4px;min-height:42px}
+.task-day-mini{font-size:10px;color:var(--text2);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 6px;border-radius:8px;background:rgba(255,255,255,.035)}
+.task-day-mini.block{border:1px solid rgba(192,132,252,.18)}
+.task-day-mini.task{border:1px solid rgba(251,146,60,.18)}
+.task-day-mini.rule{border:1px solid rgba(251,191,36,.18)}
+.task-day-empty{font-size:10px;color:var(--muted);opacity:.48;padding-top:2px}
+.task-day-count{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace}
+.task-day-dots{display:flex;gap:4px;align-items:center;flex-wrap:wrap;min-height:8px}
+.task-day-dot{width:6px;height:6px;border-radius:999px}
+.day-modal-group-title{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
+.day-modal-item{padding:12px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);margin-bottom:8px}
+.day-modal-title{font-size:14px;font-weight:700;line-height:1.35}
+.day-modal-meta{margin-top:4px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.45}
+</style>
+<script id="v17-calendar-preview-and-encoding-fix-script">
+(function(){
+  const saveFn = () => { try{ if(typeof saveSafe==='function') saveSafe(); else if(typeof save==='function') save(); }catch(e){} };
+  const ymd = (d)=>{
+    const dt = new Date(d);
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth()+1).padStart(2,'0');
+    const day = String(dt.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  };
+  const parseDateOnly = (str)=>{
+    if(!str) return null;
+    const p=String(str).slice(0,10).split('-').map(Number);
+    if(p.length!==3 || p.some(Number.isNaN)) return null;
+    return new Date(p[0], p[1]-1, p[2]);
+  };
+  const escapeHtml=(s)=>String(s??'').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const prioLabel=(p)=>p==='high'?'Alta':p==='low'?'Baixa':'Média';
+  const repeatLabel=(r)=>r==='daily'?'Todos os dias':r==='weekdays'?'Dias úteis':r==='weekly'?'Semanal':'Sem repetição';
+  const formatShortDate=(dateStr)=>{ try{return parseDateOnly(dateStr).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});}catch(e){return dateStr||'';} };
+  const formatDueLabel=(v)=>{
+    if(!v) return '';
+    try{ if(typeof formatDueSafe==='function') return formatDueSafe(v); }catch(e){}
+    const ds = String(v).slice(0,10);
+    const hm = String(v).slice(11,16);
+    return hm ? `${formatShortDate(ds)} · ${hm}` : formatShortDate(ds);
+  };
+
+  function fixPersistentMojibake(){
+    try{
+      window.S = window.S || {};
+      const broken = (val)=> typeof val==='string' && /Ã|ð|â|�/.test(val);
+      if(broken(S.userEmoji) || !S.userEmoji || String(S.userEmoji).length > 4){
+        S.userEmoji = '😊';
+      }
+      const avatar = document.getElementById('avatarBtn');
+      const bigAvatar = document.getElementById('bigAvatar');
+      if(avatar) avatar.textContent = S.userEmoji || '😊';
+      if(bigAvatar) bigAvatar.textContent = S.userEmoji || '😊';
+      saveFn();
+    }catch(e){}
+  }
+
+  window.timeBlockOccurrences = function(days=120, startDateStr){
+    window.S = window.S || {};
+    S.timeBlocks = Array.isArray(S.timeBlocks) ? S.timeBlocks : [];
+    S.timeBlockRules = Array.isArray(S.timeBlockRules) ? S.timeBlockRules : [];
+    const out=[];
+    const todayStr = ymd(new Date());
+    const start = parseDateOnly(startDateStr || todayStr) || new Date();
+    const end = new Date(start); end.setDate(end.getDate()+Number(days||120));
+
+    S.timeBlocks.forEach(tb=>{
+      const baseStr = tb.date || todayStr;
+      const base = parseDateOnly(baseStr);
+      if(base && base >= start && base <= end){
+        out.push({...tb, date:baseStr, repeat:tb.repeat||'none', rule:false});
+      }
+    });
+
+    S.timeBlockRules.forEach(rule=>{
+      const baseStr = rule.date || todayStr;
+      const base = parseDateOnly(baseStr);
+      if(!base) return;
+      for(let cur = new Date(start); cur <= end; cur.setDate(cur.getDate()+1)){
+        const d = new Date(cur);
+        if(d < base) continue;
+        const ds = ymd(d);
+        let include=false;
+        if(rule.repeat==='daily') include=true;
+        else if(rule.repeat==='weekdays') include=d.getDay()!==0 && d.getDay()!==6;
+        else if(rule.repeat==='weekly') include=d.getDay()===base.getDay();
+        else include=ds===baseStr;
+        if(include){
+          out.push({id:`${rule.id}-${ds}`,start:rule.start,end:rule.end,task:rule.task,color:rule.color||'#c084fc',date:ds,repeat:rule.repeat||'none',rule:true});
+        }
+      }
+    });
+
+    return out.sort((a,b)=>`${a.date}${a.start||''}`.localeCompare(`${b.date}${b.start||''}`));
+  };
+
+  window.allCalendarEventsForDate = function(dateStr){
+    window.S = window.S || {};
+    S.tasks = Array.isArray(S.tasks) ? S.tasks : [];
+    S.taskRules = Array.isArray(S.taskRules) ? S.taskRules : [];
+
+    const tasks = S.tasks
+      .filter(t => t && t.due && String(t.due).slice(0,10) === dateStr)
+      .map(t => ({
+        type:'task',
+        title:t.text || 'Tarefa',
+        done:!!t.done,
+        color:'var(--work)',
+        meta:`${t.cat || 'Tarefa'} · ${prioLabel(t.prio)}${t.done ? ' · concluída' : ''}${t.due ? ' · ' + formatDueLabel(t.due) : ''}`
+      }));
+
+    const ruleEvents = S.taskRules
+      .filter(r => {
+        if(!r || r.floating) return false;
+        const base = parseDateOnly(r.startDate || dateStr);
+        const date = parseDateOnly(dateStr);
+        if(!base || !date || date < base) return false;
+        if(r.repeat === 'daily') return true;
+        if(r.repeat === 'weekdays') return date.getDay() !== 0 && date.getDay() !== 6;
+        if(r.repeat === 'weekly') return date.getDay() === base.getDay();
+        return dateStr === (r.startDate || dateStr);
+      })
+      .map(r => ({
+        type:'rule',
+        ruleId:r.id,
+        title:r.text || 'Tarefa recorrente',
+        done:(r.doneDates || []).includes(dateStr),
+        color:'var(--habits)',
+        meta:`${r.cat || 'Tarefa'} · ${prioLabel(r.prio)} · ${repeatLabel(r.repeat)}${(r.doneDates||[]).includes(dateStr) ? ' · concluída' : ''}`
+      }));
+
+    const blocks = window.timeBlockOccurrences(120, dateStr)
+      .filter(b => b.date === dateStr)
+      .map(b => ({
+        type:'block',
+        title:b.task || 'Bloco de tempo',
+        done:false,
+        color:b.color || 'var(--study)',
+        meta:`${b.start || '--:--'}–${b.end || '--:--'}${b.repeat && b.repeat !== 'none' ? ' · ' + repeatLabel(b.repeat) : ''}`
+      }));
+
+    return [...tasks, ...ruleEvents, ...blocks];
+  };
+
+  window.openCalendarDay = function(dateStr){
+    let modal = document.getElementById('calendarDayModal');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.className = 'modal-bg';
+      modal.id = 'calendarDayModal';
+      modal.innerHTML = `
+        <div class="modal">
+          <div class="modal-title">
+            <span id="calendarDayTitle">Detalhes do dia</span>
+            <button class="modal-close" onclick="closeModal('calendarDayModal')">×</button>
+          </div>
+          <div id="calendarDayContent"></div>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('open'); });
+    }
+    const title = document.getElementById('calendarDayTitle');
+    const content = document.getElementById('calendarDayContent');
+    const dayDate = parseDateOnly(dateStr);
+    const events = window.allCalendarEventsForDate(dateStr);
+    if(title) title.textContent = dayDate ? dayDate.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}) : 'Detalhes do dia';
+    if(!content) return;
+    if(!events.length){
+      content.innerHTML = '<div class="empty">Nenhuma tarefa ou bloco de tempo neste dia.</div>';
+      modal.classList.add('open');
+      return;
+    }
+    const tasks = events.filter(ev => ev.type==='task' || ev.type==='rule');
+    const blocks = events.filter(ev => ev.type==='block');
+    let html='';
+    if(tasks.length){
+      html += '<div class="day-modal-group-title">Tarefas</div>';
+      html += tasks.map(ev => `<div class="day-modal-item"><div class="day-modal-title">${ev.type==='rule'?'↻':(ev.done?'✅':'📝')} ${escapeHtml(ev.title)}</div><div class="day-modal-meta">${escapeHtml(ev.meta)}</div></div>`).join('');
+    }
+    if(blocks.length){
+      html += '<div class="day-modal-group-title">Blocos de tempo</div>';
+      html += blocks.map(ev => `<div class="day-modal-item"><div class="day-modal-title">🕒 ${escapeHtml(ev.title)}</div><div class="day-modal-meta">${escapeHtml(ev.meta)}</div></div>`).join('');
+    }
+    content.innerHTML = html;
+    modal.classList.add('open');
+  };
+
+  window.renderTaskCalendar = function(){
+    const grid = document.getElementById('taskCalendarGrid');
+    const label = document.getElementById('taskCalendarLabel');
+    if(!grid || !label) return;
+
+    const offset = Number(window.taskCalendarOffset || 0);
+    const base = new Date();
+    base.setDate(1);
+    base.setMonth(base.getMonth() + offset);
+    const month = base.getMonth();
+    const year = base.getFullYear();
+    const monthName = base.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+    label.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+    grid.innerHTML = '';
+    ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(name=>{
+      const h=document.createElement('div');
+      h.className='task-calendar-weekday';
+      h.textContent=name;
+      grid.appendChild(h);
+    });
+
+    const first = new Date(year,month,1);
+    const startPad = first.getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const todayStr = ymd(new Date());
+
+    for(let i=0;i<startPad;i++){
+      const spacer=document.createElement('div');
+      spacer.className='task-calendar-spacer';
+      grid.appendChild(spacer);
+    }
+
+    for(let day=1; day<=daysInMonth; day++){
+      const current = new Date(year, month, day);
+      const dateStr = ymd(current);
+      const events = window.allCalendarEventsForDate(dateStr);
+      const taskCount = events.filter(ev=>ev.type==='task' || ev.type==='rule').length;
+      const blockCount = events.filter(ev=>ev.type==='block').length;
+      const total = events.length;
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='task-day' + (dateStr===todayStr?' today':'') + (total?' has-items':'') + (taskCount?' has-tasks':'') + (blockCount?' has-blocks':'');
+
+      const preview = events.slice(0,3).map(ev=>{
+        const klass = ev.type==='block' ? 'block' : ev.type==='rule' ? 'rule' : 'task';
+        const prefix = ev.type==='block' ? '🕒 ' : ev.type==='rule' ? '↻ ' : '• ';
+        return `<div class="task-day-mini ${klass}">${prefix}${escapeHtml(ev.title)}</div>`;
+      }).join('');
+
+      const dots = events.slice(0,5).map(ev => `<span class="task-day-dot" style="background:${escapeHtml(ev.color || (ev.type==='block'?'var(--study)':'var(--work)'))}"></span>`).join('');
+      btn.innerHTML = `
+        <div class="task-day-head">
+          <span class="task-day-num">${day}</span>
+          <span class="task-day-count">${total ? `${total} item${total>1?'s':''}` : ''}</span>
+        </div>
+        <div class="task-day-miniwrap">${preview || '<div class="task-day-empty">—</div>'}</div>
+        <div class="task-day-dots">${dots}</div>`;
+      btn.onclick = ()=>window.openCalendarDay(dateStr);
+      grid.appendChild(btn);
+    }
+  };
+
+  window.saveTB = function(){
+    const start = document.getElementById('tbStart')?.value;
+    const end = document.getElementById('tbEnd')?.value;
+    const task = document.getElementById('tbTask')?.value?.trim();
+    const color = document.getElementById('tbColor')?.value || '#fb923c';
+    const date = document.getElementById('tbDate')?.value || ymd(new Date());
+    const repeat = document.getElementById('tbRepeat')?.value || 'none';
+    if(!start || !end || !task) return;
+    window.S = window.S || {};
+    S.timeBlocks = Array.isArray(S.timeBlocks) ? S.timeBlocks : [];
+    S.timeBlockRules = Array.isArray(S.timeBlockRules) ? S.timeBlockRules : [];
+    if(repeat === 'none') S.timeBlocks.push({id:Date.now(), start, end, task, color, date, repeat:'none'});
+    else S.timeBlockRules.push({id:Date.now(), start, end, task, color, date, repeat});
+    saveFn();
+    try{ if(typeof renderTimeBlocks==='function') renderTimeBlocks(); }catch(e){}
+    try{ window.renderTaskCalendar(); }catch(e){}
+    try{ if(typeof closeModal==='function') closeModal('tbModal'); }catch(e){}
+    const tbTask = document.getElementById('tbTask'); if(tbTask) tbTask.value='';
+  };
+
+  function bootFixes(){
+    fixPersistentMojibake();
+    try{ if(typeof window.renderTaskCalendar==='function') window.renderTaskCalendar(); }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded', bootFixes);
+  setTimeout(bootFixes, 250);
+  setTimeout(bootFixes, 900);
+})();
+</script>
+
 </body>
 </html>
