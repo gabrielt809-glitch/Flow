@@ -25,6 +25,8 @@ export async function run() {
   const { persistState, loadPersistedState } = await import("../assets/js/storage.js");
   const { migrateState } = await import("../assets/js/migrations.js");
 
+  assert.equal(STATE_VERSION, 2);
+
   const legacyPayload = {
     onboarded: true,
     tasks: [{ title: "Legado", done: false }]
@@ -33,6 +35,21 @@ export async function run() {
   const migratedLegacy = migrateState(legacyPayload);
   assert.equal(migratedLegacy.onboarded, true);
   assert.equal(migratedLegacy.tasks[0].title, "Legado");
+  assert.match(migratedLegacy.ui.calendarAnchorDate, /^\d{4}-\d{2}-\d{2}$/);
+
+  const versionOnePayload = {
+    version: 1,
+    updatedAt: "2026-04-24T00:00:00.000Z",
+    data: {
+      ...createDefaultState(),
+      ui: {
+        ...createDefaultState().ui,
+        calendarAnchorDate: ""
+      }
+    }
+  };
+  const migratedV1 = migrateState(versionOnePayload);
+  assert.match(migratedV1.ui.calendarAnchorDate, /^\d{4}-\d{2}-\d{2}$/);
 
   const normalized = normalizeState({
     ...createDefaultState(),

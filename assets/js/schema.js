@@ -1,6 +1,6 @@
 import { clone, todayKey } from "./utils.js";
 
-export const STATE_VERSION = 1;
+export const STATE_VERSION = 2;
 
 export const DEFAULT_STATE = Object.freeze({
   onboarded: false,

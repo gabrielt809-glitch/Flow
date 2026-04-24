@@ -13,6 +13,22 @@ export function selectCalendarWeekDates(state) {
   return getWeekDates(new Date(`${anchorKey}T12:00:00`));
 }
 
+export function selectCalendarWeekLabel(state) {
+  const dates = selectCalendarWeekDates(state);
+  const start = dates[0];
+  const end = dates[dates.length - 1];
+  const startDay = String(start.getDate()).padStart(2, "0");
+  const endDay = String(end.getDate()).padStart(2, "0");
+  const startMonth = start.toLocaleDateString("pt-BR", { month: "long" });
+  const endMonth = end.toLocaleDateString("pt-BR", { month: "long" });
+
+  if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+    return `${startDay} a ${endDay} de ${endMonth}`;
+  }
+
+  return `${startDay} de ${startMonth} a ${endDay} de ${endMonth}`;
+}
+
 export function selectCompletedTasks(state) {
   return state.tasks.filter((task) => task.done).length;
 }

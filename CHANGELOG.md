@@ -62,3 +62,24 @@
 - Arquivos principais: `index.html`, `assets/js/schema.js`, `assets/js/selectors.js`, `assets/js/calendar.js`, `assets/js/timeblocks.js`, `assets/js/tasks.js`, `assets/js/focus.js`, `assets/js/overview.js`, `tests/*`, `STATE_SCHEMA.md`, `MODULE_GUIDE.md`, `TEST_CHECKLIST.md`.
 - Resultado: calendário com navegação semanal, edição de blocos, UX melhor do modal de blocos, tarefa sem data tratada com clareza e textos PT-BR revisados.
 - Impacto tecnico: a base ganhou mais usabilidade sem quebrar a arquitetura modular nem a estratégia de render por escopo.
+
+## Functional Polish v1.1
+
+- Resumo: fechamento do versionamento de estado para `v2` e melhoria do label visual do calendário.
+- Arquivos principais: `assets/js/schema.js`, `assets/js/migrations.js`, `assets/js/selectors.js`, `assets/js/calendar.js`, `tests/storage.test.js`, `tests/selectors.test.js`, `STATE_SCHEMA.md`, `FUNCTIONAL_POLISH_REPORT_V1_1.md`.
+- Resultado: `STATE_VERSION = 2`, migração oficial `v1 -> v2` criada para `ui.calendarAnchorDate` e calendário exibindo intervalo semanal em formato amigável.
+- Impacto tecnico: compatibilidade histórica preservada com trilha formal de migração e uma UI de calendário mais clara sem mudar regra de negócio.
+
+## Visual Premium v1
+
+- Resumo: elevação da interface para um visual premium com mais atmosfera, profundidade, glassmorphism e microinterações.
+- Arquivos principais: `assets/styles.css`, `index.html`, `CHANGELOG.md`, `VISUAL_PREMIUM_REPORT_V1.md`.
+- Resultado: fundo com orbs ambientais, superfícies em vidro, header/nav/modais mais densos, cards com mais profundidade, glows contextuais e animações suaves com respeito a `prefers-reduced-motion`.
+- Impacto tecnico: upgrade visual concentrado em CSS, com impacto mínimo na estrutura HTML e sem alterar lógica, persistência ou arquitetura.
+
+## Visual Premium v1.1
+
+- Resumo: refinamento visual dirigido por QA mobile para reduzir exageros e corrigir componentes quebrados no iPhone/PWA.
+- Arquivos principais: `assets/styles.css`, `CHANGELOG.md`, `VISUAL_PREMIUM_REPORT_V1_1.md`.
+- Resultado: bottom nav compactada e integrada, menu lateral corrigido como gaveta direita coerente, modais e superfícies menos agressivos, densidade visual melhor ajustada e atmosfera premium mais contida.
+- Impacto tecnico: correção visual concentrada em CSS, preservando a arquitetura, a lógica e a base de testes sem necessidade de alterar JS.

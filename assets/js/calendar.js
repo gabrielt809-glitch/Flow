@@ -1,5 +1,5 @@
 import { getState, mutateState } from "./state.js";
-import { selectCalendarAnchorDate, selectCalendarEventsForDate, selectCalendarWeekDates } from "./selectors.js";
+import { selectCalendarAnchorDate, selectCalendarEventsForDate, selectCalendarWeekDates, selectCalendarWeekLabel } from "./selectors.js";
 import { escapeHTML, sameDay, shortDay, todayKey, qs, safeText } from "./utils.js";
 import { skipTimeblockOccurrence } from "./timeblocks.js";
 
@@ -42,7 +42,7 @@ export function initCalendar() {
 export function renderCalendar(state = getState()) {
   const weekRoot = qs("#calendarWeek");
   weekRoot.replaceChildren();
-  safeText("#calendarRangeLabel", `Semana de ${selectCalendarAnchorDate(state)}`);
+  safeText("#calendarRangeLabel", selectCalendarWeekLabel(state));
 
   selectCalendarWeekDates(state).forEach((date) => {
     const key = todayKey(date);

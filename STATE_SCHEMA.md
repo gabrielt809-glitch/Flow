@@ -2,7 +2,7 @@
 
 ## Versao Atual
 
-- `STATE_VERSION = 1`
+- `STATE_VERSION = 2`
 - Chave atual do `localStorage`: `flow-app-limpo-v1`
 
 ## Envelope Persistido
@@ -11,7 +11,7 @@ O estado e salvo em `localStorage` no seguinte formato:
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "updatedAt": "2026-04-24T00:00:00.000Z",
   "data": {
     "...": "state"
@@ -83,6 +83,7 @@ Compatibilidade:
 ```
 
 `calendarAnchorDate` usa formato `YYYY-MM-DD` e define a semana atualmente exibida no calendário.
+Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI persistida.
 
 ### `water`
 
@@ -312,6 +313,11 @@ Quando houver mudanca estrutural real:
 3. a migracao deve transformar apenas da versao N para N+1
 4. `migrateState(payload)` deve rodar somente enquanto `currentVersion < STATE_VERSION`
 5. depois disso, sempre retornar `normalizeState(currentData)`
+
+Exemplo recente:
+
+- `v2` formalizou `ui.calendarAnchorDate`
+- payloads `v1` sem esse campo passam por migração dedicada antes da normalização final
 
 Regra importante:
 

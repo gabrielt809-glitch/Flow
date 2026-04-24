@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createDefaultState, normalizeState } from "../assets/js/schema.js";
-import { selectCalendarEventsForDate, selectCalendarWeekDates, selectScore } from "../assets/js/selectors.js";
+import { selectCalendarEventsForDate, selectCalendarWeekDates, selectCalendarWeekLabel, selectScore } from "../assets/js/selectors.js";
 
 export async function run() {
   const baseState = normalizeState(createDefaultState());
@@ -42,4 +42,14 @@ export async function run() {
   assert.equal(weekDates.length, 7);
   assert.equal(weekDates[0].toISOString().slice(0, 10), "2026-05-04");
   assert.equal(weekDates[6].toISOString().slice(0, 10), "2026-05-10");
+  assert.equal(selectCalendarWeekLabel(anchoredState), "04 a 10 de maio");
+
+  const crossingMonthState = normalizeState({
+    ...createDefaultState(),
+    ui: {
+      ...createDefaultState().ui,
+      calendarAnchorDate: "2026-05-01"
+    }
+  });
+  assert.equal(selectCalendarWeekLabel(crossingMonthState), "27 de abril a 03 de maio");
 }
