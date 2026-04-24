@@ -83,3 +83,17 @@
 - Arquivos principais: `assets/styles.css`, `CHANGELOG.md`, `VISUAL_PREMIUM_REPORT_V1_1.md`.
 - Resultado: bottom nav compactada e integrada, menu lateral corrigido como gaveta direita coerente, modais e superfícies menos agressivos, densidade visual melhor ajustada e atmosfera premium mais contida.
 - Impacto tecnico: correção visual concentrada em CSS, preservando a arquitetura, a lógica e a base de testes sem necessidade de alterar JS.
+
+## Visual Premium v1.2
+
+- Resumo: refinamento sóbrio focado em iPhone/PWA, com redução de ruído visual, correção de overscroll branco e amadurecimento da linguagem visual.
+- Arquivos principais: `assets/styles.css`, `index.html`, `CHANGELOG.md`, `VISUAL_PREMIUM_REPORT_V1_2.md`.
+- Resultado: paleta migrada para base grafite/azul escuro, bottom nav mais madura, menu lateral mais elegante, modais mais adaptados ao mobile, ícones estáticos menos infantis e fundo escuro consistente durante bounce/overscroll.
+- Impacto tecnico: ajustes visuais concentrados em CSS com pequenas trocas seguras de ícones estáticos no HTML, sem alterar regras de negócio, persistência ou módulos JS.
+
+## Visual System Reset v2
+
+- Resumo: troca real de direcao visual para uma linguagem dark premium sobria, com menos cor, menos glass e menos aparencia de app infantil.
+- Arquivos principais: ssets/styles.css, index.html, CHANGELOG.md, VISUAL_SYSTEM_RESET_V2_REPORT.md.
+- Resultado: paleta redefinida para quase preto/grafite/azul profundo, bottom nav minimalista com SVGs monocromaticos, side menu mais adulto, cards e modais mais solidos e correcoes agressivas no fundo para eliminar o overscroll branco do iPhone.
+- Impacto tecnico: reset visual concentrado em CSS com troca segura de icones estaticos no HTML, sem alterar regras de negocio, storage, schema, state ou selectors.
