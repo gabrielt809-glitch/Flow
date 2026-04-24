@@ -1761,38 +1761,84 @@ let S = {
   medMinutes: 5,
 };
 
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+window.S = S;
+const STORAGE_KEYS = [KEY, 'flow_state', 'flowData', 'flow_backup_v24'];
+
+function ensureStateShape(){
+  if (!S.goals) S.goals = { water:8, waterBaseMl:0, steps:10000, calories:2000, sleep:8, pomodoros:4 };
+  if (!('waterBaseMl' in S.goals)) S.goals.waterBaseMl = 0;
+  if (!S.profile) S.profile = { age:'', heightCm:'', weightKg:'' };
+  if (!S.history) S.history = {};
+  if (!S.habitLogs) S.habitLogs = {};
+  if (!S.measures) S.measures = {};
+  if (!S.mealBuilder) S.mealBuilder = [];
+  if (!S.mealFavs) S.mealFavs = [];
+  if (!S.recentFoods) S.recentFoods = [];
+  if (!S.timeBlocks) S.timeBlocks = [];
+  if (!S.timeBlockRules) S.timeBlockRules = [];
+  if (!S.timeBlockSkips) S.timeBlockSkips = [];
+  if (!S.calendarBlockSkips) S.calendarBlockSkips = [];
+  if (!S.weights) S.weights = [];
+  if (!S.workouts) S.workouts = [];
+  if (!S.studySessions) S.studySessions = [];
+  if (!S.gratitude) S.gratitude = ['','',''];
+  if (!S.review) S.review = ['','',''];
+  if (!S.tasks) S.tasks = [];
+  if (!S.meals) S.meals = [];
+  if (!S.habits) S.habits = [];
+  if (!S.userEmoji || String(S.userEmoji).length > 4 || /Ã|ð|�/.test(String(S.userEmoji))) S.userEmoji = '😊';
+  window.S = S;
+}
+
+function readPersistedState(){
+  let best = null;
+  let bestScore = -1;
+  STORAGE_KEYS.forEach(k=>{
+    try{
+      const raw = localStorage.getItem(k);
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      if(!parsed || typeof parsed !== 'object') return;
+      const score = Object.keys(parsed).length + (parsed.onboarded ? 1000 : 0) + (parsed.userName ? 100 : 0) + (parsed.history ? Object.keys(parsed.history).length : 0);
+      if(score > bestScore){ best = parsed; bestScore = score; }
+    }catch(e){}
+  });
+  return best;
+}
+
+function save(){
+  try{
+    ensureStateShape();
+    const payload = JSON.stringify(S);
+    STORAGE_KEYS.forEach(k=>{ try{ localStorage.setItem(k, payload); }catch(e){} });
+  }catch(e){}
+}
+
 function load() {
   try {
-    const d = localStorage.getItem(KEY);
-    if (d) S = Object.assign(S, JSON.parse(d));
-    // ensure nested
-    if (!S.goals) S.goals = { water:8, waterBaseMl:0, steps:10000, calories:2000, sleep:8, pomodoros:4 };
-    if (!('waterBaseMl' in S.goals)) S.goals.waterBaseMl = 0;
-    if (!S.profile) S.profile = { age:'', heightCm:'', weightKg:'' };
-    if (!S.history) S.history = {};
-    if (!S.habitLogs) S.habitLogs = {};
-    if (!S.measures) S.measures = {};
-    if (!S.mealBuilder) S.mealBuilder = [];
-    if (!S.mealFavs) S.mealFavs = [];
-    if (!S.recentFoods) S.recentFoods = [];
-    if (!S.timeBlocks) S.timeBlocks = [];
-    if (!S.weights) S.weights = [];
-    if (!S.studySessions) S.studySessions = [];
-    if (!S.gratitude) S.gratitude = ['','',''];
-    if (!S.review) S.review = ['','',''];
-  } catch(e){}
-  // daily reset
+    const d = readPersistedState();
+    if (d) S = Object.assign(S, d);
+    ensureStateShape();
+  } catch(e){ ensureStateShape(); }
+
   const today = new Date().toDateString();
   if (S.today !== today) {
-    // save yesterday to history before resetting
-    if (S.today) saveHistory(S.today);
+    if (S.today) {
+      try { saveHistory(S.today); } catch(e){}
+    }
     S.today = today;
-    S.water = 0; S.tasks = []; S.steps = 0;
-    S.meals = []; S.mealBuilder = []; S.pomsDone = 0; S.studySessions = [];
-    S.mood = 0; S.gratitude = ['','','']; S.review = ['','',''];
-    S.dreamNotes = ''; S.timeBlocks = [];
-    S.workouts = []; S.hr = null;
+    // Preserve user/profile/configuration and recurring structures. Only clear daily activity counters when the calendar day changes.
+    S.water = 0;
+    S.steps = 0;
+    S.meals = [];
+    S.mealBuilder = [];
+    S.pomsDone = 0;
+    S.studySessions = [];
+    S.mood = 0;
+    S.gratitude = ['','',''];
+    S.review = ['','',''];
+    S.workouts = [];
+    S.hr = null;
     save();
   }
 }
@@ -8769,6 +8815,94 @@ body{touch-action:manipulation}
   document.addEventListener('DOMContentLoaded',boot);setTimeout(boot,250);setTimeout(boot,900);setTimeout(boot,1600);
   window.addEventListener('pagehide',()=>{try{persistSleep();nativeSave();}catch(e){}});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){try{persistSleep();nativeSave();}catch(e){}}});
+})();
+</script>
+
+
+<script id="v24-persistence-hardening-script">
+(function(){
+  const KEYS=['flow_v3','flow_state','flowData','flow_backup_v24'];
+  function getState(){
+    try{ if(typeof S !== 'undefined') return S; }catch(e){}
+    return window.S || {};
+  }
+  function ensureWindowState(){
+    try{ if(typeof S !== 'undefined') window.S = S; }catch(e){}
+  }
+  function persistNow(){
+    try{
+      ensureWindowState();
+      const state=getState();
+      if(!state || typeof state !== 'object') return;
+      if(state.userEmoji && (String(state.userEmoji).length>4 || /Ã|ð|�/.test(String(state.userEmoji)))) state.userEmoji='😊';
+      const payload=JSON.stringify(state);
+      KEYS.forEach(k=>{try{localStorage.setItem(k,payload);}catch(e){}});
+    }catch(e){}
+  }
+  const oldSave=window.save;
+  window.save=function(){
+    try{ if(typeof oldSave==='function') oldSave(); }catch(e){}
+    persistNow();
+  };
+  window.forceFlowSave=persistNow;
+
+  function patchOnboarding(){
+    const oldFinish=window.finishOnboard;
+    if(typeof oldFinish==='function' && !oldFinish.__v24Patched){
+      const patched=function(){
+        const result=oldFinish.apply(this,arguments);
+        try{ if(typeof S!=='undefined'){ S.onboarded=true; window.S=S; } }catch(e){}
+        persistNow();
+        return result;
+      };
+      patched.__v24Patched=true;
+      window.finishOnboard=patched;
+    }
+  }
+
+  function syncSleepInputs(){
+    try{
+      const state=getState();
+      const sleepStart=document.getElementById('sleepStart');
+      const sleepEnd=document.getElementById('sleepEnd');
+      const dreamNotes=document.getElementById('dreamNotes');
+      if(sleepStart && sleepStart.value) state.sleepStart=sleepStart.value;
+      if(sleepEnd && sleepEnd.value) state.sleepEnd=sleepEnd.value;
+      if(dreamNotes) state.dreamNotes=dreamNotes.value;
+      if(typeof getSleepHours==='function'){
+        state.history=state.history||{};
+        const key=new Date().toDateString();
+        state.history[key]=Object.assign(state.history[key]||{}, {sleep:getSleepHours(), score: typeof calcScore==='function'?calcScore():state.history[key]?.score});
+      }
+      persistNow();
+    }catch(e){persistNow();}
+  }
+
+  ['input','change','click'].forEach(evt=>{
+    document.addEventListener(evt, function(e){
+      const target=e.target;
+      if(!target) return;
+      const id=target.id||'';
+      if(/^sleep|dreamNotes|ob-|goal|profile|meas|task|tb|water|steps|meal|mood|grat|review|study|habit/i.test(id)){
+        setTimeout(()=>{ syncSleepInputs(); persistNow(); }, 80);
+      }
+    }, true);
+  });
+
+  window.addEventListener('pagehide', persistNow);
+  window.addEventListener('beforeunload', persistNow);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') persistNow(); else { patchOnboarding(); persistNow(); } });
+  window.addEventListener('focus', ()=>{ patchOnboarding(); persistNow(); });
+
+  function boot(){
+    ensureWindowState();
+    patchOnboarding();
+    persistNow();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot,300);
+  setTimeout(boot,1200);
 })();
 </script>
 
