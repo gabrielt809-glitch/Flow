@@ -1,55 +1,142 @@
 import { getState, mutateState } from "./state.js";
-import { selectSleepToday, selectTodayKey } from "./selectors.js";
-import { diffHours, formatHours, optionalQs, qs, qsa, safeStyle, safeText } from "./utils.js";
+import { selectSleepEntry, selectSleepWeek, selectTodayKey } from "./selectors.js";
+import { diffHours, escapeHTML, formatDateInput, formatDurationMinutes, qs, qsa, safeHTML, safeStyle, safeText, safeValue } from "./utils.js";
 
-function saveSleep() {
+let selectedSleepDate = selectTodayKey();
+
+function getCurrentDateKey() {
+  return qs("#sleepDate").value || selectedSleepDate || selectTodayKey();
+}
+
+export function formatSleepDurationLabel(totalMinutes) {
+  const formatted = formatDurationMinutes(totalMinutes);
+  const [hours, minutes] = formatted.split(":");
+  return `${Number(hours)}h${String(minutes).padStart(2, "0")}min`;
+}
+
+function persistSleepEntry() {
+  const key = getCurrentDateKey();
   mutateState((draft) => {
-    draft.sleep.start = qs("#sleepStart").value || "23:00";
-    draft.sleep.end = qs("#sleepEnd").value || "07:00";
-    draft.sleep.notes = qs("#dreamNotes").value;
-    draft.sleep.history[selectTodayKey()] = {
-      hours: diffHours(draft.sleep.start, draft.sleep.end),
-      quality: draft.sleep.quality,
-      notes: draft.sleep.notes
+    const currentEntry = draft.sleep.entries[key] || {};
+    const nextEntry = {
+      ...currentEntry,
+      start: qs("#sleepStart").value || "23:00",
+      end: qs("#sleepEnd").value || "07:00",
+      quality: Number(currentEntry.quality || draft.sleep.quality || 3),
+      notes: qs("#dreamNotes").value.trim(),
+      wakeMood: Number(currentEntry.wakeMood || draft.sleep.wakeMood || 3)
     };
+    draft.sleep.entries[key] = nextEntry;
+    draft.sleep.history[key] = {
+      hours: Number(diffHours(nextEntry.start, nextEntry.end)),
+      quality: nextEntry.quality,
+      notes: nextEntry.notes
+    };
+
+    if (key === selectTodayKey()) {
+      draft.sleep.start = nextEntry.start;
+      draft.sleep.end = nextEntry.end;
+      draft.sleep.notes = nextEntry.notes;
+      draft.sleep.quality = nextEntry.quality;
+      draft.sleep.wakeMood = nextEntry.wakeMood;
+    }
   }, { scope: "sleep" });
 }
 
+function setSleepQuality(value) {
+  const key = getCurrentDateKey();
+  mutateState((draft) => {
+    const currentEntry = draft.sleep.entries[key] || {};
+    draft.sleep.entries[key] = {
+      ...currentEntry,
+      start: currentEntry.start || qs("#sleepStart").value || draft.sleep.start,
+      end: currentEntry.end || qs("#sleepEnd").value || draft.sleep.end,
+      notes: currentEntry.notes ?? qs("#dreamNotes").value.trim(),
+      quality: Number(value),
+      wakeMood: Number(currentEntry.wakeMood || draft.sleep.wakeMood || 3)
+    };
+
+    if (key === selectTodayKey()) {
+      draft.sleep.quality = Number(value);
+    }
+  }, { scope: "sleep" });
+}
+
+function setWakeMood(value) {
+  const key = getCurrentDateKey();
+  mutateState((draft) => {
+    const currentEntry = draft.sleep.entries[key] || {};
+    draft.sleep.entries[key] = {
+      ...currentEntry,
+      start: currentEntry.start || qs("#sleepStart").value || draft.sleep.start,
+      end: currentEntry.end || qs("#sleepEnd").value || draft.sleep.end,
+      notes: currentEntry.notes ?? qs("#dreamNotes").value.trim(),
+      quality: Number(currentEntry.quality || draft.sleep.quality || 3),
+      wakeMood: Number(value)
+    };
+
+    if (key === selectTodayKey()) {
+      draft.sleep.wakeMood = Number(value);
+    }
+  }, { scope: "sleep" });
+}
+
+function handleSleepDateChange() {
+  selectedSleepDate = qs("#sleepDate").value || selectTodayKey();
+  renderSleep();
+}
+
 export function initSleep() {
+  safeValue("#sleepDate", formatDateInput());
+
   ["input", "change", "blur"].forEach((eventName) => {
-    qs("#sleepStart").addEventListener(eventName, saveSleep);
-    qs("#sleepEnd").addEventListener(eventName, saveSleep);
-    qs("#dreamNotes").addEventListener(eventName, saveSleep);
+    qs("#sleepStart").addEventListener(eventName, persistSleepEntry);
+    qs("#sleepEnd").addEventListener(eventName, persistSleepEntry);
+    qs("#dreamNotes").addEventListener(eventName, persistSleepEntry);
   });
 
+  qs("#sleepDate").addEventListener("change", handleSleepDateChange);
+
   qsa("[data-sleep-quality]").forEach((button) => {
-    button.addEventListener("click", () => {
-      mutateState((draft) => {
-        draft.sleep.quality = Number(button.dataset.sleepQuality);
-        draft.sleep.history[selectTodayKey()] = {
-          hours: diffHours(draft.sleep.start, draft.sleep.end),
-          quality: draft.sleep.quality,
-          notes: draft.sleep.notes
-        };
-      }, { scope: "sleep" });
-    });
+    button.addEventListener("click", () => setSleepQuality(button.dataset.sleepQuality));
+  });
+
+  qsa("[data-wake-mood]").forEach((button) => {
+    button.addEventListener("click", () => setWakeMood(button.dataset.wakeMood));
   });
 }
 
 export function renderSleep(state = getState()) {
-  const sleep = selectSleepToday(state);
-  qs("#sleepStart").value = sleep.start;
-  qs("#sleepEnd").value = sleep.end;
-  qs("#dreamNotes").value = sleep.notes;
-  safeText("#sleepHrs", sleep.hours.toFixed(1));
+  const dateKey = getCurrentDateKey();
+  const sleep = selectSleepEntry(state, dateKey);
+  const weekly = selectSleepWeek(state, dateKey);
+
+  safeValue("#sleepDate", dateKey);
+  safeValue("#sleepStart", sleep.start);
+  safeValue("#sleepEnd", sleep.end);
+  safeValue("#dreamNotes", sleep.notes);
+  safeText("#sleepHrs", formatSleepDurationLabel(sleep.totalMinutes));
   safeStyle("#sleepBar", "width", `${sleep.percent}%`);
-  safeText("#sleepDebt", sleep.debt >= 0 ? `${formatHours(sleep.debt)} acima da meta` : `${formatHours(Math.abs(sleep.debt))} abaixo da meta`);
+  safeText("#sleepDebt", sleep.debt >= 0 ? `${formatSleepDurationLabel(Math.round(sleep.debt * 60))} acima da meta` : `${formatSleepDurationLabel(Math.round(Math.abs(sleep.debt) * 60))} abaixo da meta`);
   safeText("#alarmSugg", `Dormir ${sleep.start}`);
-  const sleepRing = optionalQs(".sleep-ring");
-  if (sleepRing) {
-    sleepRing.style.setProperty("--sleep-progress", `${sleep.percent}%`);
-  }
+
+  safeHTML("#sleepWeekList", weekly.map((entry) => `
+    <div class="task-item">
+      <div class="item-top">
+        <div>
+          <div class="task-title">${escapeHTML(entry.date.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" }))}</div>
+          <div class="item-meta">Qualidade ${escapeHTML(String(entry.quality || 0))}/5 - sensação ${escapeHTML(String(entry.wakeMood || 0))}/4</div>
+        </div>
+        <div class="task-badge">${escapeHTML(formatSleepDurationLabel(Math.round(entry.hours * 60)))}</div>
+      </div>
+    </div>
+  `).join(""));
+
   qsa("[data-sleep-quality]").forEach((button) => {
-    button.classList.toggle("on", Number(button.dataset.sleepQuality) === Number(state.sleep.quality));
+    button.classList.toggle("on", Number(button.dataset.sleepQuality) === Number(sleep.quality));
+  });
+
+  qsa("[data-wake-mood]").forEach((button) => {
+    button.classList.toggle("on", Number(button.dataset.wakeMood) === Number(sleep.wakeMood));
   });
 }

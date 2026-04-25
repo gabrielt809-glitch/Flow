@@ -5,7 +5,8 @@ const suites = [
   "./selectors.test.js",
   "./timeblocks.test.js",
   "./storage.test.js",
-  "./state.test.js"
+  "./state.test.js",
+  "./product-expansion.test.js"
 ];
 
 let failures = 0;

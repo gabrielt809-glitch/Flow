@@ -1,5 +1,5 @@
 import { mutateState, getState } from "./state.js";
-import { selectTodayKey, selectWaterProgress } from "./selectors.js";
+import { selectExerciseWaterRecommendation, selectTodayKey, selectWaterProgress } from "./selectors.js";
 import { escapeHTML, qs, safeHTML, safeStyle, safeText } from "./utils.js";
 
 const DEFAULT_VOLUMES = [150, 250, 350, 500];
@@ -93,6 +93,7 @@ export function addWater(direction, customMl = null) {
 
 export function renderWater(state = getState()) {
   const water = selectWaterProgress(state);
+  const recommendation = selectExerciseWaterRecommendation(state);
   const selectedVolume = water.cupMl;
   const allVolumes = getAllVolumes(state);
 
@@ -104,6 +105,7 @@ export function renderWater(state = getState()) {
   safeText("#waterMetricConsumed", `${water.currentMl}ml`);
   safeText("#waterMetricGoal", `${water.goalMl}ml`);
   safeText("#waterMetricProgress", `${water.percent}%`);
+  safeText("#waterExerciseHint", `Recomendação extra por treino: +${recommendation.extraMl}ml`);
   safeText(".water-num-suffix", water.cupCount === 1 ? "copo" : "copos");
   safeStyle("#waterBar", "width", `${water.percent}%`);
   safeHTML("#waterCups", Array.from({ length: Math.max(water.goalCups, 8) }, (_, index) => (

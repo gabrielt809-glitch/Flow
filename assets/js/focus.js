@@ -298,6 +298,12 @@ export function setSoundMode(mode) {
 
 export function renderFocus(state = getState()) {
   const focus = selectFocusStatsToday(state);
+  if (!focus.soundPlaying && activeSoundNodes.length) {
+    stopActiveSound();
+    if (masterGain) {
+      masterGain.gain.value = 0;
+    }
+  }
   safeText("#focusTimer", formatTimer(focus.secondsLeft));
   safeText("#focusStateLabel", focus.isRunning ? "Timer em andamento" : "Pronto para iniciar");
   safeText("#focusSessionCount", `${focus.sessions} ${focus.sessions === 1 ? "sessao" : "sessoes"} hoje`);

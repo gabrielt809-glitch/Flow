@@ -135,6 +135,13 @@ export function formatHours(value) {
   return `${Number(value || 0).toFixed(1)}h`;
 }
 
+export function formatDurationMinutes(totalMinutes) {
+  const minutes = Math.max(0, Math.round(Number(totalMinutes || 0)));
+  const hoursPart = Math.floor(minutes / 60);
+  const minutesPart = minutes % 60;
+  return `${String(hoursPart).padStart(2, "0")}:${String(minutesPart).padStart(2, "0")}`;
+}
+
 export function percent(value, total) {
   if (!total) return 0;
   return clamp(Math.round((value / total) * 100), 0, 100);

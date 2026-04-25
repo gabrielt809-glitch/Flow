@@ -78,31 +78,111 @@ export function selectWaterProgress(state) {
   };
 }
 
-export function selectSleepToday(state) {
+export function selectTodayActivityEntries(state) {
   const key = selectTodayKey();
-  const hours = Number(state.sleep.history[key]?.hours ?? diffHours(state.sleep.start, state.sleep.end));
+  return (state.health.activityEntries || []).filter((entry) => entry.date === key);
+}
+
+export function selectExerciseWaterRecommendation(state) {
+  const extraMl = selectTodayActivityEntries(state).reduce((total, entry) => {
+    const multiplier = entry.intensity === "intensa" ? 600 : entry.intensity === "leve" ? 300 : 500;
+    return total + Math.round((entry.minutes / 30) * multiplier);
+  }, 0);
+
+  return {
+    extraMl,
+    percentOfGoal: percent(extraMl, Math.max(Number(state.goals.waterMl || 0), 1))
+  };
+}
+
+function resolveSleepEntry(state, dateKey) {
+  const entry = state.sleep.entries?.[dateKey];
+  if (entry) {
+    return entry;
+  }
+
+  if (dateKey === selectTodayKey()) {
+    return {
+      start: state.sleep.start,
+      end: state.sleep.end,
+      quality: state.sleep.quality,
+      notes: state.sleep.notes,
+      wakeMood: state.sleep.wakeMood
+    };
+  }
+
+  const history = state.sleep.history?.[dateKey];
+  if (history) {
+    return {
+      start: state.sleep.start,
+      end: state.sleep.end,
+      quality: Number(history.quality || 3),
+      notes: history.notes || "",
+      wakeMood: 3
+    };
+  }
+
+  return {
+    start: "23:00",
+    end: "07:00",
+    quality: 3,
+    notes: "",
+    wakeMood: 3
+  };
+}
+
+export function selectSleepEntry(state, dateKey = selectTodayKey()) {
+  const entry = resolveSleepEntry(state, dateKey);
+  const hours = Number(diffHours(entry.start, entry.end));
+  const totalMinutes = Math.round(hours * 60);
   const goalHours = Number(state.goals.sleepHours || 8);
   const debt = Number((hours - goalHours).toFixed(1));
+
   return {
-    key,
-    start: state.sleep.start,
-    end: state.sleep.end,
-    notes: state.sleep.notes,
-    quality: Number(state.sleep.quality || 0),
+    key: dateKey,
+    start: entry.start,
+    end: entry.end,
+    notes: entry.notes,
+    quality: Number(entry.quality || 0),
+    wakeMood: Number(entry.wakeMood || 0),
     hours,
+    totalMinutes,
     goalHours,
     percent: percent(hours, goalHours),
     debt
   };
 }
 
+export function selectSleepToday(state) {
+  return selectSleepEntry(state, selectTodayKey());
+}
+
+export function selectSleepWeek(state, anchorKey = selectTodayKey()) {
+  return getWeekDates(new Date(`${anchorKey}T12:00:00`)).map((date) => {
+    const key = todayKey(date);
+    const entry = selectSleepEntry(state, key);
+    return {
+      key,
+      date,
+      hours: entry.hours,
+      quality: entry.quality,
+      wakeMood: entry.wakeMood
+    };
+  });
+}
+
+export function selectFoodEntriesForDate(state, dateKey = selectTodayKey()) {
+  return (state.food.entries || []).filter((entry) => !entry.date || entry.date === dateKey);
+}
+
 export function selectFoodCaloriesToday(state) {
-  const total = state.food.entries.reduce((acc, entry) => acc + Number(entry.calories || 0), 0);
+  const entries = selectFoodEntriesForDate(state, selectTodayKey());
+  const total = entries.reduce((acc, entry) => acc + Number(entry.calories || 0), 0);
   return {
     total,
     goal: Number(state.goals.calories || 0),
     percent: percent(total, Math.max(Number(state.goals.calories || 0), 1)),
-    entries: state.food.entries
+    entries
   };
 }
 
@@ -118,12 +198,49 @@ export function selectHabitStatsToday(state) {
   };
 }
 
+export function selectHabitWeek(state, anchorKey = selectTodayKey()) {
+  return getWeekDates(new Date(`${anchorKey}T12:00:00`)).map((date) => {
+    const key = todayKey(date);
+    const completed = state.habits.filter((habit) => (habit.doneDates || []).includes(key)).length;
+    return {
+      key,
+      date,
+      completed
+    };
+  });
+}
+
+export function selectHabitMonth(state, anchorKey = selectTodayKey()) {
+  const anchor = new Date(`${anchorKey}T12:00:00`);
+  const year = anchor.getFullYear();
+  const month = anchor.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  return Array.from({ length: daysInMonth }, (_, index) => {
+    const date = new Date(year, month, index + 1, 12, 0, 0);
+    const key = todayKey(date);
+    const completed = state.habits.filter((habit) => (habit.doneDates || []).includes(key)).length;
+    return { key, date, completed };
+  });
+}
+
 export function selectMoodToday(state) {
   return {
     value: Number(state.mood.value || 0),
     gratitude: state.mood.gratitude,
     notes: state.mood.notes,
     percent: percent(Number(state.mood.value || 0), 5)
+  };
+}
+
+export function selectJournalEntry(state, dateKey = selectTodayKey()) {
+  return state.mood.journalEntries?.[dateKey] || {
+    summary: "",
+    highs: "",
+    lows: "",
+    lessons: "",
+    gratitude: "",
+    notes: ""
   };
 }
 
@@ -144,11 +261,16 @@ export function selectFocusStatsToday(state) {
 export function selectHealthStatsToday(state) {
   const steps = Number(state.health.steps || 0);
   const workoutMinutes = Number(state.health.workoutMinutes || 0);
+  const activityEntries = selectTodayActivityEntries(state);
+  const calories = activityEntries.reduce((total, entry) => total + Number(entry.calories || 0), 0);
+
   return {
     steps,
     workoutMinutes,
     goalSteps: Number(state.goals.steps || 0),
-    percent: percent(steps, Math.max(Number(state.goals.steps || 0), 1))
+    percent: percent(steps, Math.max(Number(state.goals.steps || 0), 1)),
+    activityEntries,
+    calories
   };
 }
 

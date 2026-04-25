@@ -2465,6 +2465,175 @@ button:hover,
   }
 }
 
+/* Product Expansion + UX Refinement v1 */
+.health-card,
+.sleep-card,
+.food-card,
+.habits-card,
+.mood-card,
+.settings-card {
+  gap: 14px !important;
+}
+
+.health-card .water-panel,
+.sleep-card .water-panel,
+.food-card .water-panel,
+.habits-card .water-panel,
+.mood-card .water-panel,
+.settings-card .water-panel {
+  margin-top: 2px;
+  padding: 12px;
+  border: 1px solid rgba(145, 165, 194, 0.1);
+  background: rgba(16, 22, 33, 0.78);
+}
+
+.health-card .stat-grid,
+.food-card .food-summary-grid,
+.habits-card .stat-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#stepQuickAddRow,
+#habitSuggestions,
+#pinnedTabsEditor,
+.food-form-row,
+.focus-mode-row,
+.sound-mode-row,
+#calendarControls,
+#taskFilters {
+  row-gap: 8px;
+}
+
+#activityList,
+#workoutsList,
+#foodList,
+#savedMealsList,
+#dietMealsList,
+#sleepWeekList,
+#habitsList {
+  gap: 8px;
+}
+
+.compact-actions {
+  gap: 6px;
+}
+
+.breathing-timer {
+  font-size: 40px;
+  margin-top: 4px;
+}
+
+#breathingInstruction {
+  margin-top: -2px;
+}
+
+#wakeMoodRow,
+#dailyMoodRow {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#sleepDate,
+#journalDate,
+#habitDate,
+#healthActivityType,
+#foodLibrarySelect,
+#foodPortionCount,
+#dietMealName,
+#dietMealCalories,
+#workoutNameInput,
+#workoutExercisesInput,
+#workoutSetsInput,
+#workoutDaysInput {
+  min-width: 0;
+}
+
+#closeMenuBtn.btn-icon.btn {
+  min-height: 36px;
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 18px;
+}
+
+#tbModal .modal,
+#habitModal .modal,
+#dailyMoodModal .modal {
+  width: min(92vw, 520px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  gap: 12px;
+}
+
+#tbModal .modal-title,
+#habitModal .modal-title,
+#dailyMoodModal .modal-title {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, rgba(9, 13, 20, 0.98), rgba(9, 13, 20, 0.88));
+  padding-bottom: 8px;
+  z-index: 2;
+}
+
+#tbModal .modal .inp-row,
+#habitModal .modal .inp-row,
+#dailyMoodModal .modal .inp-row {
+  align-items: stretch;
+}
+
+#tbModal .chip-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#tbDaysHint,
+#tbTimeHint,
+#waterExerciseHint {
+  margin-top: 2px;
+}
+
+.side-menu-card {
+  padding-top: calc(16px + env(safe-area-inset-top));
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+.nav {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.content {
+  padding-bottom: calc(124px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 640px) {
+  .health-card .stat-grid,
+  .food-card .food-summary-grid,
+  .habits-card .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #tbModal .chip-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .food-card .btn-row,
+  .health-card .btn-row,
+  .settings-card .btn-row,
+  .mood-card .btn-row {
+    flex-wrap: wrap;
+  }
+
+  .food-card .btn-row .btn,
+  .health-card .btn-row .btn,
+  .settings-card .btn-row .btn,
+  .mood-card .btn-row .btn {
+    flex: 1 1 calc(50% - 4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

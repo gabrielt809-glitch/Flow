@@ -146,3 +146,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/focus.js`, `assets/js/schema.js`, `assets/js/tasks.js`, `assets/js/calendar.js`, `assets/js/timeblocks.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/settings.js`, `assets/js/onboarding.js`, `tests/storage.test.js`, `PRODUCT_UI_UX_QA_REPORT.md`.
 - Resultado: Foco com modo Deep 50m e audio interno funcional, cards e formularios compactados nas demais abas, estados vazios refinados, modais mais consistentes no mobile e fim das siglas-placeholder como icones principais.
 - Impacto tecnico: ajustes concentrados em apresentacao, renders e na base de foco/schema para suportar o novo modo, preservando a paleta atual, a aba Hoje e a arquitetura modular.
+
+## Product Expansion + UX Refinement v1
+
+- Resumo: expansao funcional das abas de Configuracoes, Saude, Sono, Nutricao, Habitos e Bem-estar, com correcoes urgentes de audio, modal e navegacao.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/health.js`, `assets/js/sleep.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/mood.js`, `assets/js/settings.js`, `assets/js/schema.js`, `assets/js/migrations.js`, `assets/js/selectors.js`, `assets/js/navigation.js`, `assets/js/water.js`, `STATE_SCHEMA.md`, `tests/storage.test.js`, `tests/product-expansion.test.js`, `PRODUCT_EXPANSION_V1_REPORT.md`.
+- Resultado: player de foco com audio interno corrigido, modo Deep 50m ativo, configuracoes com reset diario e abas fixadas, Saude com biblioteca de atividades e area Academia, Sono com registro por data e resumo semanal, Nutricao com biblioteca/modelos/refeicoes planejadas, Habitos com sugestoes e leitura semanal/mensal, Bem-estar com respiracao, modal diario e diario noturno.
+- Impacto tecnico: `STATE_VERSION` subiu para 3 com migracao oficial `v2 -> v3`, novos campos persistidos foram normalizados e documentados, a bottom nav passou a ser personalizada por estado, e a base ganhou novos testes de regressao para a expansao funcional.

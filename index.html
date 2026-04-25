@@ -272,6 +272,7 @@
             </div>
             <div class="prog-wrap water-prog-wrap"><div class="prog-bar" id="waterBar"></div></div>
             <div class="prog-lbl water-prog-lbl"><span id="waterMl">0ml</span><span id="waterMax">2000ml</span></div>
+            <div class="item-meta" id="waterExerciseHint">Recomendação extra por treino: +0ml</div>
           </div>
 
           <div class="water-panel water-cups-block water-section">
@@ -432,14 +433,67 @@
               <div class="stat-val" id="workoutVal">0</div>
               <div class="stat-lbl">min treino</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-val" id="activityCaloriesVal">0 kcal</div>
+              <div class="stat-lbl">gasto estimado</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="exerciseWaterVal">0ml</div>
+              <div class="stat-lbl">água extra sugerida</div>
+            </div>
           </div>
-          <div class="inp-row">
-            <input class="inp" id="stepsInput" type="number" placeholder="Passos do dia">
-            <button class="btn btn-p" type="button" id="saveStepsBtn">Salvar</button>
+
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Passos do dia</span>
+              <span class="water-panel-sub">Atualize manualmente ou some com atalhos rápidos.</span>
+            </div>
+            <div class="inp-row">
+              <input class="inp" id="stepsInput" type="number" placeholder="Passos do dia">
+              <button class="btn btn-p" type="button" id="saveStepsBtn">Salvar</button>
+            </div>
+            <div class="chip-row" id="stepQuickAddRow">
+              <button class="chip" type="button" data-step-add="500">+500</button>
+              <button class="chip" type="button" data-step-add="1000">+1000</button>
+              <button class="chip" type="button" data-step-add="2000">+2000</button>
+              <button class="chip" type="button" data-step-add="5000">+5000</button>
+            </div>
           </div>
-          <div class="inp-row">
-            <input class="inp" id="workoutInput" type="number" placeholder="Minutos de treino">
-            <button class="btn" type="button" id="saveWorkoutBtn">Atualizar</button>
+
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Atividade física</span>
+              <span class="water-panel-sub">Escolha uma atividade, informe a duração e registre o gasto estimado.</span>
+            </div>
+            <div class="inp-row">
+              <select class="inp" id="healthActivityType"></select>
+              <input class="inp" id="workoutInput" type="number" placeholder="Minutos">
+            </div>
+            <div class="btn-row">
+              <button class="btn" type="button" id="saveWorkoutBtn">Atualizar minutos</button>
+              <button class="btn btn-p" type="button" id="addActivityBtn">Registrar atividade</button>
+            </div>
+            <div id="activityList" class="stack-list"></div>
+          </div>
+
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Academia</span>
+              <span class="water-panel-sub">Monte treinos da semana com exercícios, séries, repetições e observações.</span>
+            </div>
+            <div class="inp-row">
+              <input class="inp" id="workoutNameInput" placeholder="Nome do treino">
+              <input class="inp" id="workoutExercisesInput" placeholder="Exercícios (separados por vírgula)">
+            </div>
+            <div class="inp-row">
+              <input class="inp" id="workoutSetsInput" placeholder="Séries x repetições (ex.: 4x12)">
+              <input class="inp" id="workoutDaysInput" placeholder="Dias (ex.: seg, qua, sex)">
+            </div>
+            <textarea class="inp" id="workoutNotesInput" rows="3" placeholder="Observações ou cargas"></textarea>
+            <div class="btn-row">
+              <button class="btn btn-p" type="button" id="saveWorkoutPlanBtn">Salvar treino</button>
+            </div>
+            <div id="workoutsList" class="stack-list"></div>
           </div>
         </div>
       </section>
@@ -451,10 +505,17 @@
             <span class="card-title">Sono de hoje</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 4.8a7 7 0 1 0 4.7 11.8 6.7 6.7 0 0 1-4.7-11.8Z"></path></svg></span>
           </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Registro por dia</span>
+              <span class="water-panel-sub">Revise hoje, ontem ou qualquer outro dia da semana.</span>
+            </div>
+            <input class="inp" id="sleepDate" type="date">
+          </div>
           <div class="sleep-ring">
             <div class="sleep-ring-core">
               <div class="sleep-hours" id="sleepHrs">-</div>
-              <div class="sleep-caption">horas dormidas</div>
+              <div class="sleep-caption">duração total</div>
             </div>
           </div>
           <div class="inp-row">
@@ -476,7 +537,20 @@
             <button class="qual-btn" type="button" data-sleep-quality="4">Muito boa</button>
             <button class="qual-btn" type="button" data-sleep-quality="5">Ótima</button>
           </div>
-          <textarea class="inp" id="dreamNotes" rows="4" placeholder="Notas de sono e sonhos"></textarea>
+          <div class="mood-row" id="wakeMoodRow">
+            <button class="mood-btn" type="button" data-wake-mood="1">Cansado</button>
+            <button class="mood-btn" type="button" data-wake-mood="2">Ok</button>
+            <button class="mood-btn" type="button" data-wake-mood="3">Bem</button>
+            <button class="mood-btn" type="button" data-wake-mood="4">Muito bem</button>
+          </div>
+          <textarea class="inp" id="dreamNotes" rows="3" placeholder="Como me senti ao acordar ou notas do sono"></textarea>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Resumo semanal</span>
+              <span class="water-panel-sub">Horas dormidas e qualidade ao longo da semana.</span>
+            </div>
+            <div id="sleepWeekList" class="stack-list"></div>
+          </div>
         </div>
       </section>
 
@@ -487,12 +561,66 @@
             <span class="card-title">Nutrição</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span>
           </div>
-          <div class="inp-row food-form-row">
-            <input class="inp" id="foodName" placeholder="Refeição ou alimento">
-            <input class="inp" id="foodCalories" type="number" placeholder="kcal">
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Biblioteca de alimentos</span>
+              <span class="water-panel-sub">Selecione um alimento, ajuste a quantidade e registre no dia.</span>
+            </div>
+            <div class="inp-row food-form-row">
+              <select class="inp" id="foodLibrarySelect"></select>
+              <input class="inp" id="foodPortionCount" type="number" min="1" step="1" value="1" placeholder="Qtd.">
+            </div>
+            <div class="inp-row food-form-row">
+              <input class="inp" id="foodName" placeholder="Refeição ou alimento">
+              <input class="inp" id="foodCalories" type="number" placeholder="kcal">
+            </div>
+            <div class="btn-row">
+              <button class="btn" type="button" id="useFoodLibraryBtn">Usar biblioteca</button>
+              <button class="btn btn-p food-add-btn" type="button" id="addFoodBtn">Adicionar refeição</button>
+            </div>
           </div>
-          <button class="btn btn-p food-add-btn" type="button" id="addFoodBtn">Adicionar refeição</button>
-          <div id="foodList" class="stack-list"></div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Refeições do dia</span>
+              <span class="water-panel-sub">Monte refeições, salve modelos e acompanhe as calorias totais.</span>
+            </div>
+            <div class="stat-grid food-summary-grid">
+              <div class="stat-card">
+                <div class="stat-val" id="foodTotalCalories">0 kcal</div>
+                <div class="stat-lbl">registradas hoje</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-val" id="foodMealCount">0</div>
+                <div class="stat-lbl">itens no dia</div>
+              </div>
+            </div>
+            <div id="foodList" class="stack-list"></div>
+            <div class="btn-row">
+              <button class="btn" type="button" id="saveFoodMealBtn">Salvar como refeição</button>
+            </div>
+          </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Modelos salvos</span>
+              <span class="water-panel-sub">Reutilize café da manhã, almoço, pós-treino e outras combinações.</span>
+            </div>
+            <div id="savedMealsList" class="stack-list"></div>
+          </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Plano da dieta</span>
+              <span class="water-panel-sub">Cadastre refeições planejadas com itens, kcal estimadas e observações.</span>
+            </div>
+            <div class="inp-row">
+              <input class="inp" id="dietMealName" placeholder="Nome da refeição planejada">
+              <input class="inp" id="dietMealCalories" type="number" placeholder="kcal estimadas">
+            </div>
+            <textarea class="inp" id="dietMealItems" rows="3" placeholder="Itens e observações"></textarea>
+            <div class="btn-row">
+              <button class="btn btn-p" type="button" id="saveDietMealBtn">Salvar refeição planejada</button>
+            </div>
+            <div id="dietMealsList" class="stack-list"></div>
+          </div>
         </div>
       </section>
 
@@ -503,7 +631,37 @@
             <span class="card-title">Hábitos de hoje</span>
             <button class="btn btn-xs" type="button" id="openHabitBtn">+ Novo</button>
           </div>
-          <div id="habitsList" class="stack-list"></div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Registro do dia</span>
+              <span class="water-panel-sub">Marque hoje ou preencha manualmente outra data.</span>
+            </div>
+            <input class="inp" id="habitDate" type="date">
+          </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Sugestões rápidas</span>
+              <span class="water-panel-sub">Adicione hábitos comuns com um toque.</span>
+            </div>
+            <div class="chip-row" id="habitSuggestions"></div>
+          </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Seus hábitos</span>
+              <span class="water-panel-sub">Visão compacta com consistência semanal e mensal.</span>
+            </div>
+            <div id="habitsList" class="stack-list"></div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-val" id="habitWeekSummary">0/0</div>
+              <div class="stat-lbl">semana</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="habitMonthSummary">0/0</div>
+              <div class="stat-lbl">mês</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -514,16 +672,52 @@
             <span class="card-title">Como você está?</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg></span>
           </div>
-          <div class="mood-row" id="moodRow">
-            <button class="mood-btn" type="button" data-mood="1">Baixo</button>
-            <button class="mood-btn" type="button" data-mood="2">Sensível</button>
-            <button class="mood-btn" type="button" data-mood="3">Neutro</button>
-            <button class="mood-btn" type="button" data-mood="4">Bem</button>
-            <button class="mood-btn" type="button" data-mood="5">Ótimo</button>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Check-in diário</span>
+              <span class="water-panel-sub">Registre o humor do dia com uma escala mais humana e objetiva.</span>
+            </div>
+            <div class="mood-row" id="moodRow">
+              <button class="mood-btn" type="button" data-mood="1">Baixo</button>
+              <button class="mood-btn" type="button" data-mood="2">Sensível</button>
+              <button class="mood-btn" type="button" data-mood="3">Neutro</button>
+              <button class="mood-btn" type="button" data-mood="4">Bem</button>
+              <button class="mood-btn" type="button" data-mood="5">Ótimo</button>
+            </div>
+            <textarea class="inp" id="gratitudeInput" rows="3" placeholder="Uma gratidão de hoje"></textarea>
+            <textarea class="inp" id="moodNotesInput" rows="3" placeholder="Notas do dia"></textarea>
+            <button class="btn btn-p" type="button" id="saveMoodBtn">Salvar check-in</button>
           </div>
-          <textarea class="inp" id="gratitudeInput" rows="3" placeholder="Uma gratidão de hoje"></textarea>
-          <textarea class="inp" id="moodNotesInput" rows="3" placeholder="Notas do dia"></textarea>
-          <button class="btn btn-p" type="button" id="saveMoodBtn">Salvar check-in</button>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Respiração guiada</span>
+              <span class="water-panel-sub">Use um ciclo simples para desacelerar sem sair do app.</span>
+            </div>
+            <div class="inp-row">
+              <select class="inp" id="breathingMode">
+                <option value="box">Box 4-4-4-4</option>
+                <option value="478">4-7-8</option>
+                <option value="calm">Respiração calma</option>
+              </select>
+              <button class="btn btn-p" type="button" id="toggleBreathingBtn">Iniciar</button>
+            </div>
+            <div class="focus-timer breathing-timer" id="breathingTimer">00:00</div>
+            <div class="item-meta" id="breathingInstruction">Escolha um modo e toque em iniciar.</div>
+          </div>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Diário noturno</span>
+              <span class="water-panel-sub">Feche o dia registrando altos, baixos, aprendizados e gratidão.</span>
+            </div>
+            <input class="inp" id="journalDate" type="date">
+            <textarea class="inp" id="journalDayInput" rows="2" placeholder="Como foi o dia?"></textarea>
+            <textarea class="inp" id="journalHighsInput" rows="2" placeholder="Altos do dia"></textarea>
+            <textarea class="inp" id="journalLowsInput" rows="2" placeholder="Baixos do dia"></textarea>
+            <textarea class="inp" id="journalLearningsInput" rows="2" placeholder="Aprendizados"></textarea>
+            <textarea class="inp" id="journalGratitudeInput" rows="2" placeholder="Gratidão"></textarea>
+            <textarea class="inp" id="journalNotesInput" rows="3" placeholder="Nota livre"></textarea>
+            <button class="btn btn-p" type="button" id="saveJournalBtn">Salvar diário</button>
+          </div>
         </div>
       </section>
 
@@ -552,13 +746,17 @@
               <input class="inp" id="goalCalories" type="number">
             </label>
           </div>
-          <div class="settings-row">
-            <span>Tema claro</span>
-            <button class="toggle" type="button" id="themeToggle" aria-label="Alternar tema"></button>
+          <div class="water-panel water-section">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Abas fixadas</span>
+              <span class="water-panel-sub">Escolha até 5 atalhos na barra inferior. O Menu continua dando acesso ao restante.</span>
+            </div>
+            <div class="chip-row" id="pinnedTabsEditor"></div>
           </div>
           <div class="profile-card" id="profileSummary"></div>
           <div class="btn-row">
             <button class="btn btn-p" type="button" id="saveSettingsBtn">Salvar</button>
+            <button class="btn" type="button" id="resetDailyBtn">Reset diário</button>
             <button class="btn" type="button" id="resetAppBtn">Resetar dados</button>
           </div>
         </div>
@@ -601,8 +799,26 @@
     <div class="modal">
       <div class="modal-title">Novo hábito <button class="modal-close" type="button" data-close-modal="habitModal">&times;</button></div>
       <input class="inp" id="habitName" placeholder="Nome do hábito">
-      <input class="inp" id="habitIcon" placeholder="Símbolo opcional" maxlength="2">
+      <input class="inp" id="habitIcon" placeholder="Ícone opcional" maxlength="2">
       <button class="btn btn-p" type="button" id="saveHabitBtn">Criar hábito</button>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="dailyMoodModal">
+    <div class="modal">
+      <div class="modal-title">Como você está hoje? <button class="modal-close" type="button" data-close-modal="dailyMoodModal">&times;</button></div>
+      <div class="item-meta">Esse check-in aparece uma vez por dia e pode ser pulado sem perder o restante do app.</div>
+      <div class="mood-row" id="dailyMoodRow">
+        <button class="mood-btn" type="button" data-daily-mood="1">Baixo</button>
+        <button class="mood-btn" type="button" data-daily-mood="2">Sensível</button>
+        <button class="mood-btn" type="button" data-daily-mood="3">Neutro</button>
+        <button class="mood-btn" type="button" data-daily-mood="4">Bem</button>
+        <button class="mood-btn" type="button" data-daily-mood="5">Ótimo</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" type="button" id="skipDailyMoodBtn">Pular</button>
+        <button class="btn btn-p" type="button" id="saveDailyMoodBtn">Salvar humor</button>
+      </div>
     </div>
   </div>
 

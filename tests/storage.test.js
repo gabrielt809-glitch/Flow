@@ -25,7 +25,7 @@ export async function run() {
   const { persistState, loadPersistedState } = await import("../assets/js/storage.js");
   const { migrateState } = await import("../assets/js/migrations.js");
 
-  assert.equal(STATE_VERSION, 2);
+  assert.equal(STATE_VERSION, 3);
 
   const legacyPayload = {
     onboarded: true,
@@ -51,6 +51,25 @@ export async function run() {
   const migratedV1 = migrateState(versionOnePayload);
   assert.match(migratedV1.ui.calendarAnchorDate, /^\d{4}-\d{2}-\d{2}$/);
 
+  const versionTwoPayload = {
+    version: 2,
+    updatedAt: "2026-04-25T00:00:00.000Z",
+    data: {
+      ...createDefaultState(),
+      ui: {
+        ...createDefaultState().ui,
+        pinnedTabs: ["overview", "water"]
+      },
+      mood: {
+        ...createDefaultState().mood
+      }
+    }
+  };
+  const migratedV2 = migrateState(versionTwoPayload);
+  assert.equal(migratedV2.ui.theme, "dark");
+  assert.deepEqual(migratedV2.ui.pinnedTabs, ["overview", "water", "menu"]);
+  assert.equal(migratedV2.mood.dailyCheckinShownDate, "");
+
   const normalized = normalizeState({
     ...createDefaultState(),
     focus: {
@@ -60,7 +79,8 @@ export async function run() {
     },
     ui: {
       ...createDefaultState().ui,
-      calendarAnchorDate: "2026-05-07"
+      calendarAnchorDate: "2026-05-07",
+      pinnedTabs: ["overview", "water", "study", "work", "menu", "food"]
     },
     water: {
       ...createDefaultState().water,
@@ -77,6 +97,7 @@ export async function run() {
   assert.equal(normalized.focus.mode, "deep");
   assert.equal(normalized.focus.secondsLeft, 50 * 60);
   assert.equal(normalized.ui.calendarAnchorDate, "2026-05-07");
+  assert.deepEqual(normalized.ui.pinnedTabs, ["overview", "water", "study", "work", "menu"]);
   assert.deepEqual(normalized.water.customVolumes, [600, 750]);
 
   persistState(normalized);

@@ -1,18 +1,18 @@
 # FLOW-APP-LIMPO State Schema
 
-## Versao Atual
+## Versão Atual
 
-- `STATE_VERSION = 2`
+- `STATE_VERSION = 3`
 - Chave atual do `localStorage`: `flow-app-limpo-v1`
 
 ## Envelope Persistido
 
-O estado e salvo em `localStorage` no seguinte formato:
+O estado continua salvo em `localStorage` no formato:
 
 ```json
 {
-  "version": 2,
-  "updatedAt": "2026-04-24T00:00:00.000Z",
+  "version": 3,
+  "updatedAt": "2026-04-25T00:00:00.000Z",
   "data": {
     "...": "state"
   }
@@ -21,10 +21,11 @@ O estado e salvo em `localStorage` no seguinte formato:
 
 Compatibilidade:
 
-- formato novo com envelope: suportado
-- formato antigo salvando o state direto: suportado
+- payload antigo sem envelope: suportado
+- payload envelopado `version: 1`: suportado
+- payload envelopado `version: 2`: suportado
 
-## Estrutura Geral do Estado
+## Estrutura Geral
 
 ```js
 {
@@ -46,9 +47,7 @@ Compatibilidade:
 }
 ```
 
-## Campos
-
-### `profile`
+## Profile
 
 ```js
 {
@@ -60,7 +59,7 @@ Compatibilidade:
 }
 ```
 
-### `goals`
+## Goals
 
 ```js
 {
@@ -71,37 +70,42 @@ Compatibilidade:
 }
 ```
 
-### `ui`
+## UI
 
 ```js
 {
   activeSection: "overview" | "water" | "study" | "work" | "health" | "sleep" | "food" | "habits" | "mood" | "settings",
-  theme: "dark" | "light",
+  theme: "dark",
   taskFilter: "all" | "pending" | "done" | "high",
-  calendarAnchorDate: string
+  calendarAnchorDate: string,
+  pinnedTabs: string[]
 }
 ```
 
-`calendarAnchorDate` usa formato `YYYY-MM-DD` e define a semana atualmente exibida no calendário.
-Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI persistida.
+Observações:
 
-### `water`
+- `calendarAnchorDate` usa `YYYY-MM-DD` e controla a semana ativa do calendário.
+- `pinnedTabs` foi formalizado na versão 3 para permitir personalização da bottom nav.
+- `theme` passou a ser tratado como `dark` fixo na versão 3.
+
+## Water
 
 ```js
 {
   ml: number,
   cupMl: number,
+  customVolumes: number[],
   history: {
     [dateKey]: number
   }
 }
 ```
 
-### `focus`
+## Focus
 
 ```js
 {
-  mode: "focus" | "short" | "long",
+  mode: "focus" | "deep" | "short" | "long",
   secondsLeft: number,
   isRunning: boolean,
   sessionsToday: number,
@@ -114,7 +118,7 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 }
 ```
 
-### `tasks`
+## Tasks
 
 ```js
 [
@@ -130,7 +134,7 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 ]
 ```
 
-### `timeblocks`
+## Timeblocks
 
 ```js
 [
@@ -152,16 +156,52 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 ]
 ```
 
-### `health`
+Modelo:
+
+- `single`: usa `date` e replica a data em `startDate`
+- `recurring_period`: usa `startDate`, `endDate` e opcionalmente `daysOfWeek`
+- `recurring_forever`: usa `startDate` e opcionalmente `daysOfWeek`
+- `skippedDates`: lista de ocorrências ocultadas sem apagar o bloco inteiro
+- `allDay`: força `00:00` até `23:59`
+
+## Health
 
 ```js
 {
   steps: number,
-  workoutMinutes: number
+  workoutMinutes: number,
+  activityEntries: [
+    {
+      id: string,
+      name: string,
+      activityId: string,
+      minutes: number,
+      calories: number,
+      intensity: "leve" | "moderada" | "intensa",
+      date: string
+    }
+  ],
+  workouts: [
+    {
+      id: string,
+      name: string,
+      daysOfWeek: string[],
+      notes: string,
+      exercises: [
+        {
+          name: string,
+          sets: string,
+          reps: string,
+          load: string,
+          notes: string
+        }
+      ]
+    }
+  ]
 }
 ```
 
-### `sleep`
+## Sleep
 
 ```js
 {
@@ -169,6 +209,16 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
   end: string,
   quality: number,
   notes: string,
+  wakeMood: number,
+  entries: {
+    [dateKey]: {
+      start: string,
+      end: string,
+      quality: number,
+      notes: string,
+      wakeMood: number
+    }
+  },
   history: {
     [dateKey]: {
       hours: number,
@@ -179,7 +229,7 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 }
 ```
 
-### `food`
+## Food
 
 ```js
 {
@@ -187,7 +237,29 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
     {
       id: string,
       name: string,
+      calories: number,
+      date: string,
+      category: string,
+      portionLabel: string,
+      source: string
+    }
+  ],
+  savedMeals: [
+    {
+      id: string,
+      name: string,
+      category: string,
+      notes: string,
+      items: FoodEntry[],
       calories: number
+    }
+  ],
+  dietMeals: [
+    {
+      id: string,
+      name: string,
+      calories: number,
+      notes: string
     }
   ],
   history: {
@@ -196,7 +268,7 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 }
 ```
 
-### `habits`
+## Habits
 
 ```js
 [
@@ -209,13 +281,24 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 ]
 ```
 
-### `mood`
+## Mood
 
 ```js
 {
   value: number,
   gratitude: string,
   notes: string,
+  dailyCheckinShownDate: string,
+  journalEntries: {
+    [dateKey]: {
+      summary: string,
+      highs: string,
+      lows: string,
+      lessons: string,
+      gratitude: string,
+      notes: string
+    }
+  },
   history: {
     [dateKey]: {
       value: number,
@@ -226,9 +309,9 @@ Na versão 2 do estado, esse campo foi formalizado como parte oficial da UI pers
 }
 ```
 
-### `history`
+## History
 
-Snapshot diario usado por overview/history/selectors:
+Snapshot diário usado por overview e selectors:
 
 ```js
 {
@@ -244,90 +327,18 @@ Snapshot diario usado por overview/history/selectors:
 }
 ```
 
-## Modelo de Timeblocks
+## Migrações Futuras
 
-### `single`
+Sempre que um campo persistido novo for adicionado:
 
-- representa um bloco de dia unico
-- usa `date`
-- `startDate` e preenchido com a mesma data por compatibilidade
-- nao depende de `daysOfWeek`
+1. atualizar `STATE_VERSION` em `assets/js/schema.js`
+2. criar migração explícita em `assets/js/migrations.js`
+3. normalizar o novo campo em `normalizeState()`
+4. documentar a mudança neste arquivo
+5. cobrir a migração com teste quando possível
 
-### `recurring_period`
+## Compatibilidade com Dados Antigos
 
-- representa recorrencia entre `startDate` e `endDate`
-- pode usar `daysOfWeek`
-- desaparece apos `endDate`
-
-### `recurring_forever`
-
-- representa recorrencia continua a partir de `startDate`
-- pode usar `daysOfWeek`
-- nao precisa de `endDate`
-
-### `skippedDates`
-
-- array de datas ISO (`YYYY-MM-DD`)
-- remove apenas ocorrencias especificas
-- nao remove o bloco inteiro
-
-### `daysOfWeek`
-
-- array numerico no padrao JS `Date.getDay()`
-- `0 = domingo`
-- `1 = segunda`
-- ...
-- `6 = sabado`
-
-### `allDay`
-
-- quando `true`, o bloco representa dia inteiro
-- a ocorrencia e marcada como `allDay`
-- a exibicao textual usa a indicacao correspondente no selector/render
-
-## Normalizacao e Compatibilidade
-
-`normalizeState(state)` e obrigatorio antes de usar qualquer payload.
-
-Ele garante:
-
-- merge com `DEFAULT_STATE`
-- tipos consistentes
-- arrays e objetos padrao
-- filtros validos
-- blocos antigos convertidos
-- IDs deterministas para registros sem `id`
-
-Compatibilidade com dados antigos:
-
-- tarefas, habitos, comidas e blocos sem `id` ganham IDs deterministas
-- timeblocks antigos com `date` viram `type: "single"`
-- payload antigo sem envelope ainda carrega normalmente
-
-## Como Criar Migracoes Futuras
-
-Quando houver mudanca estrutural real:
-
-1. incrementar `STATE_VERSION` em `schema.js`
-2. adicionar migracao em `migrations.js`
-3. a migracao deve transformar apenas da versao N para N+1
-4. `migrateState(payload)` deve rodar somente enquanto `currentVersion < STATE_VERSION`
-5. depois disso, sempre retornar `normalizeState(currentData)`
-
-Exemplo recente:
-
-- `v2` formalizou `ui.calendarAnchorDate`
-- payloads `v1` sem esse campo passam por migração dedicada antes da normalização final
-
-Regra importante:
-
-- migracao corrige compatibilidade historica
-- normalizacao corrige formato, defaults e higiene do dado atual
-
-## Boas Praticas para Compatibilidade
-
-- nunca remover suporte a payload antigo sem migracao correspondente
-- nunca depender do formato bruto de `localStorage` fora de `storage.js`
-- nunca gerar IDs aleatorios em `normalizeState()`
-- sempre documentar novos campos em `STATE_SCHEMA.md`
-- sempre cobrir mudancas estruturais com testes em `storage.test.js` ou `state.test.js`
+- `migrateState()` aplica apenas migrações pendentes enquanto `currentVersion < STATE_VERSION`
+- payloads sem envelope continuam aceitos e passam por normalização
+- payloads antigos de `timeblocks`, `food`, `sleep`, `mood` e `ui` são completados com defaults seguros na normalização
