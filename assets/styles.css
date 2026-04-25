@@ -863,6 +863,10 @@ button {
   gap: 14px;
 }
 
+.water-section {
+  position: relative;
+}
+
 .water-summary,
 .water-panel {
   border-radius: 0;
@@ -871,12 +875,31 @@ button {
 }
 
 .water-summary {
-  padding: 2px 0 0;
+  padding: 2px 0 2px;
 }
 
 .water-panel {
   padding: 14px 0 0;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.water-progress-block,
+.water-cups-block,
+.water-register-block {
+  margin-top: 2px;
+}
+
+.water-progress-block::before,
+.water-cups-block::before,
+.water-register-block::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -7px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06) 14%, rgba(255, 255, 255, 0.06) 86%, transparent);
+  opacity: 0.65;
 }
 
 .water-panel-head,
@@ -950,7 +973,13 @@ button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+    rgba(255, 255, 255, 0.018);
 }
 
 .water-metric {
@@ -958,7 +987,12 @@ button {
   flex-direction: column;
   gap: 3px;
   min-width: 0;
-  padding: 0;
+  padding: 0 2px;
+}
+
+.water-metric + .water-metric {
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .water-metric-label {
@@ -979,7 +1013,7 @@ button {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 2px;
+  margin-top: 8px;
   margin-bottom: 0;
 }
 
@@ -1003,13 +1037,13 @@ button {
 }
 
 .water-prog-wrap {
-  margin-top: 0;
+  margin-top: 2px;
   height: 8px;
   background: rgba(255, 255, 255, 0.055);
 }
 
 .water-prog-lbl {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -1020,21 +1054,21 @@ button {
 }
 
 .water-chip-row {
-  margin-top: 0;
+  margin-top: 8px;
   gap: 10px;
 }
 
 .water-custom-row {
-  margin-top: 10px;
+  margin-top: 12px;
   align-items: stretch;
 }
 
 .water-custom-note {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .water-actions {
-  margin-top: 12px;
+  margin-top: 14px;
   padding-bottom: 2px;
 }
 
@@ -2144,10 +2178,19 @@ button:hover,
     padding-top: 12px;
   }
 
+  .water-summary {
+    padding-top: 2px;
+  }
+
   .water-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     margin-top: 12px;
+    padding: 10px;
+  }
+
+  .water-metric + .water-metric {
+    padding-left: 10px;
   }
 
   .water-panel-head {
@@ -2162,6 +2205,10 @@ button:hover,
 
   #saveWaterCustomBtn {
     width: 100%;
+  }
+
+  .water-chip-row {
+    margin-top: 7px;
   }
 
   .water-num-suffix {

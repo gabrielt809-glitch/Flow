@@ -132,3 +132,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/water.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_V3_REPORT.md`.
 - Resultado: resumo principal mais limpo, metricas de Consumido/Meta/Progresso em linha compacta, barra com labels alinhados, secao de copos mais alta na tela e plural de copo corrigido.
 - Impacto tecnico: mudancas localizadas na apresentacao e no render da Agua, preservando persistencia dos volumes personalizados e sem alterar a aba Hoje.
+
+## Water Tab Final Polish v4
+
+- Resumo: polish final de ritmo visual na aba Agua, preservando o layout atual e separando melhor resumo, metricas, progresso, copos e registro.
+- Arquivos principais: `index.html`, `assets/styles.css`, `CHANGELOG.md`, `WATER_TAB_FINAL_POLISH_V4_REPORT.md`.
+- Resultado: secoes da Agua com pausas visuais mais claras, faixa de metricas mais legivel, progresso diario com mais respiro e blocos de copos/registro menos colados.
+- Impacto tecnico: ajuste concentrado em apresentacao e espacamento da aba Agua, sem mudar regras de negocio, persistencia ou a aba Hoje.
