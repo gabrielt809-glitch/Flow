@@ -153,3 +153,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/health.js`, `assets/js/sleep.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/mood.js`, `assets/js/settings.js`, `assets/js/schema.js`, `assets/js/migrations.js`, `assets/js/selectors.js`, `assets/js/navigation.js`, `assets/js/water.js`, `STATE_SCHEMA.md`, `tests/storage.test.js`, `tests/product-expansion.test.js`, `PRODUCT_EXPANSION_V1_REPORT.md`.
 - Resultado: player de foco com audio interno corrigido, modo Deep 50m ativo, configuracoes com reset diario e abas fixadas, Saude com biblioteca de atividades e area Academia, Sono com registro por data e resumo semanal, Nutricao com biblioteca/modelos/refeicoes planejadas, Habitos com sugestoes e leitura semanal/mensal, Bem-estar com respiracao, modal diario e diario noturno.
 - Impacto tecnico: `STATE_VERSION` subiu para 3 com migracao oficial `v2 -> v3`, novos campos persistidos foram normalizados e documentados, a bottom nav passou a ser personalizada por estado, e a base ganhou novos testes de regressao para a expansao funcional.
+
+## Final UX Intensive
+
+- Resumo: rodada intensiva de QA visual mobile e refinamento de UX em todas as abas, preservando a aba Hoje e a paleta dark premium atual.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/navigation.js`, `assets/js/food.js`, `qa-screenshots/*`, `FINAL_UX_INTENSIVE_REPORT.md`.
+- Resultado: banners globais removidos das abas internas para ganhar altura útil, formulários críticos reorganizados, Foco/Tarefas/Saúde/Sono/Nutrição/Hábitos/Bem-estar/Configurações mais compactos e legíveis, menu lateral e modal de bloco mais proporcionais, e screenshots locais geradas para auditoria visual por aba.
+- Impacto tecnico: ajustes concentrados em apresentação e layout responsivo, com mudanças pequenas em JS apenas para suportar o estado visual por seção e alinhar a biblioteca de Nutrição à regra do usuário, sem tocar em schema, migrations, storage, state ou selectors.

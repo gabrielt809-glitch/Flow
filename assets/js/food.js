@@ -29,8 +29,7 @@ export const FOOD_LIBRARY = [
   { id: "acai", name: "Açaí", portion: "300ml", calories: 320, category: "sobremesa" },
   { id: "chocolate", name: "Chocolate", portion: "25g", calories: 135, category: "sobremesa" },
   { id: "cookie", name: "Biscoito", portion: "4 unidades", calories: 150, category: "lanche" },
-  { id: "vegetables", name: "Legumes", portion: "1 porção", calories: 60, category: "vegetal" },
-  { id: "fish", name: "Peixe", portion: "100g", calories: 170, category: "proteina" }
+  { id: "vegetables", name: "Legumes", portion: "1 porção", calories: 60, category: "vegetal" }
 ];
 
 function getSelectedFood() {

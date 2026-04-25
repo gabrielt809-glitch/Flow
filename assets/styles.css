@@ -2655,3 +2655,379 @@ button:hover,
     animation: none !important;
   }
 }
+
+/* Final UX Intensive */
+#appWrap[data-active-section]:not([data-active-section="overview"]) .streak-banner,
+#appWrap[data-active-section]:not([data-active-section="overview"]) .motivation {
+  display: none;
+}
+
+#appWrap[data-active-section]:not([data-active-section="overview"]) .content {
+  padding-top: 10px;
+}
+
+.prog-lbl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.prog-lbl span:last-child {
+  text-align: right;
+}
+
+.sec:not([data-section="water"]) .water-panel-head {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+.water-panel-sub {
+  max-width: 100%;
+  line-height: 1.35;
+  font-size: 12px;
+}
+
+.task-primary-row,
+.task-meta-row,
+.task-date-row,
+.health-step-row,
+.health-activity-row,
+.workout-plan-row,
+.sleep-time-row,
+.food-library-row,
+.food-manual-row,
+.diet-meal-row,
+.breathing-row {
+  display: grid;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.task-primary-row,
+.task-date-row,
+.health-step-row,
+.breathing-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.task-meta-row,
+.health-activity-row,
+.workout-plan-row,
+.sleep-time-row,
+.food-manual-row,
+.diet-meal-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.food-library-row {
+  grid-template-columns: minmax(0, 1.7fr) minmax(84px, 0.7fr);
+}
+
+.tasks-form-card #addTaskBtn,
+.tasks-form-card #clearTaskDueBtn,
+.health-card #saveStepsBtn,
+.health-card #addActivityBtn,
+.health-card #saveWorkoutBtn,
+.mood-card #toggleBreathingBtn {
+  width: auto;
+  min-width: 104px;
+}
+
+.tasks-form-card #taskFilters {
+  gap: 6px;
+}
+
+.tasks-form-card .task-item {
+  padding: 11px 12px;
+}
+
+.tasks-form-card .task-row {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.tasks-form-card .item-top {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.tasks-form-card .badge {
+  font-size: 10px;
+}
+
+.focus-mode-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.focus-mode-row .chip,
+.sound-mode-row .chip,
+#stepQuickAddRow .chip {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+
+.sound-mode-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.focus-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.focus-audio-controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+#focusAudioBtn {
+  min-width: 110px;
+}
+
+.focus-player {
+  padding: 10px 12px;
+}
+
+.focus-title {
+  font-size: 14px;
+}
+
+.focus-sub {
+  line-height: 1.4;
+}
+
+.calendar-card #calendarControls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calendar-day {
+  min-height: 88px;
+  padding: 9px 10px;
+}
+
+.calendar-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calendar-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.calendar-item .btn {
+  flex: 0 0 auto;
+}
+
+.timeblock-item .item-top {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.timeblock-item .btn-row {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.health-card .stat-card,
+.food-card .stat-card,
+.habits-card .stat-card {
+  min-height: 0;
+  padding: 11px;
+}
+
+#stepQuickAddRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.health-card .btn-row,
+.food-card .btn-row,
+.settings-card .btn-row,
+.mood-card .btn-row {
+  gap: 8px;
+}
+
+.health-card .task-item,
+.food-card .task-item,
+.habits-card .habit-item,
+.sleep-card .task-item {
+  padding: 11px 12px;
+}
+
+.sleep-ring {
+  width: 148px;
+  height: 148px;
+  margin: 2px auto 6px;
+}
+
+.sleep-hours {
+  font-size: 40px;
+}
+
+#sleepQualRow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#wakeMoodRow {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sleep-card textarea.inp {
+  min-height: 72px;
+}
+
+.food-card .food-summary-grid {
+  gap: 8px;
+}
+
+.food-card .stat-val {
+  font-size: 22px;
+}
+
+.habits-card #habitSuggestions {
+  gap: 8px;
+}
+
+.mood-card .mood-row,
+#dailyMoodRow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mood-card .mood-btn,
+#dailyMoodRow .mood-btn,
+#wakeMoodRow .mood-btn,
+#sleepQualRow .qual-btn {
+  min-height: 38px;
+  padding: 8px 6px;
+  font-size: 11px;
+}
+
+.mood-card textarea.inp {
+  min-height: 76px;
+}
+
+.settings-card .settings-grid {
+  gap: 10px;
+}
+
+#pinnedTabsEditor {
+  gap: 8px;
+}
+
+.settings-card .btn-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.settings-card #saveSettingsBtn {
+  grid-column: 1 / -1;
+}
+
+#closeMenuBtn.btn-icon.btn {
+  flex: 0 0 auto !important;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 0;
+}
+
+.side-menu-top {
+  align-items: center;
+}
+
+#tbModal .modal,
+#habitModal .modal,
+#dailyMoodModal .modal {
+  gap: 12px;
+}
+
+.modal .field-inline {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+
+#tbTimeRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#tbColor {
+  width: 100%;
+  min-height: 44px;
+  padding: 4px;
+}
+
+#tbDaysRow .chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.checkbox-row {
+  gap: 12px;
+}
+
+.checkbox-row input {
+  margin-left: auto;
+}
+
+.modal-close {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 9px;
+}
+
+@media (max-width: 640px) {
+  .breathing-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .breathing-row .btn {
+    width: 100%;
+  }
+
+  .sound-mode-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #stepQuickAddRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mood-card .mood-row,
+  #dailyMoodRow,
+  #sleepQualRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

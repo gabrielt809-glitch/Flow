@@ -362,11 +362,11 @@
             <span class="card-title">Nova tarefa</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7.5h12"></path><path d="M6 12h12"></path><path d="M6 16.5h8"></path><path d="m15.5 16.5 1.8 1.8 3.2-3.5"></path></svg></span>
           </div>
-          <div class="inp-row">
+          <div class="inp-row task-primary-row">
             <input class="inp" id="taskInp" placeholder="Nova tarefa...">
             <button class="btn btn-p btn-sm" type="button" id="addTaskBtn">Adicionar</button>
           </div>
-          <div class="inp-row">
+          <div class="inp-row task-meta-row">
             <select class="inp" id="taskCat">
               <option>Trabalho</option>
               <option>Estudos</option>
@@ -379,7 +379,7 @@
               <option value="low">Baixa</option>
             </select>
           </div>
-          <div class="inp-row">
+          <div class="inp-row task-date-row">
             <input class="inp" id="taskDue" type="datetime-local">
             <button class="btn btn-sm" type="button" id="clearTaskDueBtn">Limpar data</button>
           </div>
@@ -448,7 +448,7 @@
               <span class="water-panel-title">Passos do dia</span>
               <span class="water-panel-sub">Atualize manualmente ou some com atalhos rápidos.</span>
             </div>
-            <div class="inp-row">
+            <div class="inp-row health-step-row">
               <input class="inp" id="stepsInput" type="number" placeholder="Passos do dia">
               <button class="btn btn-p" type="button" id="saveStepsBtn">Salvar</button>
             </div>
@@ -465,7 +465,7 @@
               <span class="water-panel-title">Atividade física</span>
               <span class="water-panel-sub">Escolha uma atividade, informe a duração e registre o gasto estimado.</span>
             </div>
-            <div class="inp-row">
+            <div class="inp-row health-activity-row">
               <select class="inp" id="healthActivityType"></select>
               <input class="inp" id="workoutInput" type="number" placeholder="Minutos">
             </div>
@@ -481,11 +481,11 @@
               <span class="water-panel-title">Academia</span>
               <span class="water-panel-sub">Monte treinos da semana com exercícios, séries, repetições e observações.</span>
             </div>
-            <div class="inp-row">
+            <div class="inp-row workout-plan-row">
               <input class="inp" id="workoutNameInput" placeholder="Nome do treino">
               <input class="inp" id="workoutExercisesInput" placeholder="Exercícios (separados por vírgula)">
             </div>
-            <div class="inp-row">
+            <div class="inp-row workout-plan-row">
               <input class="inp" id="workoutSetsInput" placeholder="Séries x repetições (ex.: 4x12)">
               <input class="inp" id="workoutDaysInput" placeholder="Dias (ex.: seg, qua, sex)">
             </div>
@@ -518,7 +518,7 @@
               <div class="sleep-caption">duração total</div>
             </div>
           </div>
-          <div class="inp-row">
+          <div class="inp-row sleep-time-row">
             <label class="field-inline">
               <span>Dormir</span>
               <input class="inp" id="sleepStart" type="time" value="23:00">
@@ -566,11 +566,11 @@
               <span class="water-panel-title">Biblioteca de alimentos</span>
               <span class="water-panel-sub">Selecione um alimento, ajuste a quantidade e registre no dia.</span>
             </div>
-            <div class="inp-row food-form-row">
+            <div class="inp-row food-library-row">
               <select class="inp" id="foodLibrarySelect"></select>
               <input class="inp" id="foodPortionCount" type="number" min="1" step="1" value="1" placeholder="Qtd.">
             </div>
-            <div class="inp-row food-form-row">
+            <div class="inp-row food-manual-row">
               <input class="inp" id="foodName" placeholder="Refeição ou alimento">
               <input class="inp" id="foodCalories" type="number" placeholder="kcal">
             </div>
@@ -611,7 +611,7 @@
               <span class="water-panel-title">Plano da dieta</span>
               <span class="water-panel-sub">Cadastre refeições planejadas com itens, kcal estimadas e observações.</span>
             </div>
-            <div class="inp-row">
+            <div class="inp-row diet-meal-row">
               <input class="inp" id="dietMealName" placeholder="Nome da refeição planejada">
               <input class="inp" id="dietMealCalories" type="number" placeholder="kcal estimadas">
             </div>
@@ -693,7 +693,7 @@
               <span class="water-panel-title">Respiração guiada</span>
               <span class="water-panel-sub">Use um ciclo simples para desacelerar sem sair do app.</span>
             </div>
-            <div class="inp-row">
+            <div class="inp-row breathing-row">
               <select class="inp" id="breathingMode">
                 <option value="box">Box 4-4-4-4</option>
                 <option value="478">4-7-8</option>

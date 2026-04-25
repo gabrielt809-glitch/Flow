@@ -111,5 +111,7 @@ export function renderNavigation(state = getState()) {
     section.classList.toggle("active", section.dataset.section === state.ui.activeSection);
   });
 
+  qs("#appWrap").dataset.activeSection = state.ui.activeSection;
+
   renderPinnedTabs(state);
 }
