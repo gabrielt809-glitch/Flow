@@ -118,3 +118,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/water.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_REPORT.md`.
 - Resultado: bottom nav mais estável no rodapé visual das abas internas, aba Água reorganizada em blocos mais claros, progresso mais legível, ações mais proporcionais e suporte a volume personalizado em ml.
 - Impacto técnico: ajustes concentrados em layout/CSS e no módulo da Água, sem alterar schema, migrations, storage, state ou selectors.
+
+## Refinamento visual e UX da aba Agua v2
+
+- Resumo: segunda rodada de polish da Agua com melhor espacamento, resumo de consumo/meta reorganizado e suporte a volumes personalizados reutilizaveis.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/schema.js`, `assets/js/water.js`, `tests/storage.test.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_V2_REPORT.md`.
+- Resultado: aba Agua com mais respiro entre blocos, mini resumo de consumo/meta/progresso mais claro, chips mais bem distribuidos e possibilidade de salvar volumes personalizados persistidos como chips selecionaveis.
+- Impacto tecnico: mudancas localizadas na estrutura visual da Agua, normalizacao do estado da agua para volumes customizados persistidos e cobertura de teste para persistencia sem alterar logica global do app.

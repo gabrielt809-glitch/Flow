@@ -873,11 +873,11 @@ button {
 }
 
 .water-summary {
-  padding: 14px 12px 12px;
+  padding: 15px 13px 13px;
 }
 
 .water-panel {
-  padding: 12px;
+  padding: 13px;
 }
 
 .water-panel-head,
@@ -889,7 +889,7 @@ button {
 }
 
 .water-panel-head {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .water-panel-title {
@@ -946,6 +946,36 @@ button {
   text-align: center;
 }
 
+.water-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.water-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 9px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.water-metric-label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: "DM Mono", monospace;
+}
+
+.water-metric-value {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
 .cups-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -984,18 +1014,47 @@ button {
 
 .water-chip-row {
   margin-top: 0;
+  gap: 10px;
 }
 
 .water-custom-row {
-  margin-top: 10px;
+  margin-top: 12px;
+  align-items: stretch;
 }
 
 .water-custom-note {
-  margin-top: 8px;
+  margin-top: 9px;
 }
 
 .water-actions {
-  margin-top: 10px;
+  margin-top: 12px;
+}
+
+.water-chip {
+  min-height: 38px;
+  padding-inline: 12px;
+  gap: 8px;
+}
+
+.water-chip-remove {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 1;
+}
+
+#waterCustomMl {
+  min-height: 42px;
+}
+
+#saveWaterCustomBtn {
+  min-width: 144px;
 }
 
 .btn-row,
@@ -2077,10 +2136,24 @@ button:hover,
     padding: 11px;
   }
 
+  .water-metrics {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    margin-top: 12px;
+  }
+
   .water-panel-head {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+
+  .water-custom-row {
+    flex-direction: column;
+  }
+
+  #saveWaterCustomBtn {
+    width: 100%;
   }
 
   .focus-timer {

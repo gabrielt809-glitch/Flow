@@ -27,6 +27,7 @@ export const DEFAULT_STATE = Object.freeze({
   water: {
     ml: 0,
     cupMl: 250,
+    customVolumes: [],
     history: {}
   },
   focus: {
@@ -250,6 +251,12 @@ export function normalizeState(state) {
 
   merged.water.ml = Math.max(0, asNumber(merged.water.ml, 0));
   merged.water.cupMl = Math.max(50, asNumber(merged.water.cupMl, 250));
+  merged.water.customVolumes = Array.isArray(merged.water.customVolumes)
+    ? merged.water.customVolumes
+      .map((value) => Math.round(asNumber(value, 0)))
+      .filter((value, index, values) => value > 0 && values.indexOf(value) === index)
+      .sort((left, right) => left - right)
+    : [];
   merged.water.history = asObject(merged.water.history);
 
   merged.focus.mode = VALID_FOCUS_MODES.has(merged.focus.mode) ? merged.focus.mode : "focus";

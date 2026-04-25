@@ -57,6 +57,10 @@ export async function run() {
       ...createDefaultState().ui,
       calendarAnchorDate: "2026-05-07"
     },
+    water: {
+      ...createDefaultState().water,
+      customVolumes: [600, "750", 600, 0]
+    },
     tasks: [{ title: "Sem id" }]
   });
   const validation = validateState(normalized);
@@ -66,12 +70,14 @@ export async function run() {
     tasks: [{ title: "Sem id" }]
   }).tasks[0].id);
   assert.equal(normalized.ui.calendarAnchorDate, "2026-05-07");
+  assert.deepEqual(normalized.water.customVolumes, [600, 750]);
 
   persistState(normalized);
   const envelope = JSON.parse(global.localStorage.getItem("flow-app-limpo-v1"));
   assert.equal(envelope.version, STATE_VERSION);
   assert.equal(typeof envelope.updatedAt, "string");
   assert.deepEqual(envelope.data.tasks.length, 1);
+  assert.deepEqual(envelope.data.water.customVolumes, [600, 750]);
 
   global.localStorage.setItem("flow-app-limpo-v1", JSON.stringify(legacyPayload));
   const loadedLegacy = loadPersistedState();

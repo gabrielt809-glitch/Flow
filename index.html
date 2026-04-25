@@ -249,6 +249,20 @@
               </div>
               <div class="water-unit" id="waterUnit">0ml consumidos · meta <span id="waterGoalDisp">2000</span>ml</div>
             </div>
+            <div class="water-metrics">
+              <div class="water-metric">
+                <span class="water-metric-label">Consumido</span>
+                <strong class="water-metric-value" id="waterMetricConsumed">0ml</strong>
+              </div>
+              <div class="water-metric">
+                <span class="water-metric-label">Meta</span>
+                <strong class="water-metric-value" id="waterMetricGoal">2000ml</strong>
+              </div>
+              <div class="water-metric">
+                <span class="water-metric-label">Copos</span>
+                <strong class="water-metric-value" id="waterMetricCups">0 copos</strong>
+              </div>
+            </div>
           </div>
 
           <div class="water-panel">
@@ -271,18 +285,16 @@
           <div class="water-panel water-entry-panel">
             <div class="water-panel-head">
               <span class="water-panel-title">Registrar volume</span>
-              <span class="water-panel-sub">use um chip ou informe outro valor</span>
+              <span class="water-panel-sub">toque em um volume salvo ou adicione outro</span>
             </div>
-            <div class="chip-row water-chip-row">
-              <button class="chip" type="button" data-cup-size="150">150ml</button>
-              <button class="chip on" type="button" data-cup-size="250">250ml</button>
-              <button class="chip" type="button" data-cup-size="350">350ml</button>
-              <button class="chip" type="button" data-cup-size="500">500ml</button>
+            <div class="chip-row water-chip-row" id="waterVolumes">
+              <button class="chip on water-chip" type="button" data-cup-size="250"><span>250ml</span></button>
             </div>
             <div class="inp-row water-custom-row">
               <input class="inp" id="waterCustomMl" type="number" min="1" step="10" placeholder="Outro valor (ml)">
+              <button class="btn btn-sm" type="button" id="saveWaterCustomBtn">+ adicionar volume</button>
             </div>
-            <div class="item-meta water-custom-note">Se preencher outro valor, o botão principal registra esse volume.</div>
+            <div class="item-meta water-custom-note">Os volumes personalizados ficam salvos como chips reutilizáveis.</div>
             <div class="btn-row water-actions">
               <button class="btn" type="button" id="removeWaterBtn">Desfazer</button>
               <button class="btn btn-p" type="button" id="addWaterBtn">+ Beber</button>
