@@ -34,7 +34,7 @@ function readTimeblockForm() {
     daysOfWeek: type === "single" ? [] : readSelectedDays(),
     start: allDay ? "00:00" : (qs("#tbStart").value || "09:00"),
     end: allDay ? "23:59" : (qs("#tbEnd").value || "10:00"),
-    color: qs("#tbColor").value || "#fb923c",
+    color: qs("#tbColor").value || "#5475bc",
     allDay
   };
 }
@@ -100,7 +100,7 @@ function clearTimeblockForm() {
   qs("#tbEndDate").value = formatDateInput();
   qs("#tbStart").value = "";
   qs("#tbEnd").value = "";
-  qs("#tbColor").value = "#fb923c";
+  qs("#tbColor").value = "#5475bc";
   qs("#tbAllDay").checked = false;
   qsa("[data-tb-day]").forEach((input) => {
     input.checked = false;
@@ -117,7 +117,7 @@ function fillTimeblockForm(block) {
   qs("#tbEndDate").value = block.endDate || block.startDate || formatDateInput();
   qs("#tbStart").value = block.allDay ? "" : (block.start || "09:00");
   qs("#tbEnd").value = block.allDay ? "" : (block.end || "10:00");
-  qs("#tbColor").value = block.color || "#fb923c";
+  qs("#tbColor").value = block.color || "#5475bc";
   qs("#tbAllDay").checked = Boolean(block.allDay);
   qsa("[data-tb-day]").forEach((input) => {
     input.checked = (block.daysOfWeek || []).includes(Number(input.value));
@@ -245,7 +245,7 @@ export function renderTimeblocks(state = getState()) {
           <div class="item-top">
             <div>
               <div class="task-title">${escapeHTML(block.title)}</div>
-              <div class="item-meta">${escapeHTML(describeType(block))} • ${escapeHTML(block.allDay ? "dia inteiro" : `${block.start} - ${block.end}`)}</div>
+              <div class="item-meta">${escapeHTML(describeType(block))} · ${escapeHTML(block.allDay ? "dia inteiro" : `${block.start} - ${block.end}`)}</div>
               <div class="item-meta">${escapeHTML(describeDays(block))}</div>
               ${skipped ? `<div class="btn-row">${skipped}</div>` : ""}
             </div>

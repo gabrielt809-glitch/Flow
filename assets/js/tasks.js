@@ -81,7 +81,7 @@ export function renderTasks(state = getState()) {
             <button class="task-check ${task.done ? "done" : ""}" type="button" data-task-toggle="${escapeHTML(task.id)}"></button>
             <div>
               <div class="task-title">${escapeHTML(task.title)}</div>
-              <div class="task-meta">${escapeHTML(task.category)} • ${escapeHTML(task.dueDate ? formatDateTime(task.dueDate) : "Sem data")}</div>
+              <div class="task-meta">${escapeHTML(task.category)} · ${escapeHTML(task.dueDate ? formatDateTime(task.dueDate) : "Sem data")}</div>
             </div>
           </div>
           <div class="item-top">

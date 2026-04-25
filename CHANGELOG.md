@@ -97,3 +97,10 @@
 - Arquivos principais: ssets/styles.css, index.html, CHANGELOG.md, VISUAL_SYSTEM_RESET_V2_REPORT.md.
 - Resultado: paleta redefinida para quase preto/grafite/azul profundo, bottom nav minimalista com SVGs monocromaticos, side menu mais adulto, cards e modais mais solidos e correcoes agressivas no fundo para eliminar o overscroll branco do iPhone.
 - Impacto tecnico: reset visual concentrado em CSS com troca segura de icones estaticos no HTML, sem alterar regras de negocio, storage, schema, state ou selectors.
+
+## Visual + UX Polish V3
+
+- Resumo: correcao definitiva de glyphs quebrados, refinamento mobile-first dos modais e polimento visual/UX nas abas sem perder a paleta sobria mais recente.
+- Arquivos principais: index.html, ssets/styles.css, ssets/js/overview.js, ssets/js/calendar.js, ssets/js/timeblocks.js, ssets/js/tasks.js, CHANGELOG.md, VISUAL_UX_POLISH_V3_REPORT.md.
+- Resultado: interface limpa de mojibake, icones estaticos mais seguros, formularios e listas mais consistentes, calendario e blocos com textos corrigidos e modais mais estaveis no iPhone.
+- Impacto tecnico: ajustes concentrados em HTML/CSS e em poucos modulos de render para correcao de texto/apresentacao, sem alterar regras de negocio, persistencia ou arquitetura de estado.

@@ -34,7 +34,7 @@ export function renderOverview(state = getState()) {
   const mood = selectMoodToday(state);
 
   safeText("#hdrDate", humanDate(new Date()));
-  safeText("#greeting", `Olá ${state.profile.name || "Você"} ${state.profile.emoji || "😊"}`);
+  safeText("#greeting", `Olá ${state.profile.name || "Você"} ${state.profile.emoji || ""}`.trim());
   safeText("#greetSub", score >= 60 ? "Seu dia está ganhando tração." : "Vamos montar um bom ritmo hoje.");
   safeText("#motivationEl", score >= 60
     ? "Você está sustentando consistência. Priorize manter as pequenas vitórias."

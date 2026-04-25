@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -19,6 +19,7 @@
     <span class="orb-cyan"></span>
     <span class="orb-indigo"></span>
   </div>
+
   <div class="onboard" id="onboard">
     <div class="onboard-card">
       <div class="onboard-logo">FLOW</div>
@@ -45,7 +46,7 @@
           </label>
           <label>
             <span>Emoji</span>
-            <input class="inp" id="ob-emoji" placeholder="ðŸ˜Š" maxlength="2">
+            <input class="inp" id="ob-emoji" placeholder=":)" maxlength="2">
           </label>
         </div>
         <div class="inp-row">
@@ -63,9 +64,9 @@
           <input class="inp" id="ob-sleep" type="number" value="8" min="5" max="12">
         </label>
         <div class="onboard-note">
-          A meta de Ã¡gua inicial serÃ¡ calculada automaticamente com base no seu peso e pode ser ajustada depois em ConfiguraÃ§Ãµes.
+          A meta de água inicial será calculada automaticamente com base no seu peso e pode ser ajustada depois em Configurações.
         </div>
-        <button class="btn btn-p btn-lg" id="finishOnboardBtn" type="button">ComeÃ§ar</button>
+        <button class="btn btn-p btn-lg" id="finishOnboardBtn" type="button">Começar</button>
       </div>
     </div>
   </div>
@@ -81,14 +82,16 @@
           <span class="score-label">score</span>
           <span class="score-num" id="scoreNum">0%</span>
         </div>
-        <button class="avatar-btn" id="avatarBtn" type="button" data-nav="settings">ðŸ˜Š</button>
+        <button class="avatar-btn" id="avatarBtn" type="button" data-nav="settings">@</button>
       </div>
     </div>
   </header>
 
   <div class="app-shell" id="appWrap" hidden>
     <div class="streak-banner" id="streakBanner">
-      <div class="streak-fire">ðŸ”¥</div>
+      <div class="streak-fire" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12.2 3.8c1.2 2 1.6 3.6 1.2 4.9-.3 1-.9 1.8-1.9 2.7.4-1.9-.1-3.3-1.5-4.6-2 1.9-3.2 4.2-3.2 6.4A5 5 0 0 0 12 18.4a5 5 0 0 0 5.1-5c0-1.8-.8-3.6-2.5-5.7-.2 1.3-.8 2.2-1.7 3 .2-1.8-.1-4.1-2.7-6.9Z"></path></svg>
+      </div>
       <div class="streak-text">
         <strong id="streakText">Rotina em movimento</strong>
         Continue registrando seu dia para manter o ritmo.
@@ -101,7 +104,7 @@
       <section class="sec active" id="sec-overview" data-section="overview">
         <div class="hero-row">
           <div>
-            <div class="hero-title" id="greeting">Ola</div>
+            <div class="hero-title" id="greeting">Olá</div>
             <div class="hero-sub" id="greetSub">Pronto para o dia?</div>
           </div>
           <div class="hero-score">
@@ -111,7 +114,7 @@
         </div>
 
         <div class="mini-stats">
-          <div class="mini-stat"><strong id="ms-water">0%</strong><span>Agua</span></div>
+          <div class="mini-stat"><strong id="ms-water">0%</strong><span>Água</span></div>
           <div class="mini-stat"><strong id="ms-focus">0</strong><span>Foco</span></div>
           <div class="mini-stat"><strong id="ms-tasks">0</strong><span>Tarefas</span></div>
           <div class="mini-stat"><strong id="ms-steps">0</strong><span>Passos</span></div>
@@ -124,28 +127,30 @@
             <span class="card-icon">+</span>
           </div>
           <div class="spotlight">
-            <div class="spotlight-ic" id="spotlightIcon">âš¡</div>
+            <div class="spotlight-ic" id="spotlightIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M13.5 2.5 6.8 13h4.5L10.5 21.5 17.2 11h-4.6l.9-8.5Z"></path></svg>
+            </div>
             <div class="spotlight-copy">
               <div class="spotlight-kicker" id="spotlightKicker">Agora</div>
-              <div class="spotlight-title" id="spotlightTitle">Seu dia esta comecando</div>
-              <div class="spotlight-sub" id="spotlightSub">Vamos priorizar as proximas acoes para manter ritmo e consistencia.</div>
+              <div class="spotlight-title" id="spotlightTitle">Seu dia está começando</div>
+              <div class="spotlight-sub" id="spotlightSub">Vamos priorizar as próximas ações para manter ritmo e consistência.</div>
             </div>
           </div>
           <div class="quick-grid">
             <button class="quick-btn" type="button" id="quickAddWaterBtn">
-              <span class="quick-ic">~</span>
-              <span class="quick-copy"><span class="quick-title">Beber agua</span><span class="quick-sub">registrar +1 copo</span></span>
+              <span class="quick-ic">H2O</span>
+              <span class="quick-copy"><span class="quick-title">Beber água</span><span class="quick-sub">registrar +1 copo</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="study">
-              <span class="quick-ic">||</span>
+              <span class="quick-ic">FX</span>
               <span class="quick-copy"><span class="quick-title">Entrar em foco</span><span class="quick-sub">abrir timer pomodoro</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="work">
-              <span class="quick-ic">âœ“</span>
+              <span class="quick-ic">OK</span>
               <span class="quick-copy"><span class="quick-title">Ver tarefas</span><span class="quick-sub">prioridades do dia</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="mood">
-              <span class="quick-ic">â—‹</span>
+              <span class="quick-ic">BW</span>
               <span class="quick-copy"><span class="quick-title">Check-in</span><span class="quick-sub">registrar humor</span></span>
             </button>
           </div>
@@ -153,55 +158,55 @@
 
         <div id="nextTaskWrap" class="card card-highlight" hidden>
           <div class="card-accent"></div>
-          <div class="eyebrow">PrÃ³xima tarefa</div>
+          <div class="eyebrow">Próxima tarefa</div>
           <div class="highlight-text" id="nextTaskText">-</div>
         </div>
 
         <div class="ov-grid">
           <button class="ov-card" type="button" data-nav="water">
-            <div class="ov-ic">~</div>
-            <div class="ov-name">Hidratacao</div>
+            <div class="ov-ic">H2O</div>
+            <div class="ov-name">Hidratação</div>
             <div class="ov-val" id="ov-water">0/8</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-water"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="study">
-            <div class="ov-ic">||</div>
+            <div class="ov-ic">FX</div>
             <div class="ov-name">Foco</div>
             <div class="ov-val" id="ov-study">0 pomos</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-study"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="work">
-            <div class="ov-ic">âœ“</div>
+            <div class="ov-ic">OK</div>
             <div class="ov-name">Tarefas</div>
             <div class="ov-val" id="ov-work">0/0</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-work"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="health">
-            <div class="ov-ic">â†‘</div>
-            <div class="ov-name">Saude</div>
+            <div class="ov-ic">MV</div>
+            <div class="ov-name">Saúde</div>
             <div class="ov-val" id="ov-health">0 passos</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-health"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="sleep">
-            <div class="ov-ic">â—</div>
+            <div class="ov-ic">SL</div>
             <div class="ov-name">Sono</div>
             <div class="ov-val" id="ov-sleep">-h</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-sleep"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="food">
-            <div class="ov-ic">â—¦</div>
-            <div class="ov-name">NutriÃ§Ã£o</div>
+            <div class="ov-ic">NT</div>
+            <div class="ov-name">Nutrição</div>
             <div class="ov-val" id="ov-food">0 kcal</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-food"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="habits">
-            <div class="ov-ic">â—Ž</div>
-            <div class="ov-name">Habitos</div>
+            <div class="ov-ic">HB</div>
+            <div class="ov-name">Hábitos</div>
             <div class="ov-val" id="ov-habits">0/0</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-habits"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="mood">
-            <div class="ov-ic">â—‹</div>
+            <div class="ov-ic">BW</div>
             <div class="ov-name">Bem-estar</div>
             <div class="ov-val" id="ov-mood">-</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-mood"></div></div>
@@ -222,12 +227,12 @@
         <div class="card" style="--acc:var(--water)">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">Ãgua de hoje</span>
-            <span class="card-icon">~</span>
+            <span class="card-title">Água de hoje</span>
+            <span class="card-icon">H2O</span>
           </div>
           <div class="water-big">
             <div class="water-num" id="waterNum">0</div>
-            <div class="water-unit" id="waterUnit">copos â€¢ 0ml / <span id="waterGoalDisp">2000</span>ml</div>
+            <div class="water-unit" id="waterUnit">copos &middot; 0ml / <span id="waterGoalDisp">2000</span>ml</div>
           </div>
           <div class="cups-grid" id="waterCups"></div>
           <div class="prog-wrap"><div class="prog-bar" id="waterBar"></div></div>
@@ -250,7 +255,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Timer de foco</span>
-            <span class="card-icon">||</span>
+            <span class="card-icon">FX</span>
           </div>
           <div class="chip-row">
             <button class="chip on" type="button" data-focus-mode="focus">Foco 25m</button>
@@ -260,7 +265,7 @@
           <div class="focus-timer" id="focusTimer">25:00</div>
           <div class="focus-meta-line">
             <span id="focusStateLabel">Pronto para iniciar</span>
-            <span id="focusSessionCount">0 sessoes hoje</span>
+            <span id="focusSessionCount">0 sessões hoje</span>
           </div>
           <div class="btn-row">
             <button class="btn btn-p" type="button" id="focusStartBtn">Iniciar</button>
@@ -272,7 +277,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Flow Focus Player</span>
-            <span class="card-icon">â—Œ</span>
+            <span class="card-icon">AUDIO</span>
           </div>
           <div class="focus-player" id="focusPlayer">
             <div class="focus-bars">
@@ -300,22 +305,22 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Nova tarefa</span>
-            <span class="card-icon">âœ“</span>
+            <span class="card-icon">OK</span>
           </div>
           <div class="inp-row">
             <input class="inp" id="taskInp" placeholder="Nova tarefa...">
-            <button class="btn btn-p btn-sm" type="button" id="addTaskBtn">+</button>
+            <button class="btn btn-p btn-sm" type="button" id="addTaskBtn">Adicionar</button>
           </div>
           <div class="inp-row">
             <select class="inp" id="taskCat">
-              <option>ðŸ’¼ Trabalho</option>
-              <option>ðŸ“š Estudos</option>
-              <option>ðŸ  Pessoal</option>
-              <option>ðŸ§  Saude mental</option>
+              <option>Trabalho</option>
+              <option>Estudos</option>
+              <option>Pessoal</option>
+              <option>Saúde mental</option>
             </select>
             <select class="inp" id="taskPrio">
               <option value="high">Alta</option>
-              <option value="mid" selected>Media</option>
+              <option value="mid" selected>Média</option>
               <option value="low">Baixa</option>
             </select>
           </div>
@@ -326,7 +331,7 @@
           <div class="scroll-tabs" id="taskFilters">
             <button class="chip on" type="button" data-task-filter="all">Todas</button>
             <button class="chip" type="button" data-task-filter="pending">Pendentes</button>
-            <button class="chip" type="button" data-task-filter="done">ConcluÃ­das</button>
+            <button class="chip" type="button" data-task-filter="done">Concluídas</button>
             <button class="chip" type="button" data-task-filter="high">Alta</button>
           </div>
           <div id="tasksList" class="stack-list"></div>
@@ -335,13 +340,13 @@
         <div class="card" style="--acc:var(--work)">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">CalendÃ¡rio semanal</span>
-            <span class="card-icon">â–¦</span>
+            <span class="card-title">Calendário semanal</span>
+            <span class="card-icon">CAL</span>
           </div>
           <div class="btn-row" id="calendarControls">
             <button class="btn btn-xs" type="button" data-calendar-nav="prev">Semana anterior</button>
             <button class="btn btn-xs" type="button" data-calendar-nav="today">Hoje</button>
-            <button class="btn btn-xs" type="button" data-calendar-nav="next">PrÃ³xima semana</button>
+            <button class="btn btn-xs" type="button" data-calendar-nav="next">Próxima semana</button>
           </div>
           <div class="item-meta" id="calendarRangeLabel">Semana atual</div>
           <div class="calendar-week" id="calendarWeek"></div>
@@ -362,7 +367,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Movimento</span>
-            <span class="card-icon">â†‘</span>
+            <span class="card-icon">MV</span>
           </div>
           <div class="stat-grid">
             <div class="stat-card">
@@ -390,7 +395,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Sono de hoje</span>
-            <span class="card-icon">â—</span>
+            <span class="card-icon">SL</span>
           </div>
           <div class="sleep-ring">
             <div class="sleep-ring-core">
@@ -411,11 +416,11 @@
           <div class="prog-wrap"><div class="prog-bar" id="sleepBar"></div></div>
           <div class="prog-lbl"><span id="sleepDebt">0h de saldo</span><span id="alarmSugg">Dormir 23:00</span></div>
           <div class="qual-row" id="sleepQualRow">
-            <button class="qual-btn" type="button" data-sleep-quality="1">ðŸ˜´</button>
-            <button class="qual-btn" type="button" data-sleep-quality="2">ðŸ˜</button>
-            <button class="qual-btn" type="button" data-sleep-quality="3">ðŸ™‚</button>
-            <button class="qual-btn" type="button" data-sleep-quality="4">ðŸ˜Š</button>
-            <button class="qual-btn" type="button" data-sleep-quality="5">ðŸ¤©</button>
+            <button class="qual-btn" type="button" data-sleep-quality="1">I</button>
+            <button class="qual-btn" type="button" data-sleep-quality="2">II</button>
+            <button class="qual-btn" type="button" data-sleep-quality="3">III</button>
+            <button class="qual-btn" type="button" data-sleep-quality="4">IV</button>
+            <button class="qual-btn" type="button" data-sleep-quality="5">V</button>
           </div>
           <textarea class="inp" id="dreamNotes" rows="4" placeholder="Notas de sono e sonhos"></textarea>
         </div>
@@ -425,14 +430,14 @@
         <div class="card" style="--acc:var(--food)">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">NutriÃ§Ã£o</span>
-            <span class="card-icon">â—¦</span>
+            <span class="card-title">Nutrição</span>
+            <span class="card-icon">NT</span>
           </div>
           <div class="inp-row">
-            <input class="inp" id="foodName" placeholder="RefeiÃ§Ã£o ou alimento">
+            <input class="inp" id="foodName" placeholder="Refeição ou alimento">
             <input class="inp" id="foodCalories" type="number" placeholder="kcal">
           </div>
-          <button class="btn btn-p" type="button" id="addFoodBtn">Adicionar refeiÃ§Ã£o</button>
+          <button class="btn btn-p" type="button" id="addFoodBtn">Adicionar refeição</button>
           <div id="foodList" class="stack-list"></div>
         </div>
       </section>
@@ -441,7 +446,7 @@
         <div class="card" style="--acc:var(--habits)">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">HÃ¡bitos de hoje</span>
+            <span class="card-title">Hábitos de hoje</span>
             <button class="btn btn-xs" type="button" id="openHabitBtn">+ Novo</button>
           </div>
           <div id="habitsList" class="stack-list"></div>
@@ -452,17 +457,17 @@
         <div class="card" style="--acc:var(--mood)">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">Como vocÃª estÃ¡?</span>
-            <span class="card-icon">â—‹</span>
+            <span class="card-title">Como você está?</span>
+            <span class="card-icon">BW</span>
           </div>
           <div class="mood-row" id="moodRow">
-            <button class="mood-btn" type="button" data-mood="1">ðŸ˜ž</button>
-            <button class="mood-btn" type="button" data-mood="2">ðŸ˜•</button>
-            <button class="mood-btn" type="button" data-mood="3">ðŸ˜</button>
-            <button class="mood-btn" type="button" data-mood="4">ðŸ™‚</button>
-            <button class="mood-btn" type="button" data-mood="5">ðŸ˜„</button>
+            <button class="mood-btn" type="button" data-mood="1">I</button>
+            <button class="mood-btn" type="button" data-mood="2">II</button>
+            <button class="mood-btn" type="button" data-mood="3">III</button>
+            <button class="mood-btn" type="button" data-mood="4">IV</button>
+            <button class="mood-btn" type="button" data-mood="5">V</button>
           </div>
-          <textarea class="inp" id="gratitudeInput" rows="3" placeholder="Uma gratidao de hoje"></textarea>
+          <textarea class="inp" id="gratitudeInput" rows="3" placeholder="Uma gratidão de hoje"></textarea>
           <textarea class="inp" id="moodNotesInput" rows="3" placeholder="Notas do dia"></textarea>
           <button class="btn btn-p" type="button" id="saveMoodBtn">Salvar check-in</button>
         </div>
@@ -472,12 +477,12 @@
         <div class="card">
           <div class="card-accent"></div>
           <div class="card-hdr">
-            <span class="card-title">ConfiguraÃ§Ãµes</span>
-            <span class="card-icon">âŒ˜</span>
+            <span class="card-title">Configurações</span>
+            <span class="card-icon">CFG</span>
           </div>
           <div class="settings-grid">
             <label class="field-inline">
-              <span>Meta de Ã¡gua (ml)</span>
+              <span>Meta de água (ml)</span>
               <input class="inp" id="goalWater" type="number">
             </label>
             <label class="field-inline">
@@ -489,7 +494,7 @@
               <input class="inp" id="goalSleep" type="number">
             </label>
             <label class="field-inline">
-              <span>Meta calÃ³rica</span>
+              <span>Meta calórica</span>
               <input class="inp" id="goalCalories" type="number">
             </label>
           </div>
@@ -510,7 +515,7 @@
   <nav class="nav" id="mainNav" hidden>
     <div class="nav-inner">
       <button class="nav-btn active" type="button" data-nav="overview"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V19h11v-8.5"></path></svg></span><span>Hoje</span><div class="nav-dot"></div></button>
-      <button class="nav-btn" type="button" data-nav="water"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></span><span>Agua</span><div class="nav-dot"></div></button>
+      <button class="nav-btn" type="button" data-nav="water"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></span><span>Água</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" data-nav="study"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"></circle></svg></span><span>Foco</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" data-nav="work"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6.5 12.5 3.4 3.4 7.6-7.8"></path></svg></span><span>Tarefas</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" id="menuToggleBtn"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7.5h14"></path><path d="M5 12h14"></path><path d="M5 16.5h14"></path></svg></span><span>Menu</span><div class="nav-dot"></div></button>
@@ -521,18 +526,18 @@
     <div class="side-menu-card">
       <div class="side-menu-top">
         <div>
-          <div class="side-title">Mais areas</div>
+          <div class="side-title">Mais áreas</div>
           <div class="side-sub">Acesse outras partes da rotina</div>
         </div>
-        <button class="btn-icon btn" type="button" id="closeMenuBtn">Ã—</button>
+        <button class="btn-icon btn" type="button" id="closeMenuBtn">&times;</button>
       </div>
       <div class="side-links">
-        <button class="side-link" type="button" data-nav="health"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18v-8"></path><path d="m8.5 13.5 3.5-3.5 3.5 3.5"></path><path d="M6 19h12"></path></svg></span><span>Saude</span></button>
+        <button class="side-link" type="button" data-nav="health"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18v-8"></path><path d="m8.5 13.5 3.5-3.5 3.5 3.5"></path><path d="M6 19h12"></path></svg></span><span>Saúde</span></button>
         <button class="side-link" type="button" data-nav="sleep"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 4.8a7 7 0 1 0 4.7 11.8 6.7 6.7 0 0 1-4.7-11.8Z"></path></svg></span><span>Sono</span></button>
-        <button class="side-link" type="button" data-nav="food"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span><span>Nutricao</span></button>
-        <button class="side-link" type="button" data-nav="habits"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="2.2"></circle></svg></span><span>Habitos</span></button>
+        <button class="side-link" type="button" data-nav="food"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span><span>Nutrição</span></button>
+        <button class="side-link" type="button" data-nav="habits"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="2.2"></circle></svg></span><span>Hábitos</span></button>
         <button class="side-link" type="button" data-nav="mood"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg></span><span>Bem-estar</span></button>
-        <button class="side-link" type="button" data-nav="settings"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"></circle><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7.4 7.4 0 0 0-2.1-1.2L14 3h-4l-.4 2.6a7.4 7.4 0 0 0-2.1 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 0 0 2.1 1.2L10 21h4l.4-2.6a7.4 7.4 0 0 0 2.1-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"></path></svg></span><span>Configuracoes</span></button>
+        <button class="side-link" type="button" data-nav="settings"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"></circle><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7.4 7.4 0 0 0-2.1-1.2L14 3h-4l-.4 2.6a7.4 7.4 0 0 0-2.1 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 0 0 2.1 1.2L10 21h4l.4-2.6a7.4 7.4 0 0 0 2.1-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"></path></svg></span><span>Configurações</span></button>
       </div>
     </div>
   </aside>
@@ -540,23 +545,23 @@
 
   <div class="modal-bg" id="habitModal">
     <div class="modal">
-      <div class="modal-title">Novo hÃ¡bito <button class="modal-close" type="button" data-close-modal="habitModal">Ã—</button></div>
-      <input class="inp" id="habitName" placeholder="Nome do hÃ¡bito">
+      <div class="modal-title">Novo hábito <button class="modal-close" type="button" data-close-modal="habitModal">&times;</button></div>
+      <input class="inp" id="habitName" placeholder="Nome do hábito">
       <input class="inp" id="habitIcon" placeholder="Emoji" maxlength="2">
-      <button class="btn btn-p" type="button" id="saveHabitBtn">Criar habito</button>
+      <button class="btn btn-p" type="button" id="saveHabitBtn">Criar hábito</button>
     </div>
   </div>
 
   <div class="modal-bg" id="tbModal">
     <div class="modal">
-      <div class="modal-title"><span id="tbModalTitle">Bloco de tempo</span> <button class="modal-close" type="button" data-close-modal="tbModal">Ã—</button></div>
-      <input class="inp" id="tbTask" placeholder="TÃ­tulo da atividade">
+      <div class="modal-title"><span id="tbModalTitle">Bloco de tempo</span> <button class="modal-close" type="button" data-close-modal="tbModal">&times;</button></div>
+      <input class="inp" id="tbTask" placeholder="Título da atividade">
       <label class="field-inline">
         <span>Tipo</span>
         <select class="inp" id="tbType">
-          <option value="single">Dia Ãºnico</option>
-          <option value="recurring_period">Recorrente com perÃ­odo</option>
-          <option value="recurring_forever">Recorrente sem perÃ­odo</option>
+          <option value="single">Dia único</option>
+          <option value="recurring_period">Recorrente com período</option>
+          <option value="recurring_forever">Recorrente sem período</option>
         </select>
       </label>
       <label class="field-inline" id="tbSingleDateRow">
@@ -577,13 +582,13 @@
         <label class="chip"><input type="checkbox" data-tb-day value="3"> Qua</label>
         <label class="chip"><input type="checkbox" data-tb-day value="4"> Qui</label>
         <label class="chip"><input type="checkbox" data-tb-day value="5"> Sex</label>
-        <label class="chip"><input type="checkbox" data-tb-day value="6"> Sab</label>
+        <label class="chip"><input type="checkbox" data-tb-day value="6"> Sáb</label>
         <label class="chip"><input type="checkbox" data-tb-day value="0"> Dom</label>
       </div>
-      <div class="item-meta" id="tbDaysHint" hidden>Se nenhum dia for marcado, o bloco valerÃ¡ para todos os dias.</div>
+      <div class="item-meta" id="tbDaysHint" hidden>Se nenhum dia for marcado, o bloco valerá para todos os dias.</div>
       <div class="inp-row" id="tbTimeRow">
         <label class="field-inline">
-          <span>InÃ­cio</span>
+          <span>Início</span>
           <input class="inp" id="tbStart" type="time">
         </label>
         <label class="field-inline">
@@ -591,10 +596,10 @@
           <input class="inp" id="tbEnd" type="time">
         </label>
       </div>
-      <div class="item-meta" id="tbTimeHint" hidden>Dia inteiro usa automaticamente 00:00 atÃ© 23:59.</div>
+      <div class="item-meta" id="tbTimeHint" hidden>Dia inteiro usa automaticamente 00:00 até 23:59.</div>
       <label class="field-inline">
         <span>Cor</span>
-        <input class="inp" id="tbColor" type="color" value="#fb923c">
+        <input class="inp" id="tbColor" type="color" value="#5475bc">
       </label>
       <label class="settings-row checkbox-row">
         <span>Dia inteiro</span>

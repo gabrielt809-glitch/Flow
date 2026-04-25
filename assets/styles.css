@@ -386,9 +386,25 @@ button {
 }
 
 .streak-fire {
-  font-size: 18px;
-  filter: none;
-  opacity: 0.84;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(84, 117, 188, 0.1);
+  color: #d6def0;
+  opacity: 0.92;
+}
+
+.streak-fire svg,
+.spotlight-ic svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .streak-text {
@@ -575,18 +591,18 @@ button {
 .spotlight {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 .spotlight-ic {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--study) 10%, var(--surface-2));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  font-size: 18px;
+  color: #d5dff3;
 }
 
 .spotlight-kicker {
@@ -601,6 +617,7 @@ button {
   margin-top: 3px;
   font-size: 18px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .spotlight-sub {
@@ -666,6 +683,7 @@ button {
   align-items: center;
   padding: 11px;
   text-align: left;
+  min-height: 68px;
 }
 
 .quick-ic {
@@ -685,6 +703,11 @@ button {
 .quick-title {
   display: block;
   font-weight: 700;
+  font-size: 14px;
+}
+
+.quick-copy {
+  min-width: 0;
 }
 
 .quick-sub,
@@ -711,6 +734,7 @@ button {
 .ov-card {
   padding: 11px;
   text-align: left;
+  min-height: 112px;
 }
 
 .ov-ic {
@@ -848,6 +872,7 @@ button {
 .inp-row {
   gap: 8px;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .inp-row > .inp {
@@ -859,6 +884,10 @@ button {
 .inp-row > .btn-xs {
   flex: 0 0 auto;
   white-space: nowrap;
+}
+
+#clearTaskDueBtn {
+  min-width: 126px;
 }
 
 .btn-row {
@@ -1090,6 +1119,7 @@ textarea.inp {
 .habit-item,
 .calendar-day {
   padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .task-row,
@@ -1103,6 +1133,7 @@ textarea.inp {
   display: flex;
   gap: 10px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .task-check,
@@ -1137,6 +1168,7 @@ textarea.inp {
 .habit-name,
 .food-name {
   font-weight: 700;
+  line-height: 1.35;
 }
 
 .task-meta,
@@ -1228,6 +1260,10 @@ textarea.inp {
     var(--surface3);
   border: 1px solid rgba(255, 255, 255, 0.035);
   line-height: 1.4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .stat-grid {
@@ -1289,7 +1325,9 @@ textarea.inp {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
     var(--surface-2);
-  font-size: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .qual-btn.on,
@@ -1474,14 +1512,14 @@ textarea.inp {
 }
 
 .side-links {
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .side-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 13px 14px;
   text-align: left;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1535,8 +1573,8 @@ textarea.inp {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 16px;
+  gap: 10px;
+  padding: 18px 16px 16px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background:
@@ -1558,16 +1596,26 @@ textarea.inp {
   min-width: 0;
 }
 
+.modal .btn-row .btn,
+.modal .inp,
+.modal select,
+.modal textarea {
+  min-width: 0;
+}
+
 .modal-title {
   font-size: 16px;
   font-weight: 700;
+  padding-bottom: 10px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .modal-close {
   border: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   color: var(--muted);
-  font-size: 22px;
+  font-size: 20px;
   width: 34px;
   height: 34px;
   border-radius: 10px;
@@ -1764,7 +1812,7 @@ button:hover,
     width: min(92vw, 520px);
     max-height: calc(100dvh - var(--st) - var(--sb) - 20px);
     max-height: calc(100svh - var(--st) - var(--sb) - 20px);
-    padding: 15px;
+    padding: 16px 14px 14px;
     border-radius: 16px;
   }
 
@@ -1803,6 +1851,27 @@ button:hover,
     width: 22rem;
     height: 22rem;
     left: 24%;
+  }
+
+  .task-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .item-top {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .task-item .item-top,
+  .timeblock-item .item-top {
+    margin-top: 8px;
+  }
+
+  .btn-row#calendarControls .btn,
+  #timeblocksList .btn-xs,
+  #tasksList .btn-xs {
+    flex: 0 0 auto;
   }
 }
 
