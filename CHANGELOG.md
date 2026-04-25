@@ -125,3 +125,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/schema.js`, `assets/js/water.js`, `tests/storage.test.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_V2_REPORT.md`.
 - Resultado: aba Agua com mais respiro entre blocos, mini resumo de consumo/meta/progresso mais claro, chips mais bem distribuidos e possibilidade de salvar volumes personalizados persistidos como chips selecionaveis.
 - Impacto tecnico: mudancas localizadas na estrutura visual da Agua, normalizacao do estado da agua para volumes customizados persistidos e cobertura de teste para persistencia sem alterar logica global do app.
+
+## Water Tab Polish v3
+
+- Resumo: reorganizacao obrigatoria da aba Agua para remover subcards pesados, compactar metricas e limpar a hierarquia do progresso.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/water.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_V3_REPORT.md`.
+- Resultado: resumo principal mais limpo, metricas de Consumido/Meta/Progresso em linha compacta, barra com labels alinhados, secao de copos mais alta na tela e plural de copo corrigido.
+- Impacto tecnico: mudancas localizadas na apresentacao e no render da Agua, preservando persistencia dos volumes personalizados e sem alterar a aba Hoje.

@@ -1,6 +1,6 @@
 import { mutateState, getState } from "./state.js";
 import { selectTodayKey, selectWaterProgress } from "./selectors.js";
-import { escapeHTML, qs, qsa, safeHTML, safeStyle, safeText } from "./utils.js";
+import { escapeHTML, qs, safeHTML, safeStyle, safeText } from "./utils.js";
 
 const DEFAULT_VOLUMES = [150, 250, 350, 500];
 
@@ -97,13 +97,14 @@ export function renderWater(state = getState()) {
   const allVolumes = getAllVolumes(state);
 
   safeText("#waterNum", String(water.cupCount));
-  safeHTML("#waterUnit", `${water.currentMl}ml consumidos - ${water.cupCount} copos de ${selectedVolume}ml`);
+  safeText("#waterUnit", `${water.currentMl}ml consumidos`);
   safeText("#waterMl", `${water.currentMl}ml`);
   safeText("#waterMax", `${water.goalMl}ml`);
   safeText("#waterPercentLabel", `${water.percent}%`);
   safeText("#waterMetricConsumed", `${water.currentMl}ml`);
   safeText("#waterMetricGoal", `${water.goalMl}ml`);
-  safeText("#waterMetricCups", `${water.cupCount} copos`);
+  safeText("#waterMetricProgress", `${water.percent}%`);
+  safeText(".water-num-suffix", water.cupCount === 1 ? "copo" : "copos");
   safeStyle("#waterBar", "width", `${water.percent}%`);
   safeHTML("#waterCups", Array.from({ length: Math.max(water.goalCups, 8) }, (_, index) => (
     `<div class="cup ${index < water.cupCount ? "fill" : ""}"></div>`
