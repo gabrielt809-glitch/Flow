@@ -3283,3 +3283,615 @@ button:hover,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Mobile Layout Containment */
+:root {
+  --nav-h: 82px;
+  --safe-bottom-space: calc(var(--nav-h) + env(safe-area-inset-bottom) + 28px);
+  --content-x: clamp(14px, 4vw, 18px);
+  --section-gap: 14px;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  padding-bottom: 0;
+}
+
+.app-shell,
+#appWrap,
+.content,
+.sec,
+.sec > *,
+.card,
+.water-panel,
+.focus-player,
+.task-item,
+.timeblock-item,
+.food-item,
+.habit-item,
+.calendar-day,
+.calendar-item,
+.stat-card,
+.profile-card,
+.modal,
+.side-menu,
+.side-menu-card,
+.onboard,
+.onboard-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+#appWrap {
+  width: min(100%, 760px);
+  overflow-x: clip;
+}
+
+.content {
+  width: 100%;
+  gap: var(--section-gap);
+  padding: 12px var(--content-x) var(--safe-bottom-space);
+  overflow-x: clip;
+}
+
+.sec {
+  width: 100%;
+  gap: var(--section-gap);
+  padding-bottom: 10px;
+  overflow-x: clip;
+}
+
+#appWrap[data-active-section]:not([data-active-section="overview"]) .content {
+  padding-top: 10px;
+}
+
+#appWrap[data-active-section]:not([data-active-section="overview"]) .sec.active {
+  padding-bottom: 18px;
+}
+
+.sec > :last-child,
+.stack-list > :last-child,
+.water-card > :last-child,
+.water-panel > :last-child {
+  margin-bottom: 0;
+}
+
+.btn-row,
+.inp-row,
+.settings-row,
+.chip-row,
+.scroll-tabs,
+.stack-list,
+.stat-grid,
+.settings-grid,
+.calendar-week,
+.calendar-items,
+.task-main,
+.item-top,
+.food-form-row,
+.task-primary-row,
+.task-meta-row,
+.task-date-row,
+.health-step-row,
+.health-activity-row,
+.workout-plan-row,
+.sleep-time-row,
+.food-library-row,
+.food-manual-row,
+.diet-meal-row,
+.breathing-row {
+  width: 100%;
+  min-width: 0;
+}
+
+.btn-row > *,
+.inp-row > *,
+.settings-row > *,
+.chip-row > *,
+.scroll-tabs > *,
+.stack-list > *,
+.stat-grid > *,
+.settings-grid > *,
+.calendar-week > *,
+.calendar-items > *,
+.task-main > *,
+.item-top > *,
+.food-form-row > *,
+.task-primary-row > *,
+.task-meta-row > *,
+.task-date-row > *,
+.health-step-row > *,
+.health-activity-row > *,
+.workout-plan-row > *,
+.sleep-time-row > *,
+.food-library-row > *,
+.food-manual-row > *,
+.diet-meal-row > *,
+.breathing-row > * {
+  min-width: 0;
+}
+
+.btn,
+.chip,
+.inp,
+textarea.inp,
+select.inp {
+  max-width: 100%;
+}
+
+.btn,
+.chip {
+  white-space: normal;
+  line-height: 1.2;
+}
+
+textarea.inp {
+  max-width: 100%;
+}
+
+.task-title,
+.item-title,
+.calendar-item,
+.task-meta,
+.item-meta,
+.water-panel-sub,
+.side-sub,
+.onboard-sub,
+.onboard-note,
+.prog-lbl,
+.stat-lbl,
+.chart-foot,
+.mood-btn,
+.qual-btn {
+  overflow-wrap: anywhere;
+}
+
+.side-menu {
+  max-height: 100dvh;
+}
+
+.side-menu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.side-links {
+  padding-bottom: 6px;
+}
+
+.modal-bg {
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: max(12px, calc(var(--st) + 8px)) 12px calc(12px + env(safe-area-inset-bottom));
+}
+
+.modal,
+#tbModal .modal,
+#habitModal .modal,
+#dailyMoodModal .modal {
+  width: min(92vw, 520px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+
+#tbModal .modal,
+#habitModal .modal,
+#dailyMoodModal .modal {
+  gap: 11px;
+}
+
+#tbModal .modal-title {
+  margin-bottom: 2px;
+  padding-bottom: 8px;
+}
+
+#tbTimeRow {
+  align-items: stretch;
+}
+
+#tbColor {
+  min-height: 40px;
+}
+
+#pinnedTabsEditor .chip {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 0;
+}
+
+#tasksList,
+#timeblocksList,
+#activityList,
+#workoutsList,
+#sleepWeekList,
+#foodList,
+#savedMealsList,
+#dietMealsList,
+#habitsList {
+  padding-bottom: 2px;
+}
+
+#sec-work,
+#sec-health,
+#sec-sleep,
+#sec-food,
+#sec-habits,
+#sec-mood,
+#sec-settings {
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 430px) {
+  :root {
+    --nav-h: 78px;
+    --safe-bottom-space: calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px);
+    --content-x: 14px;
+    --section-gap: 12px;
+  }
+
+  .hdr {
+    padding: calc(var(--st) + 8px) var(--content-x) 8px;
+  }
+
+  #appWrap {
+    min-height: calc(100dvh - 68px - var(--st));
+    min-height: calc(100svh - 68px - var(--st));
+  }
+
+  .content {
+    padding: 10px var(--content-x) var(--safe-bottom-space);
+  }
+
+  .sec {
+    padding-bottom: 12px;
+  }
+
+  .card {
+    padding: 11px;
+    border-radius: 12px;
+  }
+
+  .card-hdr {
+    margin-bottom: 8px;
+  }
+
+  .btn {
+    min-height: 40px;
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: 8px 10px;
+  }
+
+  .btn-xs {
+    min-height: 32px;
+    padding: 6px 8px;
+  }
+
+  .inp {
+    min-height: 40px;
+    padding: 9px 11px;
+  }
+
+  textarea.inp {
+    min-height: 68px;
+  }
+
+  .nav {
+    min-height: calc(var(--nav-h) + var(--sb));
+    padding: 0 10px max(10px, var(--sb));
+  }
+
+  .nav-inner {
+    gap: 2px;
+    padding: 3px;
+    border-radius: 14px;
+  }
+
+  .nav-btn {
+    min-height: 44px;
+    padding: 6px 2px 5px;
+    font-size: 10px;
+  }
+
+  .nav-ic {
+    width: 12px;
+    height: 12px;
+  }
+
+  .task-primary-row,
+  .task-meta-row,
+  .task-date-row,
+  .health-step-row,
+  .health-activity-row,
+  .workout-plan-row,
+  .sleep-time-row,
+  .food-library-row,
+  .food-manual-row,
+  .diet-meal-row,
+  .breathing-row,
+  .focus-audio-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .focus-mode-row,
+  .sound-mode-row,
+  .focus-actions,
+  #stepQuickAddRow,
+  #sleepQualRow,
+  #wakeMoodRow,
+  .mood-card .mood-row,
+  #dailyMoodRow,
+  .settings-card .btn-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .focus-audio-controls .btn,
+  .focus-audio-controls #focusAudioBtn,
+  .breathing-row .btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .focus-player {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px 11px;
+  }
+
+  .focus-bars {
+    justify-content: flex-start;
+  }
+
+  .focus-timer {
+    font-size: 50px;
+  }
+
+  .calendar-card #calendarControls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .calendar-day {
+    min-height: 68px;
+    padding: 8px 9px;
+  }
+
+  .calendar-date {
+    font-size: 15px;
+  }
+
+  .calendar-item {
+    flex-wrap: wrap;
+  }
+
+  .calendar-item .btn {
+    margin-left: auto;
+  }
+
+  .timeblock-item .btn-row,
+  .item-top .btn-row {
+    gap: 6px;
+  }
+
+  .task-item,
+  .timeblock-item,
+  .food-item,
+  .habit-item,
+  .calendar-day {
+    padding: 10px;
+  }
+
+  .health-card .stat-grid,
+  .food-card .food-summary-grid,
+  .habits-card .stat-grid,
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sleep-ring {
+    width: 136px;
+    height: 136px;
+    margin: 0 auto 6px;
+  }
+
+  .sleep-hours {
+    font-size: 36px;
+  }
+
+  .sleep-card textarea.inp,
+  .mood-card textarea.inp {
+    min-height: 68px;
+  }
+
+  .side-menu {
+    width: min(88vw, 320px);
+  }
+
+  .side-menu-card {
+    padding: calc(var(--st) + 12px) 14px calc(18px + var(--sb));
+  }
+
+  .side-links {
+    gap: 6px;
+  }
+
+  .side-link {
+    padding: 10px 11px;
+  }
+
+  .modal-bg {
+    padding: max(10px, calc(var(--st) + 8px)) 10px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .modal,
+  #tbModal .modal,
+  #habitModal .modal,
+  #dailyMoodModal .modal {
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding: 14px 13px 13px;
+    border-radius: 16px;
+    gap: 10px;
+  }
+
+  #tbModal .modal {
+    padding: 15px 13px 13px;
+  }
+
+  #tbModal .modal-title {
+    gap: 10px;
+    font-size: 15px;
+  }
+
+  #tbModal .chip-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #tbTimeRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #tbColor {
+    min-height: 38px;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .onboard {
+    padding: max(10px, calc(var(--st) + 8px)) 12px calc(28px + var(--sb));
+  }
+
+  .onboard-card {
+    width: min(100%, 440px);
+    margin: 0 0 16px;
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+
+  .onboard-form {
+    gap: 8px;
+  }
+
+  .onboard-note {
+    padding: 10px;
+  }
+}
+
+@media (max-height: 700px) {
+  :root {
+    --nav-h: 76px;
+    --safe-bottom-space: calc(var(--nav-h) + env(safe-area-inset-bottom) + 22px);
+    --section-gap: 11px;
+  }
+
+  .hdr {
+    padding-top: calc(var(--st) + 7px);
+    padding-bottom: 8px;
+  }
+
+  .content {
+    padding-top: 8px;
+    gap: 11px;
+  }
+
+  .sec {
+    gap: 11px;
+    padding-bottom: 10px;
+  }
+
+  .card {
+    padding: 10px 11px;
+  }
+
+  .card-hdr {
+    margin-bottom: 7px;
+  }
+
+  .btn {
+    min-height: 38px;
+  }
+
+  .btn-lg {
+    padding: 11px;
+  }
+
+  .inp {
+    min-height: 38px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .focus-timer {
+    font-size: 46px;
+  }
+
+  .calendar-day {
+    min-height: 62px;
+    padding: 8px;
+  }
+
+  .sleep-ring {
+    width: 124px;
+    height: 124px;
+  }
+
+  .sleep-hours {
+    font-size: 32px;
+  }
+
+  .modal-bg {
+    align-items: flex-start;
+    padding: max(8px, var(--st)) 8px calc(8px + var(--sb));
+  }
+
+  .modal,
+  #tbModal .modal,
+  #habitModal .modal,
+  #dailyMoodModal .modal {
+    max-height: calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding: 13px 12px 12px;
+    gap: 9px;
+  }
+
+  .modal-title,
+  #tbModal .modal-title {
+    font-size: 14px;
+    padding-bottom: 7px;
+  }
+
+  .modal .btn {
+    min-height: 38px;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+  }
+
+  .onboard-card {
+    padding: 16px 15px;
+    margin-bottom: 12px;
+  }
+
+  .onboard-note {
+    font-size: 10px;
+    padding: 9px 10px;
+  }
+}

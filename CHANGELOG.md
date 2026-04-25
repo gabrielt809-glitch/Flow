@@ -161,6 +161,13 @@
 - Resultado: banners globais removidos das abas internas para ganhar altura útil, formulários críticos reorganizados, Foco/Tarefas/Saúde/Sono/Nutrição/Hábitos/Bem-estar/Configurações mais compactos e legíveis, menu lateral e modal de bloco mais proporcionais, e screenshots locais geradas para auditoria visual por aba.
 - Impacto tecnico: ajustes concentrados em apresentação e layout responsivo, com mudanças pequenas em JS apenas para suportar o estado visual por seção e alinhar a biblioteca de Nutrição à regra do usuário, sem tocar em schema, migrations, storage, state ou selectors.
 
+## Mobile Layout Containment
+
+- Resumo: rodada estrutural de containment mobile para eliminar escapes horizontais, reduzir compressao vertical e garantir que bottom nav, modais e telas longas caibam com seguranca no iPhone/PWA.
+- Arquivos principais: `assets/styles.css`, `scripts/layout-audit.js`, `package.json`, `package-lock.json`, `LAYOUT_AUDIT_REPORT.md`, `qa-layout-screenshots/*`, `MOBILE_LAYOUT_CONTAINMENT_REPORT.md`.
+- Resultado: root layout estabilizado com padding inferior seguro, grids e formularios internos quebrando corretamente em viewports baixos, modal de bloco cabendo em 390x667 com scroll interno, onboarding rolando melhor em 390x667 e auditoria automatizada aprovada em 390x844, 390x667, 375x667 e 430x932.
+- Impacto tecnico: ajustes concentrados em CSS responsivo e tooling de QA com Playwright, sem alterar regras de negocio, schema, migrations, storage, state ou selectors.
+
 ## Final UX/UI Overhaul
 
 - Resumo: rodada final de QA visual rigoroso com screenshots mobile novas, correção real de contraste, onboarding mais compacto, badges traduzidos e validação honesta por aba.

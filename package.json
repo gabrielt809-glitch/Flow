@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/run-tests.js"
+    "test": "node tests/run-tests.js",
+    "layout:audit": "node scripts/layout-audit.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }
