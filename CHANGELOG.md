@@ -111,3 +111,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/onboarding.js`, `assets/js/overview.js`, `assets/js/water.js`, `assets/js/focus.js`, `assets/js/tasks.js`, `assets/js/timeblocks.js`, `assets/js/calendar.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/settings.js`, `CHANGELOG.md`, `VISUAL_REFINEMENT_V4_REPORT.md`.
 - Resultado: siglas-placeholder removidas, textos PT-BR corrigidos, cards e formulários compactados, calendário e blocos mais legíveis, água e foco mais proporcionais, modais mais estáveis no mobile e consistência visual melhor entre onboarding, Hoje, Água, Foco, Tarefas, Saúde, Sono, Nutrição, Hábitos, Bem-estar e Configurações.
 - Impacto técnico: refinamento concentrado em HTML/CSS e em módulos de render com correções seguras de texto/apresentação, preservando regras de negócio, estado, storage, selectors e a arquitetura modular.
+
+## Ajuste fino da aba Água
+
+- Resumo: refinamento visual e funcional focado na aba Água, com correção estrutural da bottom nav nas telas internas.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/water.js`, `CHANGELOG.md`, `WATER_TAB_POLISH_REPORT.md`.
+- Resultado: bottom nav mais estável no rodapé visual das abas internas, aba Água reorganizada em blocos mais claros, progresso mais legível, ações mais proporcionais e suporte a volume personalizado em ml.
+- Impacto técnico: ajustes concentrados em layout/CSS e no módulo da Água, sem alterar schema, migrations, storage, state ou selectors.

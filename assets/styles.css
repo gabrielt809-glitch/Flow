@@ -189,6 +189,18 @@ button {
   min-height: 100%;
 }
 
+#appWrap {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 74px - var(--st));
+  min-height: calc(100svh - 74px - var(--st));
+}
+
+.content {
+  flex: 1 1 auto;
+  padding-bottom: 6px;
+}
+
 .hdr {
   position: sticky;
   top: 0;
@@ -843,7 +855,72 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 8px 0 10px;
+  gap: 4px;
+  margin: 0;
+}
+
+.water-card {
+  gap: 10px;
+}
+
+.water-summary,
+.water-panel {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+    var(--surface-2);
+}
+
+.water-summary {
+  padding: 14px 12px 12px;
+}
+
+.water-panel {
+  padding: 12px;
+}
+
+.water-panel-head,
+.water-num-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.water-panel-head {
+  margin-bottom: 10px;
+}
+
+.water-panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: "DM Mono", monospace;
+}
+
+.water-panel-sub,
+.water-panel-value,
+.water-custom-note,
+.water-num-suffix {
+  color: var(--text2);
+}
+
+.water-panel-sub,
+.water-custom-note {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.water-panel-value {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.water-num-line {
+  justify-content: center;
 }
 
 .water-num {
@@ -854,16 +931,26 @@ button {
   filter: drop-shadow(0 0 6px rgba(93, 127, 232, 0.07));
 }
 
+.water-num-suffix {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: "DM Mono", monospace;
+}
+
 .water-unit {
   font-size: 12px;
   color: var(--text2);
+  line-height: 1.45;
+  text-align: center;
 }
 
 .cups-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .cup {
@@ -883,6 +970,32 @@ button {
   height: 70%;
   background: linear-gradient(180deg, rgba(122, 241, 255, 0.9), rgba(82, 232, 255, 0.68));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 10px rgba(82, 232, 255, 0.12);
+}
+
+.water-prog-wrap {
+  margin-top: 0;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.water-prog-lbl {
+  margin-top: 8px;
+}
+
+.water-chip-row {
+  margin-top: 0;
+}
+
+.water-custom-row {
+  margin-top: 10px;
+}
+
+.water-custom-note {
+  margin-top: 8px;
+}
+
+.water-actions {
+  margin-top: 10px;
 }
 
 .btn-row,
@@ -1403,7 +1516,11 @@ textarea.inp {
   position: fixed;
   inset: auto 0 0;
   z-index: 60;
-  padding: 8px 12px calc(8px + var(--sb));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: calc(70px + var(--sb));
+  padding: 0 12px var(--sb);
   background: linear-gradient(180deg, transparent, rgba(5, 8, 14, 0.84) 34%, rgba(5, 8, 14, 0.98));
 }
 
@@ -1416,7 +1533,7 @@ textarea.inp {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 3px;
   width: min(100%, 760px);
-  margin: 0 auto;
+  margin: 0 auto 0;
   padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 15px;
@@ -1868,6 +1985,11 @@ button:hover,
     padding: 10px 14px;
   }
 
+  #appWrap {
+    min-height: calc(100dvh - 70px - var(--st));
+    min-height: calc(100svh - 70px - var(--st));
+  }
+
   .modal {
     width: min(92vw, 520px);
     max-height: calc(100dvh - var(--st) - var(--sb) - 20px);
@@ -1948,6 +2070,17 @@ button:hover,
 
   .water-num {
     font-size: 54px;
+  }
+
+  .water-summary,
+  .water-panel {
+    padding: 11px;
+  }
+
+  .water-panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
   .focus-timer {

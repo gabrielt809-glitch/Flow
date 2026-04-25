@@ -234,28 +234,59 @@
       </section>
 
       <section class="sec" id="sec-water" data-section="water">
-        <div class="card" style="--acc:var(--water)">
+        <div class="card water-card" style="--acc:var(--water)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Água de hoje</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></span>
           </div>
-          <div class="water-big">
-            <div class="water-num" id="waterNum">0</div>
-            <div class="water-unit" id="waterUnit">copos · 0ml / <span id="waterGoalDisp">2000</span>ml</div>
+
+          <div class="water-summary">
+            <div class="water-big">
+              <div class="water-num-line">
+                <div class="water-num" id="waterNum">0</div>
+                <div class="water-num-suffix">copos</div>
+              </div>
+              <div class="water-unit" id="waterUnit">0ml consumidos · meta <span id="waterGoalDisp">2000</span>ml</div>
+            </div>
           </div>
-          <div class="cups-grid" id="waterCups"></div>
-          <div class="prog-wrap"><div class="prog-bar" id="waterBar"></div></div>
-          <div class="prog-lbl"><span id="waterMl">0ml</span><span id="waterMax">2000ml</span></div>
-          <div class="chip-row">
-            <button class="chip" type="button" data-cup-size="150">150ml</button>
-            <button class="chip on" type="button" data-cup-size="250">250ml</button>
-            <button class="chip" type="button" data-cup-size="350">350ml</button>
-            <button class="chip" type="button" data-cup-size="500">500ml</button>
+
+          <div class="water-panel">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Progresso diário</span>
+              <span class="water-panel-value" id="waterPercentLabel">0%</span>
+            </div>
+            <div class="prog-wrap water-prog-wrap"><div class="prog-bar" id="waterBar"></div></div>
+            <div class="prog-lbl water-prog-lbl"><span id="waterMl">0ml consumidos</span><span id="waterMax">Meta 2000ml</span></div>
           </div>
-          <div class="btn-row">
-            <button class="btn" type="button" id="removeWaterBtn">Remover</button>
-            <button class="btn btn-p" type="button" id="addWaterBtn">+ Beber</button>
+
+          <div class="water-panel">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Visualização</span>
+              <span class="water-panel-sub">cada bloco acompanha um copo do volume selecionado</span>
+            </div>
+            <div class="cups-grid" id="waterCups"></div>
+          </div>
+
+          <div class="water-panel water-entry-panel">
+            <div class="water-panel-head">
+              <span class="water-panel-title">Registrar volume</span>
+              <span class="water-panel-sub">use um chip ou informe outro valor</span>
+            </div>
+            <div class="chip-row water-chip-row">
+              <button class="chip" type="button" data-cup-size="150">150ml</button>
+              <button class="chip on" type="button" data-cup-size="250">250ml</button>
+              <button class="chip" type="button" data-cup-size="350">350ml</button>
+              <button class="chip" type="button" data-cup-size="500">500ml</button>
+            </div>
+            <div class="inp-row water-custom-row">
+              <input class="inp" id="waterCustomMl" type="number" min="1" step="10" placeholder="Outro valor (ml)">
+            </div>
+            <div class="item-meta water-custom-note">Se preencher outro valor, o botão principal registra esse volume.</div>
+            <div class="btn-row water-actions">
+              <button class="btn" type="button" id="removeWaterBtn">Desfazer</button>
+              <button class="btn btn-p" type="button" id="addWaterBtn">+ Beber</button>
+            </div>
           </div>
         </div>
       </section>
