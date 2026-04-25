@@ -69,11 +69,12 @@ export const DEFAULT_STATE = Object.freeze({
 
 const VALID_SECTIONS = new Set(["overview", "water", "study", "work", "health", "sleep", "food", "habits", "mood", "settings"]);
 const VALID_TASK_FILTERS = new Set(["all", "pending", "done", "high"]);
-const VALID_FOCUS_MODES = new Set(["focus", "short", "long"]);
+const VALID_FOCUS_MODES = new Set(["focus", "deep", "short", "long"]);
 const VALID_SOUND_MODES = new Set(["lofi", "rain", "deep"]);
 const VALID_TIMEBLOCK_TYPES = new Set(["single", "recurring_period", "recurring_forever"]);
 const DEFAULT_SECONDS_BY_MODE = {
   focus: 25 * 60,
+  deep: 50 * 60,
   short: 5 * 60,
   long: 15 * 60
 };

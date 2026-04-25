@@ -1106,6 +1106,31 @@ button {
   align-items: stretch;
 }
 
+.sec:not([data-section="overview"]) {
+  gap: 14px;
+}
+
+.sec:not([data-section="overview"]):not([data-section="water"]) .card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+
+.sec:not([data-section="overview"]):not([data-section="water"]) .card-hdr {
+  margin-bottom: 2px;
+}
+
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .btn-row,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .inp-row,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .scroll-tabs,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .stack-list,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .item-meta,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .prog-wrap,
+.sec:not([data-section="overview"]):not([data-section="water"]) .card > .prog-lbl {
+  margin-top: 0;
+}
+
 .inp-row > .inp {
   min-width: 0;
   flex: 1 1 0;
@@ -1145,6 +1170,7 @@ button {
 
 .btn {
   flex: 1;
+  min-height: 42px;
 }
 
 .btn-p {
@@ -1172,11 +1198,13 @@ button {
 
 .btn-sm {
   padding: 9px 12px;
+  min-height: 38px;
 }
 
 .btn-xs {
   padding: 6px 10px;
   font-size: 11px;
+  min-height: 32px;
 }
 
 .btn-icon {
@@ -1268,10 +1296,10 @@ textarea.inp {
 
 .focus-timer {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 68px;
+  font-size: 62px;
   text-align: center;
   line-height: 0.95;
-  margin: 8px 0;
+  margin: 2px 0 0;
   text-shadow:
     0 0 12px rgba(93, 127, 232, 0.1),
     0 0 8px rgba(93, 127, 232, 0.05);
@@ -1284,12 +1312,62 @@ textarea.inp {
   font-size: 11px;
 }
 
+.focus-timer-card,
+.focus-audio-card,
+.tasks-form-card,
+.calendar-card,
+.timeblocks-card,
+.health-card,
+.sleep-card,
+.food-card,
+.habits-card,
+.mood-card,
+.settings-card {
+  position: relative;
+}
+
+.focus-timer-card::after,
+.focus-audio-card::after,
+.tasks-form-card::after,
+.calendar-card::after,
+.timeblocks-card::after,
+.health-card::after,
+.sleep-card::after,
+.food-card::after,
+.habits-card::after,
+.mood-card::after,
+.settings-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 14px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04) 12%, rgba(255, 255, 255, 0.04) 88%, transparent);
+  pointer-events: none;
+}
+
+.focus-mode-row,
+.sound-mode-row,
+#taskFilters {
+  gap: 7px;
+}
+
+.focus-actions,
+.focus-audio-controls {
+  align-items: center;
+}
+
+.focus-audio-controls .slider {
+  flex: 1 1 140px;
+  min-height: 42px;
+}
+
 .focus-player {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 12px;
   align-items: center;
   padding: 12px;
+  margin-top: 2px;
 }
 
 .focus-player.playing {
@@ -1344,13 +1422,100 @@ textarea.inp {
   gap: 8px;
 }
 
+.tasks-form-card .inp-row,
+.food-card .inp-row,
+.health-card .inp-row,
+.settings-card .btn-row,
+.mood-card .btn,
+.habits-card .btn,
+.calendar-card .btn-row,
+.timeblocks-card .btn-row {
+  margin-top: 0;
+}
+
+.tasks-form-card #addTaskBtn,
+.food-add-btn,
+.health-card .btn,
+.mood-card #saveMoodBtn,
+.settings-card #saveSettingsBtn,
+.settings-card #resetAppBtn {
+  flex: 0 0 auto;
+}
+
+.tasks-form-card #taskInp {
+  flex: 1 1 220px;
+}
+
+.tasks-form-card #taskFilters {
+  padding-top: 2px;
+}
+
+.tasks-form-card #addTaskBtn {
+  min-width: 112px;
+}
+
+.tasks-form-card #clearTaskDueBtn {
+  min-width: 96px;
+}
+
+.calendar-card #calendarControls {
+  gap: 6px;
+}
+
+.calendar-card #calendarRangeLabel {
+  padding-top: 2px;
+}
+
+.calendar-card #calendarWeek {
+  padding-top: 2px;
+}
+
+.timeblocks-card #openTimeblockBtn,
+.habits-card #openHabitBtn {
+  min-width: 0;
+}
+
+.health-card .stat-grid,
+.sleep-card .qual-row,
+.mood-card .mood-row,
+.food-card #foodList,
+.habits-card #habitsList,
+.timeblocks-card #timeblocksList {
+  margin-top: 2px;
+}
+
+.sleep-card textarea.inp,
+.mood-card textarea.inp {
+  min-height: 88px;
+}
+
+.food-card .food-form-row,
+.health-card .inp-row,
+.settings-card .settings-grid,
+.settings-card .settings-row,
+.settings-card #profileSummary,
+.settings-card .btn-row {
+  margin-top: 2px;
+}
+
+.settings-card #resetAppBtn {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
+    rgba(69, 34, 38, 0.48);
+  border-color: rgba(166, 95, 108, 0.16);
+}
+
 .task-item,
 .timeblock-item,
 .food-item,
 .habit-item,
 .calendar-day {
-  padding: 10px;
+  padding: 10px 11px;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 13px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022), rgba(255, 255, 255, 0.01)),
+    var(--surface-2);
 }
 
 .task-row,
@@ -1455,7 +1620,7 @@ textarea.inp {
 }
 
 .calendar-day {
-  min-height: 122px;
+  min-height: 110px;
 }
 
 .calendar-day.today {
@@ -1500,10 +1665,11 @@ textarea.inp {
 
 .stat-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .stat-card {
-  padding: 11px;
+  padding: 10px;
 }
 
 .stat-val {
@@ -1577,6 +1743,27 @@ textarea.inp {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 11px;
+  border-radius: 13px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.empty-state strong {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.empty-state span {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text2);
 }
 
 .toggle {
@@ -1758,7 +1945,7 @@ textarea.inp {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 13px;
+  padding: 11px 12px;
   text-align: left;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1812,7 +1999,7 @@ textarea.inp {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 10px;
   padding: 16px 14px 14px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -1829,6 +2016,7 @@ textarea.inp {
 
 .modal .inp-row {
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 .modal .field-inline {
@@ -1848,6 +2036,19 @@ textarea.inp {
   padding-bottom: 9px;
   margin-bottom: 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal .btn {
+  min-height: 42px;
+}
+
+.modal #tbDaysRow,
+.modal .chip-row {
+  gap: 7px;
+}
+
+.modal .item-meta {
+  line-height: 1.45;
 }
 
 .modal-close {
@@ -2055,7 +2256,7 @@ button:hover,
 
 @media (max-width: 640px) {
   body {
-    padding-bottom: calc(84px + var(--sb));
+    padding-bottom: calc(92px + var(--sb));
   }
 
   .quick-grid,
@@ -2083,7 +2284,7 @@ button:hover,
   }
 
   .content {
-    padding: 10px 14px;
+    padding: 10px 14px calc(12px + var(--sb));
   }
 
   #appWrap {
@@ -2224,7 +2425,34 @@ button:hover,
   }
 
   .focus-timer {
-    font-size: 60px;
+    font-size: 56px;
+  }
+
+  .focus-actions .btn,
+  .focus-audio-controls .btn,
+  .tasks-form-card #addTaskBtn,
+  .food-add-btn,
+  .settings-card .btn,
+  .mood-card #saveMoodBtn {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .tasks-form-card #clearTaskDueBtn {
+    width: 100%;
+  }
+
+  .calendar-card #calendarControls .btn {
+    flex: 1 1 calc(33.333% - 6px);
+    min-width: 0;
+  }
+
+  .calendar-day {
+    min-height: 0;
+  }
+
+  .side-menu-card {
+    padding: calc(var(--st) + 14px) 14px calc(14px + var(--sb));
   }
 
   .sleep-ring {

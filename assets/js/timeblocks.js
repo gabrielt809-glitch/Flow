@@ -77,17 +77,17 @@ function syncTimeblockFormVisibility() {
   if (timeRow) timeRow.hidden = allDay;
   if (daysHint) {
     daysHint.hidden = type === "single";
-    daysHint.textContent = "Se nenhum dia for marcado, o bloco será interpretado como todos os dias.";
+    daysHint.textContent = "Se nenhum dia for marcado, o bloco sera interpretado como todos os dias.";
   }
   if (timeHint) {
     timeHint.hidden = !allDay;
-    timeHint.textContent = "Dia inteiro usa automaticamente 00:00 até 23:59.";
+    timeHint.textContent = "Dia inteiro usa automaticamente 00:00 ate 23:59.";
   }
   if (modalTitle) {
     modalTitle.textContent = editingTimeblockId ? "Editar bloco de tempo" : "Bloco de tempo";
   }
   if (saveButton) {
-    saveButton.textContent = editingTimeblockId ? "Salvar alterações" : "Salvar bloco";
+    saveButton.textContent = editingTimeblockId ? "Salvar alteracoes" : "Salvar bloco";
   }
 }
 
@@ -215,8 +215,8 @@ export function removeTimeblock(blockId) {
 }
 
 function describeType(block) {
-  if (block.type === "single") return "dia único";
-  if (block.type === "recurring_period") return `recorrente de ${block.startDate} até ${block.endDate}`;
+  if (block.type === "single") return "dia unico";
+  if (block.type === "recurring_period") return `recorrente de ${block.startDate} ate ${block.endDate}`;
   return `recorrente desde ${block.startDate}`;
 }
 
@@ -245,7 +245,7 @@ export function renderTimeblocks(state = getState()) {
           <div class="item-top">
             <div>
               <div class="task-title">${escapeHTML(block.title)}</div>
-              <div class="item-meta">${escapeHTML(describeType(block))} · ${escapeHTML(block.allDay ? "dia inteiro" : `${block.start} - ${block.end}`)}</div>
+              <div class="item-meta">${escapeHTML(describeType(block))} - ${escapeHTML(block.allDay ? "dia inteiro" : `${block.start} - ${block.end}`)}</div>
               <div class="item-meta">${escapeHTML(describeDays(block))}</div>
               ${skipped ? `<div class="btn-row">${skipped}</div>` : ""}
             </div>
@@ -257,7 +257,12 @@ export function renderTimeblocks(state = getState()) {
         </div>
       `;
     }).join("")
-    : `<div class="timeblock-item"><div class="item-meta">Nenhum bloco de tempo criado ainda.</div></div>`);
+    : `
+      <div class="empty-state">
+        <strong>Nenhum bloco criado ainda</strong>
+        <span>Adicione um bloco para organizar horarios fixos, recorrencias e dias inteiros.</span>
+      </div>
+    `);
 }
 
 export function listOccurrencesForDate(state, date) {

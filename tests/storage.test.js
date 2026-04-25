@@ -53,6 +53,11 @@ export async function run() {
 
   const normalized = normalizeState({
     ...createDefaultState(),
+    focus: {
+      ...createDefaultState().focus,
+      mode: "deep",
+      secondsLeft: 50 * 60
+    },
     ui: {
       ...createDefaultState().ui,
       calendarAnchorDate: "2026-05-07"
@@ -69,6 +74,8 @@ export async function run() {
     ...createDefaultState(),
     tasks: [{ title: "Sem id" }]
   }).tasks[0].id);
+  assert.equal(normalized.focus.mode, "deep");
+  assert.equal(normalized.focus.secondsLeft, 50 * 60);
   assert.equal(normalized.ui.calendarAnchorDate, "2026-05-07");
   assert.deepEqual(normalized.water.customVolumes, [600, 750]);
 

@@ -74,7 +74,7 @@ export function renderCalendar(state = getState()) {
         const row = document.createElement("div");
         row.className = "calendar-item";
         row.style.borderLeft = `3px solid ${item.accent}`;
-        row.textContent = `${item.label}${item.meta ? ` · ${item.meta}` : ""}`;
+        row.textContent = `${item.label}${item.meta ? ` - ${item.meta}` : ""}`;
 
         if (item.canSkip) {
           const button = document.createElement("button");

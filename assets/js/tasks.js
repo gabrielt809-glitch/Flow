@@ -81,7 +81,7 @@ export function renderTasks(state = getState()) {
             <button class="task-check ${task.done ? "done" : ""}" type="button" data-task-toggle="${escapeHTML(task.id)}"></button>
             <div>
               <div class="task-title">${escapeHTML(task.title)}</div>
-              <div class="task-meta">${escapeHTML(task.category)} · ${escapeHTML(task.dueDate ? formatDateTime(task.dueDate) : "Sem data")}</div>
+              <div class="task-meta">${escapeHTML(task.category)} - ${escapeHTML(task.dueDate ? formatDateTime(task.dueDate) : "Sem data")}</div>
             </div>
           </div>
           <div class="item-top">
@@ -91,5 +91,10 @@ export function renderTasks(state = getState()) {
         </div>
       </div>
     `).join("")
-    : `<div class="task-item"><div class="task-meta">${hasAnyTasks ? "Nenhuma tarefa encontrada neste filtro." : "Nenhuma tarefa criada ainda. Adicione a primeira tarefa acima."}</div></div>`);
+    : `
+      <div class="empty-state">
+        <strong>${hasAnyTasks ? "Nenhum resultado neste filtro" : "Nenhuma tarefa criada ainda"}</strong>
+        <span>${hasAnyTasks ? "Troque o filtro ou adicione uma nova tarefa acima." : "Use o formulario acima para registrar a primeira tarefa do dia."}</span>
+      </div>
+    `);
 }

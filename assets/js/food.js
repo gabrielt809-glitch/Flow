@@ -43,5 +43,10 @@ export function renderFood(state = getState()) {
         </div>
       </div>
     `).join("")
-    : `<div class="food-item"><div class="item-meta">Nenhuma refeição registrada hoje.</div></div>`);
+    : `
+      <div class="empty-state">
+        <strong>Nenhuma refeicao registrada hoje</strong>
+        <span>Adicione nome e calorias para montar o resumo do dia.</span>
+      </div>
+    `);
 }

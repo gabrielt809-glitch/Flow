@@ -31,7 +31,7 @@ export function renderSettings(state = getState()) {
   qs("#goalSleep").value = state.goals.sleepHours;
   qs("#goalCalories").value = state.goals.calories;
   safeHTML("#profileSummary", `
-    <strong>${escapeHTML(state.profile.emoji || "🙂")} ${escapeHTML(state.profile.name || "Seu perfil")}</strong><br>
-    Peso: ${escapeHTML(state.profile.weight || "-")} kg • Altura: ${escapeHTML(state.profile.height || "-")} cm • Idade: ${escapeHTML(state.profile.age || "-")}
+    <strong>${escapeHTML(state.profile.emoji || ":)")} ${escapeHTML(state.profile.name || "Seu perfil")}</strong><br>
+    Peso: ${escapeHTML(state.profile.weight || "-")} kg - Altura: ${escapeHTML(state.profile.height || "-")} cm - Idade: ${escapeHTML(state.profile.age || "-")}
   `);
 }

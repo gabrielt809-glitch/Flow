@@ -304,14 +304,15 @@
       </section>
 
       <section class="sec" id="sec-study" data-section="study">
-        <div class="card" style="--acc:var(--study)">
+        <div class="card focus-timer-card" style="--acc:var(--study)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Timer de foco</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="6.5"></circle><path d="M12 13 15 10.6"></path><path d="M9 4.5h6"></path></svg></span>
           </div>
-          <div class="chip-row">
+          <div class="chip-row focus-mode-row">
             <button class="chip on" type="button" data-focus-mode="focus">Foco 25m</button>
+            <button class="chip" type="button" data-focus-mode="deep">Deep 50m</button>
             <button class="chip" type="button" data-focus-mode="short">Pausa 5m</button>
             <button class="chip" type="button" data-focus-mode="long">Pausa 15m</button>
           </div>
@@ -320,13 +321,13 @@
             <span id="focusStateLabel">Pronto para iniciar</span>
             <span id="focusSessionCount">0 sessões hoje</span>
           </div>
-          <div class="btn-row">
+          <div class="btn-row focus-actions">
             <button class="btn btn-p" type="button" id="focusStartBtn">Iniciar</button>
             <button class="btn" type="button" id="focusResetBtn">Resetar</button>
           </div>
         </div>
 
-        <div class="card" style="--acc:var(--study)">
+        <div class="card focus-audio-card" style="--acc:var(--study)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Flow Focus Player</span>
@@ -341,12 +342,12 @@
               <div class="focus-sub" id="focusAudioStatus">Toque em reproduzir para ativar o som interno do app.</div>
             </div>
           </div>
-          <div class="chip-row">
+          <div class="chip-row sound-mode-row">
             <button class="chip on" type="button" data-sound-mode="lofi">Lo-fi calmo</button>
             <button class="chip" type="button" data-sound-mode="rain">Chuva</button>
             <button class="chip" type="button" data-sound-mode="deep">Deep focus</button>
           </div>
-          <div class="btn-row">
+          <div class="btn-row focus-audio-controls">
             <button class="btn btn-p" type="button" id="focusAudioBtn">Tocar</button>
             <input class="slider" type="range" min="0" max="100" value="45" id="focusVolume">
           </div>
@@ -354,7 +355,7 @@
       </section>
 
       <section class="sec" id="sec-work" data-section="work">
-        <div class="card" style="--acc:var(--work)">
+        <div class="card tasks-form-card" style="--acc:var(--work)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Nova tarefa</span>
@@ -390,7 +391,7 @@
           <div id="tasksList" class="stack-list"></div>
         </div>
 
-        <div class="card" style="--acc:var(--work)">
+        <div class="card calendar-card" style="--acc:var(--work)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Calendário semanal</span>
@@ -405,7 +406,7 @@
           <div class="calendar-week" id="calendarWeek"></div>
         </div>
 
-        <div class="card" style="--acc:var(--work)">
+        <div class="card timeblocks-card" style="--acc:var(--work)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Blocos de tempo</span>
@@ -416,7 +417,7 @@
       </section>
 
       <section class="sec" id="sec-health" data-section="health">
-        <div class="card" style="--acc:var(--health)">
+        <div class="card health-card" style="--acc:var(--health)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Movimento</span>
@@ -444,7 +445,7 @@
       </section>
 
       <section class="sec" id="sec-sleep" data-section="sleep">
-        <div class="card" style="--acc:var(--sleep)">
+        <div class="card sleep-card" style="--acc:var(--sleep)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Sono de hoje</span>
@@ -480,23 +481,23 @@
       </section>
 
       <section class="sec" id="sec-food" data-section="food">
-        <div class="card" style="--acc:var(--food)">
+        <div class="card food-card" style="--acc:var(--food)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Nutrição</span>
             <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span>
           </div>
-          <div class="inp-row">
+          <div class="inp-row food-form-row">
             <input class="inp" id="foodName" placeholder="Refeição ou alimento">
             <input class="inp" id="foodCalories" type="number" placeholder="kcal">
           </div>
-          <button class="btn btn-p" type="button" id="addFoodBtn">Adicionar refeição</button>
+          <button class="btn btn-p food-add-btn" type="button" id="addFoodBtn">Adicionar refeição</button>
           <div id="foodList" class="stack-list"></div>
         </div>
       </section>
 
       <section class="sec" id="sec-habits" data-section="habits">
-        <div class="card" style="--acc:var(--habits)">
+        <div class="card habits-card" style="--acc:var(--habits)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Hábitos de hoje</span>
@@ -507,7 +508,7 @@
       </section>
 
       <section class="sec" id="sec-mood" data-section="mood">
-        <div class="card" style="--acc:var(--mood)">
+        <div class="card mood-card" style="--acc:var(--mood)">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Como você está?</span>
@@ -527,7 +528,7 @@
       </section>
 
       <section class="sec" id="sec-settings" data-section="settings">
-        <div class="card">
+        <div class="card settings-card">
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Configurações</span>

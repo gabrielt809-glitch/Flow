@@ -139,3 +139,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `CHANGELOG.md`, `WATER_TAB_FINAL_POLISH_V4_REPORT.md`.
 - Resultado: secoes da Agua com pausas visuais mais claras, faixa de metricas mais legivel, progresso diario com mais respiro e blocos de copos/registro menos colados.
 - Impacto tecnico: ajuste concentrado em apresentacao e espacamento da aba Agua, sem mudar regras de negocio, persistencia ou a aba Hoje.
+
+## Product UI/UX QA Sprint
+
+- Resumo: rodada de fechamento visual e funcional das abas restantes, usando a Agua como referencia de organizacao e separacao visual.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/focus.js`, `assets/js/schema.js`, `assets/js/tasks.js`, `assets/js/calendar.js`, `assets/js/timeblocks.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/settings.js`, `assets/js/onboarding.js`, `tests/storage.test.js`, `PRODUCT_UI_UX_QA_REPORT.md`.
+- Resultado: Foco com modo Deep 50m e audio interno funcional, cards e formularios compactados nas demais abas, estados vazios refinados, modais mais consistentes no mobile e fim das siglas-placeholder como icones principais.
+- Impacto tecnico: ajustes concentrados em apresentacao, renders e na base de foco/schema para suportar o novo modo, preservando a paleta atual, a aba Hoje e a arquitetura modular.

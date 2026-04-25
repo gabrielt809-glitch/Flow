@@ -19,7 +19,7 @@ function saveHabit() {
     draft.habits.push({
       id: uid("habit"),
       name,
-      icon: qs("#habitIcon").value.trim() || "•",
+      icon: qs("#habitIcon").value.trim(),
       doneDates: []
     });
   }, { scope: "habits" });
@@ -58,12 +58,17 @@ export function renderHabits(state = getState()) {
           <div class="task-main">
             <button class="habit-check ${habit.doneToday ? "done" : ""}" type="button" data-habit-toggle="${escapeHTML(habit.id)}"></button>
             <div>
-              <div class="habit-name">${escapeHTML(habit.icon)} ${escapeHTML(habit.name)}</div>
+              <div class="habit-name">${habit.icon ? `${escapeHTML(habit.icon)} ` : ""}${escapeHTML(habit.name)}</div>
               <div class="item-meta">${escapeHTML(habit.doneDates.length)} registro(s)</div>
             </div>
           </div>
         </div>
       </div>
     `).join("")
-    : `<div class="habit-item"><div class="item-meta">Crie o primeiro hábito para acompanhar sua consistência.</div></div>`);
+    : `
+      <div class="empty-state">
+        <strong>Nenhum habito criado ainda</strong>
+        <span>Crie o primeiro habito para acompanhar sua consistencia com mais clareza.</span>
+      </div>
+    `);
 }
