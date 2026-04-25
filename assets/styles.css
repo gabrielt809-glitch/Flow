@@ -93,7 +93,7 @@ body {
   font-family: "Outfit", sans-serif;
   overflow-x: hidden;
   overscroll-behavior-y: none;
-  padding-bottom: calc(84px + var(--sb));
+  padding-bottom: calc(82px + var(--sb));
   transition:
     background var(--dur-med) var(--ease-premium),
     color var(--dur-med) var(--ease-premium);
@@ -430,14 +430,14 @@ button {
 .content {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 14px 18px;
+  gap: 12px;
+  padding: 12px 18px;
 }
 
 .sec {
   display: none;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .sec.active {
@@ -447,8 +447,8 @@ button {
 .card {
   position: relative;
   overflow: hidden;
-  padding: 14px;
-  border-radius: var(--r);
+  padding: 12px;
+  border-radius: 13px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008) 20%, transparent 56%),
@@ -486,7 +486,7 @@ button {
 }
 
 .card-hdr {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .card-title,
@@ -498,12 +498,33 @@ button {
   color: var(--muted);
 }
 
+.card-icon,
+.quick-ic,
+.ov-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #d3dbea;
+}
+
 .card-icon {
-  font-size: 14px;
-  color: var(--text2);
-  filter: none;
-  font-family: "DM Mono", monospace;
-  font-weight: 500;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.card-icon svg,
+.quick-ic svg,
+.ov-ic svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .hero-row {
@@ -511,7 +532,7 @@ button {
 }
 
 .hero-title {
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 800;
   line-height: 1.1;
 }
@@ -522,7 +543,7 @@ button {
 
 .hero-score-num {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 42px;
+  font-size: 40px;
   line-height: 0.9;
   text-shadow: 0 0 14px rgba(185, 137, 255, 0.14);
 }
@@ -550,7 +571,7 @@ button {
 
 .quick-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .mini-stat,
@@ -564,7 +585,7 @@ button {
 .calendar-day,
 .focus-player,
 .profile-card {
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)),
@@ -572,31 +593,31 @@ button {
 }
 
 .mini-stat {
-  padding: 10px 11px;
+  padding: 9px 10px;
   text-align: center;
   position: relative;
 }
 
 .mini-stat strong {
   display: block;
-  font-size: 19px;
+  font-size: 17px;
   margin-bottom: 2px;
 }
 
 .mini-stat span {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--muted);
 }
 
 .spotlight {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 14px;
+  gap: 12px;
 }
 
 .spotlight-ic {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   border-radius: 12px;
@@ -615,16 +636,16 @@ button {
 
 .spotlight-title {
   margin-top: 3px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .spotlight-sub {
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--text2);
-  font-size: 13px;
-  line-height: 1.56;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .quick-btn,
@@ -679,31 +700,25 @@ button {
 
 .quick-btn {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  padding: 11px;
+  padding: 10px;
   text-align: left;
-  min-height: 68px;
+  min-height: 58px;
 }
 
 .quick-ic {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.02);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  font-size: 13px;
-  color: #d3daeb;
-  font-family: "DM Mono", monospace;
-  font-weight: 500;
 }
 
 .quick-title {
   display: block;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .quick-copy {
@@ -713,7 +728,7 @@ button {
 .quick-sub,
 .focus-sub,
 .sleep-caption {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .card-highlight {
@@ -726,33 +741,35 @@ button {
 }
 
 .highlight-text {
-  margin-top: 8px;
-  font-size: 16px;
+  margin-top: 6px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .ov-card {
-  padding: 11px;
+  padding: 10px;
   text-align: left;
-  min-height: 112px;
+  min-height: 96px;
 }
 
 .ov-ic {
-  font-size: 13px;
+  width: 28px;
+  height: 28px;
   margin-bottom: 6px;
-  color: #d0d8ea;
-  font-family: "DM Mono", monospace;
-  font-weight: 500;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .ov-name {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
 }
 
 .ov-val {
-  margin-top: 4px;
+  margin-top: 3px;
   font-weight: 700;
+  font-size: 13px;
 }
 
 .ov-prog,
@@ -791,8 +808,8 @@ button {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   align-items: end;
-  gap: 10px;
-  min-height: 126px;
+  gap: 8px;
+  min-height: 110px;
 }
 
 .bar-chart .bar {
@@ -826,32 +843,32 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 12px 0 14px;
+  margin: 8px 0 10px;
 }
 
 .water-num {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 72px;
+  font-size: 60px;
   line-height: 0.9;
   text-shadow: 0 0 12px rgba(93, 127, 232, 0.12);
   filter: drop-shadow(0 0 6px rgba(93, 127, 232, 0.07));
 }
 
 .water-unit {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text2);
 }
 
 .cups-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .cup {
-  height: 48px;
-  border-radius: 14px 14px 8px 8px;
+  height: 40px;
+  border-radius: 12px 12px 7px 7px;
   border: 1px solid rgba(82, 232, 255, 0.18);
   background: linear-gradient(180deg, rgba(82, 232, 255, 0.14), rgba(82, 232, 255, 0.03));
   position: relative;
@@ -887,11 +904,11 @@ button {
 }
 
 #clearTaskDueBtn {
-  min-width: 126px;
+  min-width: 108px;
 }
 
 .btn-row {
-  margin-top: 11px;
+  margin-top: 8px;
   flex-wrap: wrap;
 }
 
@@ -901,13 +918,13 @@ button {
   justify-content: center;
   align-items: center;
   gap: 6px;
-  border-radius: 11px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)),
     var(--surface-2);
   color: var(--text);
-  padding: 11px 16px;
+  padding: 10px 14px;
   font-weight: 600;
   box-shadow: 0 6px 14px rgba(3, 6, 18, 0.08);
 }
@@ -930,8 +947,8 @@ button {
 .btn-lg {
   width: 100%;
   margin-top: 8px;
-  padding: 14px;
-  font-size: 15px;
+  padding: 13px;
+  font-size: 14px;
 }
 
 .btn-sm,
@@ -940,12 +957,12 @@ button {
 }
 
 .btn-sm {
-  padding: 10px 14px;
+  padding: 9px 12px;
 }
 
 .btn-xs {
-  padding: 7px 12px;
-  font-size: 12px;
+  padding: 6px 10px;
+  font-size: 11px;
 }
 
 .btn-icon {
@@ -962,7 +979,7 @@ button {
 }
 
 .chip {
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.008);
   color: var(--muted);
@@ -983,8 +1000,8 @@ button {
 }
 
 .inp {
-  padding: 12px 14px;
-  border-radius: 13px;
+  padding: 10px 12px;
+  border-radius: 11px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)),
@@ -1031,16 +1048,16 @@ textarea.inp {
 
 .field-inline span,
 .onboard-form span {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text2);
 }
 
 .focus-timer {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 82px;
+  font-size: 68px;
   text-align: center;
   line-height: 0.95;
-  margin: 12px 0;
+  margin: 8px 0;
   text-shadow:
     0 0 12px rgba(93, 127, 232, 0.1),
     0 0 8px rgba(93, 127, 232, 0.05);
@@ -1050,15 +1067,15 @@ textarea.inp {
   justify-content: space-between;
   gap: 12px;
   color: var(--text2);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .focus-player {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
-  padding: 14px;
+  padding: 12px;
 }
 
 .focus-player.playing {
@@ -1110,7 +1127,7 @@ textarea.inp {
 .stack-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .task-item,
@@ -1118,7 +1135,7 @@ textarea.inp {
 .food-item,
 .habit-item,
 .calendar-day {
-  padding: 11px;
+  padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -1131,7 +1148,7 @@ textarea.inp {
 
 .task-main {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: flex-start;
   min-width: 0;
 }
@@ -1169,13 +1186,14 @@ textarea.inp {
 .food-name {
   font-weight: 700;
   line-height: 1.35;
+  font-size: 14px;
 }
 
 .task-meta,
 .item-meta,
 .calendar-item,
 .profile-card {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .task-item.done .task-title {
@@ -1219,11 +1237,11 @@ textarea.inp {
 .calendar-week {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
+  gap: 7px;
 }
 
 .calendar-day {
-  min-height: 150px;
+  min-height: 122px;
 }
 
 .calendar-day.today {
@@ -1234,12 +1252,12 @@ textarea.inp {
 }
 
 .calendar-date {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .calendar-label {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1248,22 +1266,22 @@ textarea.inp {
 .calendar-items {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 5px;
+  margin-top: 8px;
 }
 
 .calendar-item {
-  padding: 7px 8px;
-  border-radius: 11px;
+  padding: 6px 7px;
+  border-radius: 10px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008)),
     var(--surface3);
   border: 1px solid rgba(255, 255, 255, 0.035);
-  line-height: 1.4;
+  line-height: 1.35;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 
 .stat-grid {
@@ -1271,22 +1289,22 @@ textarea.inp {
 }
 
 .stat-card {
-  padding: 14px;
+  padding: 11px;
 }
 
 .stat-val {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 800;
   line-height: 1;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sleep-ring {
   display: grid;
   place-items: center;
-  margin: 10px auto 16px;
-  width: 200px;
-  height: 200px;
+  margin: 6px auto 10px;
+  width: 168px;
+  height: 168px;
   border-radius: 50%;
   background:
     radial-gradient(circle at center, color-mix(in srgb, var(--surface) 94%, transparent) 52%, transparent 53%),
@@ -1303,7 +1321,7 @@ textarea.inp {
 
 .sleep-hours {
   font-family: "Bebas Neue", sans-serif;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 1;
   color: var(--sleep);
   text-shadow: 0 0 10px rgba(131, 150, 203, 0.1);
@@ -1313,21 +1331,24 @@ textarea.inp {
 .mood-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
+  gap: 7px;
+  margin-top: 10px;
 }
 
 .qual-btn,
 .mood-btn {
-  padding: 12px 0;
-  border-radius: 15px;
+  min-height: 42px;
+  padding: 10px 6px;
+  border-radius: 12px;
   border: 1px solid var(--border-soft);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
     var(--surface-2);
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .qual-btn.on,
@@ -1374,8 +1395,8 @@ textarea.inp {
 
 .profile-card {
   margin-top: 14px;
-  padding: 14px;
-  line-height: 1.6;
+  padding: 12px;
+  line-height: 1.55;
 }
 
 .nav {
@@ -1512,14 +1533,14 @@ textarea.inp {
 }
 
 .side-links {
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .side-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 14px;
+  padding: 12px 13px;
   text-align: left;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1573,8 +1594,8 @@ textarea.inp {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 18px 16px 16px;
+  gap: 9px;
+  padding: 16px 14px 14px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background:
@@ -1604,9 +1625,9 @@ textarea.inp {
 }
 
 .modal-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  padding-bottom: 10px;
+  padding-bottom: 9px;
   margin-bottom: 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -1643,8 +1664,8 @@ textarea.inp {
 .onboard-card {
   position: relative;
   width: min(100%, 460px);
-  padding: 28px 24px;
-  border-radius: 26px;
+  padding: 24px 22px;
+  border-radius: 22px;
   border: 1px solid var(--border-soft);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
@@ -1653,7 +1674,7 @@ textarea.inp {
 }
 
 .onboard-logo {
-  font-size: 44px;
+  font-size: 40px;
 }
 
 .onboard-sub {
@@ -1664,20 +1685,59 @@ textarea.inp {
 .onboard-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .onboard-note {
-  padding: 12px 14px;
-  border-radius: 15px;
+  padding: 11px 12px;
+  border-radius: 13px;
   border: 1px solid var(--border-soft);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
     var(--surface-2);
   color: var(--text2);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.56;
+}
+
+#tasksList,
+#timeblocksList,
+#foodList,
+#habitsList {
+  margin-top: 6px;
+}
+
+#calendarControls {
+  margin-top: 0;
+}
+
+#calendarControls .btn {
+  flex: 0 1 auto;
+}
+
+#timeblocksList .btn-row,
+#tasksList .btn-row {
+  margin-top: 6px;
+}
+
+.item-top .btn-row {
+  margin-top: 0;
+}
+
+#foodName,
+#foodCalories,
+#taskInp,
+#taskCat,
+#taskPrio,
+#taskDue,
+#stepsInput,
+#workoutInput,
+#goalWater,
+#goalSteps,
+#goalSleep,
+#goalCalories {
+  min-height: 42px;
 }
 
 ::-webkit-scrollbar {
@@ -1777,7 +1837,7 @@ button:hover,
 
 @media (max-width: 640px) {
   body {
-    padding-bottom: calc(88px + var(--sb));
+    padding-bottom: calc(84px + var(--sb));
   }
 
   .quick-grid,
@@ -1805,15 +1865,15 @@ button:hover,
   }
 
   .content {
-    padding: 12px 15px;
+    padding: 10px 14px;
   }
 
   .modal {
     width: min(92vw, 520px);
     max-height: calc(100dvh - var(--st) - var(--sb) - 20px);
     max-height: calc(100svh - var(--st) - var(--sb) - 20px);
-    padding: 16px 14px 14px;
-    border-radius: 16px;
+    padding: 14px 13px 13px;
+    border-radius: 14px;
   }
 
   .modal-bg {
@@ -1865,13 +1925,42 @@ button:hover,
 
   .task-item .item-top,
   .timeblock-item .item-top {
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
   .btn-row#calendarControls .btn,
   #timeblocksList .btn-xs,
   #tasksList .btn-xs {
     flex: 0 0 auto;
+  }
+
+  .hero-row {
+    gap: 10px;
+  }
+
+  .hero-title {
+    font-size: 22px;
+  }
+
+  .hero-score-num {
+    font-size: 36px;
+  }
+
+  .water-num {
+    font-size: 54px;
+  }
+
+  .focus-timer {
+    font-size: 60px;
+  }
+
+  .sleep-ring {
+    width: 156px;
+    height: 156px;
+  }
+
+  .sleep-hours {
+    font-size: 42px;
   }
 }
 

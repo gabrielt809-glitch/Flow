@@ -19,7 +19,7 @@ function saveHabit() {
     draft.habits.push({
       id: uid("habit"),
       name,
-      icon: qs("#habitIcon").value.trim() || "✨",
+      icon: qs("#habitIcon").value.trim() || "•",
       doneDates: []
     });
   }, { scope: "habits" });

@@ -46,7 +46,7 @@
           </label>
           <label>
             <span>Emoji</span>
-            <input class="inp" id="ob-emoji" placeholder=":)" maxlength="2">
+            <input class="inp" id="ob-emoji" placeholder="🙂" maxlength="2">
           </label>
         </div>
         <div class="inp-row">
@@ -124,7 +124,9 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Painel inteligente</span>
-            <span class="card-icon">+</span>
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 4v16"></path><path d="M4 12h16"></path></svg>
+            </span>
           </div>
           <div class="spotlight">
             <div class="spotlight-ic" id="spotlightIcon" aria-hidden="true">
@@ -138,19 +140,27 @@
           </div>
           <div class="quick-grid">
             <button class="quick-btn" type="button" id="quickAddWaterBtn">
-              <span class="quick-ic">H2O</span>
+              <span class="quick-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg>
+              </span>
               <span class="quick-copy"><span class="quick-title">Beber água</span><span class="quick-sub">registrar +1 copo</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="study">
-              <span class="quick-ic">FX</span>
+              <span class="quick-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"></circle></svg>
+              </span>
               <span class="quick-copy"><span class="quick-title">Entrar em foco</span><span class="quick-sub">abrir timer pomodoro</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="work">
-              <span class="quick-ic">OK</span>
+              <span class="quick-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 7.5h12"></path><path d="M6 12h12"></path><path d="M6 16.5h8"></path><path d="m15.5 16.5 1.8 1.8 3.2-3.5"></path></svg>
+              </span>
               <span class="quick-copy"><span class="quick-title">Ver tarefas</span><span class="quick-sub">prioridades do dia</span></span>
             </button>
             <button class="quick-btn" type="button" data-nav="mood">
-              <span class="quick-ic">BW</span>
+              <span class="quick-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg>
+              </span>
               <span class="quick-copy"><span class="quick-title">Check-in</span><span class="quick-sub">registrar humor</span></span>
             </button>
           </div>
@@ -164,49 +174,49 @@
 
         <div class="ov-grid">
           <button class="ov-card" type="button" data-nav="water">
-            <div class="ov-ic">H2O</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></div>
             <div class="ov-name">Hidratação</div>
             <div class="ov-val" id="ov-water">0/8</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-water"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="study">
-            <div class="ov-ic">FX</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"></circle></svg></div>
             <div class="ov-name">Foco</div>
             <div class="ov-val" id="ov-study">0 pomos</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-study"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="work">
-            <div class="ov-ic">OK</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7.5h12"></path><path d="M6 12h12"></path><path d="M6 16.5h8"></path><path d="m15.5 16.5 1.8 1.8 3.2-3.5"></path></svg></div>
             <div class="ov-name">Tarefas</div>
             <div class="ov-val" id="ov-work">0/0</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-work"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="health">
-            <div class="ov-ic">MV</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 14.5h3l1.7-4 2.7 7 2.1-5h4.5"></path></svg></div>
             <div class="ov-name">Saúde</div>
             <div class="ov-val" id="ov-health">0 passos</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-health"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="sleep">
-            <div class="ov-ic">SL</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 4.8a7 7 0 1 0 4.7 11.8 6.7 6.7 0 0 1-4.7-11.8Z"></path></svg></div>
             <div class="ov-name">Sono</div>
             <div class="ov-val" id="ov-sleep">-h</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-sleep"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="food">
-            <div class="ov-ic">NT</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></div>
             <div class="ov-name">Nutrição</div>
             <div class="ov-val" id="ov-food">0 kcal</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-food"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="habits">
-            <div class="ov-ic">HB</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 12.5 10.7 15 16 9.5"></path><circle cx="12" cy="12" r="8"></circle></svg></div>
             <div class="ov-name">Hábitos</div>
             <div class="ov-val" id="ov-habits">0/0</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-habits"></div></div>
           </button>
           <button class="ov-card" type="button" data-nav="mood">
-            <div class="ov-ic">BW</div>
+            <div class="ov-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg></div>
             <div class="ov-name">Bem-estar</div>
             <div class="ov-val" id="ov-mood">-</div>
             <div class="ov-prog"><div class="ov-prog-bar" id="ovb-mood"></div></div>
@@ -228,11 +238,11 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Água de hoje</span>
-            <span class="card-icon">H2O</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></span>
           </div>
           <div class="water-big">
             <div class="water-num" id="waterNum">0</div>
-            <div class="water-unit" id="waterUnit">copos &middot; 0ml / <span id="waterGoalDisp">2000</span>ml</div>
+            <div class="water-unit" id="waterUnit">copos · 0ml / <span id="waterGoalDisp">2000</span>ml</div>
           </div>
           <div class="cups-grid" id="waterCups"></div>
           <div class="prog-wrap"><div class="prog-bar" id="waterBar"></div></div>
@@ -244,7 +254,7 @@
             <button class="chip" type="button" data-cup-size="500">500ml</button>
           </div>
           <div class="btn-row">
-            <button class="btn" type="button" id="removeWaterBtn">- Remover</button>
+            <button class="btn" type="button" id="removeWaterBtn">Remover</button>
             <button class="btn btn-p" type="button" id="addWaterBtn">+ Beber</button>
           </div>
         </div>
@@ -255,7 +265,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Timer de foco</span>
-            <span class="card-icon">FX</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="6.5"></circle><path d="M12 13 15 10.6"></path><path d="M9 4.5h6"></path></svg></span>
           </div>
           <div class="chip-row">
             <button class="chip on" type="button" data-focus-mode="focus">Foco 25m</button>
@@ -277,7 +287,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Flow Focus Player</span>
-            <span class="card-icon">AUDIO</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 8v8"></path><path d="M12 6v12"></path><path d="M16 9v6"></path></svg></span>
           </div>
           <div class="focus-player" id="focusPlayer">
             <div class="focus-bars">
@@ -305,7 +315,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Nova tarefa</span>
-            <span class="card-icon">OK</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7.5h12"></path><path d="M6 12h12"></path><path d="M6 16.5h8"></path><path d="m15.5 16.5 1.8 1.8 3.2-3.5"></path></svg></span>
           </div>
           <div class="inp-row">
             <input class="inp" id="taskInp" placeholder="Nova tarefa...">
@@ -341,7 +351,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Calendário semanal</span>
-            <span class="card-icon">CAL</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5v3"></path><path d="M17 4.5v3"></path><path d="M5 8.5h14"></path><rect x="4.5" y="6.5" width="15" height="13" rx="2.5"></rect></svg></span>
           </div>
           <div class="btn-row" id="calendarControls">
             <button class="btn btn-xs" type="button" data-calendar-nav="prev">Semana anterior</button>
@@ -367,7 +377,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Movimento</span>
-            <span class="card-icon">MV</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 14.5h3l1.7-4 2.7 7 2.1-5h4.5"></path></svg></span>
           </div>
           <div class="stat-grid">
             <div class="stat-card">
@@ -395,7 +405,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Sono de hoje</span>
-            <span class="card-icon">SL</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 4.8a7 7 0 1 0 4.7 11.8 6.7 6.7 0 0 1-4.7-11.8Z"></path></svg></span>
           </div>
           <div class="sleep-ring">
             <div class="sleep-ring-core">
@@ -416,11 +426,11 @@
           <div class="prog-wrap"><div class="prog-bar" id="sleepBar"></div></div>
           <div class="prog-lbl"><span id="sleepDebt">0h de saldo</span><span id="alarmSugg">Dormir 23:00</span></div>
           <div class="qual-row" id="sleepQualRow">
-            <button class="qual-btn" type="button" data-sleep-quality="1">I</button>
-            <button class="qual-btn" type="button" data-sleep-quality="2">II</button>
-            <button class="qual-btn" type="button" data-sleep-quality="3">III</button>
-            <button class="qual-btn" type="button" data-sleep-quality="4">IV</button>
-            <button class="qual-btn" type="button" data-sleep-quality="5">V</button>
+            <button class="qual-btn" type="button" data-sleep-quality="1">Baixa</button>
+            <button class="qual-btn" type="button" data-sleep-quality="2">Leve</button>
+            <button class="qual-btn" type="button" data-sleep-quality="3">Boa</button>
+            <button class="qual-btn" type="button" data-sleep-quality="4">Muito boa</button>
+            <button class="qual-btn" type="button" data-sleep-quality="5">Ótima</button>
           </div>
           <textarea class="inp" id="dreamNotes" rows="4" placeholder="Notas de sono e sonhos"></textarea>
         </div>
@@ -431,7 +441,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Nutrição</span>
-            <span class="card-icon">NT</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span>
           </div>
           <div class="inp-row">
             <input class="inp" id="foodName" placeholder="Refeição ou alimento">
@@ -458,14 +468,14 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Como você está?</span>
-            <span class="card-icon">BW</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg></span>
           </div>
           <div class="mood-row" id="moodRow">
-            <button class="mood-btn" type="button" data-mood="1">I</button>
-            <button class="mood-btn" type="button" data-mood="2">II</button>
-            <button class="mood-btn" type="button" data-mood="3">III</button>
-            <button class="mood-btn" type="button" data-mood="4">IV</button>
-            <button class="mood-btn" type="button" data-mood="5">V</button>
+            <button class="mood-btn" type="button" data-mood="1">Baixo</button>
+            <button class="mood-btn" type="button" data-mood="2">Sensível</button>
+            <button class="mood-btn" type="button" data-mood="3">Neutro</button>
+            <button class="mood-btn" type="button" data-mood="4">Bem</button>
+            <button class="mood-btn" type="button" data-mood="5">Ótimo</button>
           </div>
           <textarea class="inp" id="gratitudeInput" rows="3" placeholder="Uma gratidão de hoje"></textarea>
           <textarea class="inp" id="moodNotesInput" rows="3" placeholder="Notas do dia"></textarea>
@@ -478,7 +488,7 @@
           <div class="card-accent"></div>
           <div class="card-hdr">
             <span class="card-title">Configurações</span>
-            <span class="card-icon">CFG</span>
+            <span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"></circle><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7.4 7.4 0 0 0-2.1-1.2L14 3h-4l-.4 2.6a7.4 7.4 0 0 0-2.1 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 0 0 2.1 1.2L10 21h4l.4-2.6a7.4 7.4 0 0 0 2.1-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"></path></svg></span>
           </div>
           <div class="settings-grid">
             <label class="field-inline">
@@ -517,7 +527,7 @@
       <button class="nav-btn active" type="button" data-nav="overview"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V19h11v-8.5"></path></svg></span><span>Hoje</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" data-nav="water"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4.5c3.2 4 5.3 6.8 5.3 9.2A5.3 5.3 0 0 1 12 19a5.3 5.3 0 0 1-5.3-5.3c0-2.4 2.1-5.2 5.3-9.2Z"></path></svg></span><span>Água</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" data-nav="study"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"></circle></svg></span><span>Foco</span><div class="nav-dot"></div></button>
-      <button class="nav-btn" type="button" data-nav="work"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6.5 12.5 3.4 3.4 7.6-7.8"></path></svg></span><span>Tarefas</span><div class="nav-dot"></div></button>
+      <button class="nav-btn" type="button" data-nav="work"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7.5h12"></path><path d="M6 12h12"></path><path d="M6 16.5h8"></path><path d="m15.5 16.5 1.8 1.8 3.2-3.5"></path></svg></span><span>Tarefas</span><div class="nav-dot"></div></button>
       <button class="nav-btn" type="button" id="menuToggleBtn"><span class="nav-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7.5h14"></path><path d="M5 12h14"></path><path d="M5 16.5h14"></path></svg></span><span>Menu</span><div class="nav-dot"></div></button>
     </div>
   </nav>
@@ -532,10 +542,10 @@
         <button class="btn-icon btn" type="button" id="closeMenuBtn">&times;</button>
       </div>
       <div class="side-links">
-        <button class="side-link" type="button" data-nav="health"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18v-8"></path><path d="m8.5 13.5 3.5-3.5 3.5 3.5"></path><path d="M6 19h12"></path></svg></span><span>Saúde</span></button>
+        <button class="side-link" type="button" data-nav="health"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 14.5h3l1.7-4 2.7 7 2.1-5h4.5"></path></svg></span><span>Saúde</span></button>
         <button class="side-link" type="button" data-nav="sleep"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 4.8a7 7 0 1 0 4.7 11.8 6.7 6.7 0 0 1-4.7-11.8Z"></path></svg></span><span>Sono</span></button>
         <button class="side-link" type="button" data-nav="food"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.5 5.5v5"></path><path d="M10 5.5v5"></path><path d="M8.75 10.5V19"></path><path d="M15 5.5c1.7 1.6 1.7 4.9 0 6.5V19"></path></svg></span><span>Nutrição</span></button>
-        <button class="side-link" type="button" data-nav="habits"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"></circle><circle cx="12" cy="12" r="2.2"></circle></svg></span><span>Hábitos</span></button>
+        <button class="side-link" type="button" data-nav="habits"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 12.5 10.7 15 16 9.5"></path><circle cx="12" cy="12" r="8"></circle></svg></span><span>Hábitos</span></button>
         <button class="side-link" type="button" data-nav="mood"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19s-5.5-3.5-5.5-8a3.2 3.2 0 0 1 5.5-2.2A3.2 3.2 0 0 1 17.5 11c0 4.5-5.5 8-5.5 8Z"></path></svg></span><span>Bem-estar</span></button>
         <button class="side-link" type="button" data-nav="settings"><span class="side-link-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"></circle><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7.4 7.4 0 0 0-2.1-1.2L14 3h-4l-.4 2.6a7.4 7.4 0 0 0-2.1 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 0 0 2.1 1.2L10 21h4l.4-2.6a7.4 7.4 0 0 0 2.1-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2Z"></path></svg></span><span>Configurações</span></button>
       </div>
@@ -547,7 +557,7 @@
     <div class="modal">
       <div class="modal-title">Novo hábito <button class="modal-close" type="button" data-close-modal="habitModal">&times;</button></div>
       <input class="inp" id="habitName" placeholder="Nome do hábito">
-      <input class="inp" id="habitIcon" placeholder="Emoji" maxlength="2">
+      <input class="inp" id="habitIcon" placeholder="Símbolo opcional" maxlength="2">
       <button class="btn btn-p" type="button" id="saveHabitBtn">Criar hábito</button>
     </div>
   </div>

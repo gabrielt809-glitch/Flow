@@ -31,7 +31,7 @@ export function addWater(direction) {
 export function renderWater(state = getState()) {
   const water = selectWaterProgress(state);
   safeText("#waterNum", String(water.cupCount));
-  safeHTML("#waterUnit", `copos • ${water.currentMl}ml / <span id="waterGoalDisp">${water.goalMl}</span>ml`);
+  safeHTML("#waterUnit", `copos · ${water.currentMl}ml / <span id="waterGoalDisp">${water.goalMl}</span>ml`);
   safeText("#waterMl", `${water.currentMl}ml`);
   safeText("#waterMax", `${water.goalMl}ml`);
   safeStyle("#waterBar", "width", `${water.percent}%`);

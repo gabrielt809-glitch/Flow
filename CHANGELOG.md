@@ -104,3 +104,10 @@
 - Arquivos principais: index.html, ssets/styles.css, ssets/js/overview.js, ssets/js/calendar.js, ssets/js/timeblocks.js, ssets/js/tasks.js, CHANGELOG.md, VISUAL_UX_POLISH_V3_REPORT.md.
 - Resultado: interface limpa de mojibake, icones estaticos mais seguros, formularios e listas mais consistentes, calendario e blocos com textos corrigidos e modais mais estaveis no iPhone.
 - Impacto tecnico: ajustes concentrados em HTML/CSS e em poucos modulos de render para correcao de texto/apresentacao, sem alterar regras de negocio, persistencia ou arquitetura de estado.
+
+## Visual Refinement V4
+
+- Resumo: revisão completa de UX visual em todas as abas, com ícones premium discretos, mais densidade mobile e menos sensação de placeholder.
+- Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/onboarding.js`, `assets/js/overview.js`, `assets/js/water.js`, `assets/js/focus.js`, `assets/js/tasks.js`, `assets/js/timeblocks.js`, `assets/js/calendar.js`, `assets/js/food.js`, `assets/js/habits.js`, `assets/js/settings.js`, `CHANGELOG.md`, `VISUAL_REFINEMENT_V4_REPORT.md`.
+- Resultado: siglas-placeholder removidas, textos PT-BR corrigidos, cards e formulários compactados, calendário e blocos mais legíveis, água e foco mais proporcionais, modais mais estáveis no mobile e consistência visual melhor entre onboarding, Hoje, Água, Foco, Tarefas, Saúde, Sono, Nutrição, Hábitos, Bem-estar e Configurações.
+- Impacto técnico: refinamento concentrado em HTML/CSS e em módulos de render com correções seguras de texto/apresentação, preservando regras de negócio, estado, storage, selectors e a arquitetura modular.

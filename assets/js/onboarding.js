@@ -17,7 +17,7 @@ export function finishOnboarding() {
     weight: qs("#ob-weight").value.trim(),
     height: qs("#ob-height").value.trim(),
     age: qs("#ob-age").value.trim(),
-    emoji: qs("#ob-emoji").value.trim() || "😊"
+    emoji: qs("#ob-emoji").value.trim() || "🙂"
   };
 
   mutateState((draft) => {
@@ -35,5 +35,5 @@ export function renderOnboarding(state = getState()) {
   qs("#hdr").hidden = !state.onboarded;
   qs("#appWrap").hidden = !state.onboarded;
   qs("#mainNav").hidden = !state.onboarded;
-  qs("#avatarBtn").textContent = state.profile.emoji || "😊";
+  qs("#avatarBtn").textContent = state.profile.emoji || "🙂";
 }
