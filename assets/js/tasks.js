@@ -2,6 +2,12 @@ import { getState, mutateState } from "./state.js";
 import { selectVisibleTasks } from "./selectors.js";
 import { escapeHTML, formatDateTime, qs, qsa, safeHTML, uid } from "./utils.js";
 
+const PRIORITY_LABELS = {
+  high: "Alta",
+  mid: "Média",
+  low: "Baixa"
+};
+
 export function initTasks() {
   qs("#addTaskBtn").addEventListener("click", addTask);
   qs("#clearTaskDueBtn").addEventListener("click", () => {
@@ -74,7 +80,9 @@ export function renderTasks(state = getState()) {
   const hasAnyTasks = state.tasks.length > 0;
 
   safeHTML("#tasksList", visibleTasks.length
-    ? visibleTasks.map((task) => `
+    ? visibleTasks.map((task) => {
+      const priorityLabel = PRIORITY_LABELS[task.priority] || task.priority;
+      return `
       <div class="task-item ${task.done ? "done" : ""}">
         <div class="task-row">
           <div class="task-main">
@@ -85,12 +93,13 @@ export function renderTasks(state = getState()) {
             </div>
           </div>
           <div class="item-top">
-            <span class="badge ${escapeHTML(task.priority)}">${escapeHTML(task.priority)}</span>
+            <span class="badge ${escapeHTML(task.priority)}">${escapeHTML(priorityLabel)}</span>
             <button class="btn btn-xs" type="button" data-task-remove="${escapeHTML(task.id)}">Excluir</button>
           </div>
         </div>
       </div>
-    `).join("")
+    `;
+    }).join("")
     : `
       <div class="empty-state">
         <strong>${hasAnyTasks ? "Nenhum resultado neste filtro" : "Nenhuma tarefa criada ainda"}</strong>

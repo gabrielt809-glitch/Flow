@@ -160,3 +160,10 @@
 - Arquivos principais: `index.html`, `assets/styles.css`, `assets/js/navigation.js`, `assets/js/food.js`, `qa-screenshots/*`, `FINAL_UX_INTENSIVE_REPORT.md`.
 - Resultado: banners globais removidos das abas internas para ganhar altura útil, formulários críticos reorganizados, Foco/Tarefas/Saúde/Sono/Nutrição/Hábitos/Bem-estar/Configurações mais compactos e legíveis, menu lateral e modal de bloco mais proporcionais, e screenshots locais geradas para auditoria visual por aba.
 - Impacto tecnico: ajustes concentrados em apresentação e layout responsivo, com mudanças pequenas em JS apenas para suportar o estado visual por seção e alinhar a biblioteca de Nutrição à regra do usuário, sem tocar em schema, migrations, storage, state ou selectors.
+
+## Final UX/UI Overhaul
+
+- Resumo: rodada final de QA visual rigoroso com screenshots mobile novas, correção real de contraste, onboarding mais compacto, badges traduzidos e validação honesta por aba.
+- Arquivos principais: `assets/styles.css`, `assets/js/tasks.js`, `assets/js/navigation.js`, `assets/js/food.js`, `qa-final-screenshots/*`, `FINAL_UX_OVERHAUL_REPORT.md`.
+- Resultado: Sono e Bem-estar deixaram de ter botões escuros ilegíveis, Tarefas perdeu `HIGH/MID/LOW`, Configurações passou a expor ações finais acima da nav, o onboarding ficou mais confiável no iPhone e o pacote final de screenshots passou a refletir melhor o fundo real das telas.
+- Impacto tecnico: refinamento concentrado em CSS e em poucos módulos de render, sem alterar schema, migrations, storage, state ou selectors; o app ganhou evidência visual final por aba sem reintroduzir legado.
